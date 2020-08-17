@@ -154,7 +154,8 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "http://localhost:4201",
                         "https://timsanalytics.com",
                         "https://www.timsanalytics.com",
-                        "https://demo.timsanalytics.com"
+                        "https://demo.timsanalytics.com",
+                        "https://hcs.timsanalytics.com"
                 )
         );
         configuration.setAllowedMethods(
