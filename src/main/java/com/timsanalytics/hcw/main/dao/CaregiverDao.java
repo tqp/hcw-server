@@ -2,8 +2,8 @@ package com.timsanalytics.hcw.main.dao;
 
 import com.timsanalytics.hcw.common.beans.KeyValue;
 import com.timsanalytics.hcw.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.hcw.main.beans.Student;
-import com.timsanalytics.hcw.main.dao.RowMappers.StudentRowMapper;
+import com.timsanalytics.hcw.main.beans.Caregiver;
+import com.timsanalytics.hcw.main.dao.RowMappers.CaregiverRowMapper;
 import com.timsanalytics.hcw.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,18 +16,18 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
-public class StudentDao {
+public class CaregiverDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
 
     @Autowired
-    public StudentDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
+    public CaregiverDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
     }
 
-    public Student createStudent(Student student) {
+    public Caregiver createCaregiver(Caregiver caregiver) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
         query.append("      HCW_DATA.PERSON\n");
@@ -51,16 +51,16 @@ public class StudentDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        student.setStudentGuid(this.generateUuidService.GenerateUuid());
-                        this.logger.trace("New Student GUID: " + student.getStudentGuid());
-                        ps.setString(1, student.getStudentGuid());
-                        ps.setString(2, student.getStudentSurname());
-                        ps.setString(3, student.getStudentGivenName());
-                        ps.setString(4, student.getStudentGender());
+                        caregiver.setCaregiverGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.trace("New Caregiver GUID: " + caregiver.getCaregiverGuid());
+                        ps.setString(1, caregiver.getCaregiverGuid());
+                        ps.setString(2, caregiver.getCaregiverSurname());
+                        ps.setString(3, caregiver.getCaregiverGivenName());
+                        ps.setString(4, caregiver.getCaregiverGender());
                         return ps;
                     }
             );
-            return this.getStudentDetail(student.getStudentGuid());
+            return this.getCaregiverDetail(caregiver.getCaregiverGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -70,14 +70,14 @@ public class StudentDao {
         }
     }
     
-    public int getStudentList_SSP_TotalRecords(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
+    public int getCaregiverList_SSP_TotalRecords(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
         query.append("              COUNT(*)\n");
         query.append("          FROM\n");
         query.append("          -- ROOT QUERY\n");
         query.append("          (\n");
-        query.append(getStudentList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append(getCaregiverList_SSP_RootQuery(serverSidePaginationRequest));
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
         try {
@@ -92,7 +92,7 @@ public class StudentDao {
         }
     }
 
-    public List<Student> getStudentList_SSP(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
+    public List<Caregiver> getCaregiverList_SSP(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
         int pageSize = serverSidePaginationRequest.getPageSize();
 
@@ -113,7 +113,7 @@ public class StudentDao {
 
         query.append("          -- ROOT QUERY\n");
         query.append("          (\n");
-        query.append(getStudentList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append(getCaregiverList_SSP_RootQuery(serverSidePaginationRequest));
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
 
@@ -135,10 +135,10 @@ public class StudentDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                Student item = new Student();
-                item.setStudentGuid(rs.getString("PERSON_GUID"));
-                item.setStudentSurname(rs.getString("PERSON_SURNAME"));
-                item.setStudentGivenName(rs.getString("PERSON_GIVEN_NAME"));
+                Caregiver item = new Caregiver();
+                item.setCaregiverGuid(rs.getString("PERSON_GUID"));
+                item.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
+                item.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -151,7 +151,7 @@ public class StudentDao {
         }
     }
 
-    private String getStudentList_SSP_RootQuery(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
+    private String getCaregiverList_SSP_RootQuery(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
         StringBuilder rootQuery = new StringBuilder();
 
@@ -170,14 +170,14 @@ public class StudentDao {
         rootQuery.append("              WHERE");
         rootQuery.append("              (");
         rootQuery.append("                  PERSON.STATUS = 'Active'");
-        rootQuery.append("                  AND PERSON_TYPE.PERSON_TYPE_NAME = 'Student'");
+        rootQuery.append("                  AND PERSON_TYPE.PERSON_TYPE_NAME = 'Caregiver'");
         rootQuery.append("                  AND\n");
-        rootQuery.append(getStudentList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
+        rootQuery.append(getCaregiverList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
         rootQuery.append("              )");
         return rootQuery.toString();
     }
 
-    private String getStudentList_SSP_AdditionalWhereClause(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
+    private String getCaregiverList_SSP_AdditionalWhereClause(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         StringBuilder whereClause = new StringBuilder();
         String nameFilter = serverSidePaginationRequest.getNameFilter() != null ? serverSidePaginationRequest.getNameFilter() : "";
 
@@ -195,7 +195,7 @@ public class StudentDao {
         return whereClause.toString();
     }
 
-    public Student getStudentDetail(String studentGuid) {
+    public Caregiver getCaregiverDetail(String caregiverGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      PERSON_GUID,\n");
@@ -209,7 +209,7 @@ public class StudentDao {
         query.append("      PERSON_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentGuid}, new StudentRowMapper());
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{caregiverGuid}, new CaregiverRowMapper());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -219,7 +219,7 @@ public class StudentDao {
         }
     }
 
-    public Student updateStudent(Student student) {
+    public Caregiver updateCaregiver(Caregiver caregiver) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      HCW_DATA.PERSON\n");
@@ -234,14 +234,14 @@ public class StudentDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, student.getStudentSurname());
-                        ps.setString(2, student.getStudentGivenName());
-                        ps.setString(3, student.getStudentGender());
-                        ps.setString(4, student.getStudentGuid());
+                        ps.setString(1, caregiver.getCaregiverSurname());
+                        ps.setString(2, caregiver.getCaregiverGivenName());
+                        ps.setString(3, caregiver.getCaregiverGender());
+                        ps.setString(4, caregiver.getCaregiverGuid());
                         return ps;
                     }
             );
-            return this.getStudentDetail(student.getStudentGuid());
+            return this.getCaregiverDetail(caregiver.getCaregiverGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -251,7 +251,7 @@ public class StudentDao {
         }
     }
 
-    public KeyValue deleteStudent(String studentGuid) {
+    public KeyValue deleteCaregiver(String caregiverGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      HCW_DATA.PERSON\n");
@@ -260,16 +260,16 @@ public class StudentDao {
         query.append("  WHERE\n");
         query.append("      PERSON_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("PERSON_GUID=" + studentGuid);
+        this.logger.trace("PERSON_GUID=" + caregiverGuid);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, studentGuid);
+                        ps.setString(1, caregiverGuid);
                         return ps;
                     }
             );
-            return new KeyValue("studentGuid", studentGuid);
+            return new KeyValue("caregiverGuid", caregiverGuid);
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
