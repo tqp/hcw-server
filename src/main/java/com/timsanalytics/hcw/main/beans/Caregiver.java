@@ -8,6 +8,9 @@ public class Caregiver {
     private String caregiverSurname;
     private String caregiverGivenName;
     private String caregiverGender;
+    // Joined Tables
+    private String relationshipType;
+    private Boolean relationshipBloodRelative;
     // Metadata
     private String status;
     private String createdOn;
@@ -45,6 +48,22 @@ public class Caregiver {
 
     public void setCaregiverGender(String caregiverGender) {
         this.caregiverGender = caregiverGender;
+    }
+
+    public String getRelationshipType() {
+        return relationshipType;
+    }
+
+    public void setRelationshipType(String relationshipType) {
+        this.relationshipType = relationshipType;
+    }
+
+    public Boolean getRelationshipBloodRelative() {
+        return relationshipBloodRelative;
+    }
+
+    public void setRelationshipBloodRelative(Boolean relationshipBloodRelative) {
+        this.relationshipBloodRelative = relationshipBloodRelative;
     }
 
     public String getStatus() {

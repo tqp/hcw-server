@@ -286,7 +286,9 @@ public class CaregiverDao {
         query.append("      STUDENT_GUID,\n");
         query.append("      RELATIONSHIP.PERSON_GUID,\n");
         query.append("      PERSON.PERSON_SURNAME,\n");
-        query.append("      PERSON.PERSON_GIVEN_NAME\n");
+        query.append("      PERSON.PERSON_GIVEN_NAME,\n");
+        query.append("      RELATIONSHIP.RELATIONSHIP_TYPE,\n");
+        query.append("      RELATIONSHIP.RELATIONSHIP_BLOOD_RELATIVE\n");
         query.append("  FROM\n");
         query.append("      HCW_DATA.RELATIONSHIP\n");
         query.append("      LEFT JOIN HCW_DATA.PERSON ON PERSON.PERSON_GUID = RELATIONSHIP.PERSON_GUID\n");
@@ -299,6 +301,8 @@ public class CaregiverDao {
                 row.setCaregiverGuid(rs.getString("PERSON_GUID"));
                 row.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
                 row.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
+                row.setRelationshipType(rs.getString("RELATIONSHIP_TYPE"));
+                row.setRelationshipBloodRelative(rs.getInt("RELATIONSHIP_BLOOD_RELATIVE") == 1);
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
