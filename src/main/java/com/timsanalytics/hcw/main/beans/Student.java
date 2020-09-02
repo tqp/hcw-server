@@ -8,6 +8,16 @@ public class Student {
     private String studentSurname;
     private String studentGivenName;
     private String studentGender;
+    private String studentDateOfBirth;
+    private String studentSchool;
+    private String studentGrade;
+    private String studentAddressCurrent;
+    private String studentAddressPrevious;
+    private String studentPhoneCurrent;
+    private String studentPhonePrevious;
+    // Joined Table Data
+    private String tierTypeGuid;
+    private String tierTypeName;
     // Metadata
     private String status;
     private String createdOn;
@@ -45,6 +55,78 @@ public class Student {
 
     public void setStudentGender(String studentGender) {
         this.studentGender = studentGender;
+    }
+
+    public String getStudentDateOfBirth() {
+        return studentDateOfBirth;
+    }
+
+    public void setStudentDateOfBirth(String studentDateOfBirth) {
+        this.studentDateOfBirth = studentDateOfBirth;
+    }
+
+    public String getStudentSchool() {
+        return studentSchool;
+    }
+
+    public void setStudentSchool(String studentSchool) {
+        this.studentSchool = studentSchool;
+    }
+
+    public String getStudentGrade() {
+        return studentGrade;
+    }
+
+    public void setStudentGrade(String studentGrade) {
+        this.studentGrade = studentGrade;
+    }
+
+    public String getStudentAddressCurrent() {
+        return studentAddressCurrent;
+    }
+
+    public void setStudentAddressCurrent(String studentAddressCurrent) {
+        this.studentAddressCurrent = studentAddressCurrent;
+    }
+
+    public String getStudentAddressPrevious() {
+        return studentAddressPrevious;
+    }
+
+    public void setStudentAddressPrevious(String studentAddressPrevious) {
+        this.studentAddressPrevious = studentAddressPrevious;
+    }
+
+    public String getStudentPhoneCurrent() {
+        return studentPhoneCurrent;
+    }
+
+    public void setStudentPhoneCurrent(String studentPhoneCurrent) {
+        this.studentPhoneCurrent = studentPhoneCurrent;
+    }
+
+    public String getStudentPhonePrevious() {
+        return studentPhonePrevious;
+    }
+
+    public void setStudentPhonePrevious(String studentPhonePrevious) {
+        this.studentPhonePrevious = studentPhonePrevious;
+    }
+
+    public String getTierTypeGuid() {
+        return tierTypeGuid;
+    }
+
+    public void setTierTypeGuid(String tierTypeGuid) {
+        this.tierTypeGuid = tierTypeGuid;
+    }
+
+    public String getTierTypeName() {
+        return tierTypeName;
+    }
+
+    public void setTierTypeName(String tierTypeName) {
+        this.tierTypeName = tierTypeName;
     }
 
     public String getStatus() {

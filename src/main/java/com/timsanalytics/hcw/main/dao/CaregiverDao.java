@@ -3,6 +3,7 @@ package com.timsanalytics.hcw.main.dao;
 import com.timsanalytics.hcw.common.beans.KeyValue;
 import com.timsanalytics.hcw.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.hcw.main.beans.Caregiver;
+import com.timsanalytics.hcw.main.beans.TierType;
 import com.timsanalytics.hcw.main.dao.RowMappers.CaregiverRowMapper;
 import com.timsanalytics.hcw.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -135,11 +136,11 @@ public class CaregiverDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                Caregiver item = new Caregiver();
-                item.setCaregiverGuid(rs.getString("PERSON_GUID"));
-                item.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
-                item.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
-                return item;
+                Caregiver row = new Caregiver();
+                row.setCaregiverGuid(rs.getString("PERSON_GUID"));
+                row.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
+                row.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -153,28 +154,27 @@ public class CaregiverDao {
 
     private String getCaregiverList_SSP_RootQuery(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
-        StringBuilder rootQuery = new StringBuilder();
-
-        rootQuery.append("              SELECT");
-        rootQuery.append("                  PERSON.PERSON_GUID,");
-        rootQuery.append("                  PERSON.PERSON_SURNAME,");
-        rootQuery.append("                  PERSON.PERSON_GIVEN_NAME,");
-        rootQuery.append("                  PERSON.STATUS,");
-        rootQuery.append("                  PERSON.CREATED_ON,");
-        rootQuery.append("                  PERSON.CREATED_BY,");
-        rootQuery.append("                  PERSON.UPDATED_ON,");
-        rootQuery.append("                  PERSON.UPDATED_BY");
-        rootQuery.append("              FROM");
-        rootQuery.append("                  HCW_DATA.PERSON");
-        rootQuery.append("                  LEFT JOIN HCW_DATA.PERSON_TYPE ON PERSON_TYPE.PERSON_TYPE_GUID = PERSON.PERSON_TYPE_GUID");
-        rootQuery.append("              WHERE");
-        rootQuery.append("              (");
-        rootQuery.append("                  PERSON.STATUS = 'Active'");
-        rootQuery.append("                  AND PERSON_TYPE.PERSON_TYPE_NAME = 'Caregiver'");
-        rootQuery.append("                  AND\n");
-        rootQuery.append(getCaregiverList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-        rootQuery.append("              )");
-        return rootQuery.toString();
+        StringBuilder query = new StringBuilder();
+        query.append("              SELECT");
+        query.append("                  PERSON.PERSON_GUID,");
+        query.append("                  PERSON.PERSON_SURNAME,");
+        query.append("                  PERSON.PERSON_GIVEN_NAME,");
+        query.append("                  PERSON.STATUS,");
+        query.append("                  PERSON.CREATED_ON,");
+        query.append("                  PERSON.CREATED_BY,");
+        query.append("                  PERSON.UPDATED_ON,");
+        query.append("                  PERSON.UPDATED_BY");
+        query.append("              FROM");
+        query.append("                  HCW_DATA.PERSON");
+        query.append("                  LEFT JOIN HCW_DATA.PERSON_TYPE ON PERSON_TYPE.PERSON_TYPE_GUID = PERSON.PERSON_TYPE_GUID");
+        query.append("              WHERE");
+        query.append("              (");
+        query.append("                  PERSON.STATUS = 'Active'");
+        query.append("                  AND PERSON_TYPE.PERSON_TYPE_NAME = 'Caregiver'");
+        query.append("                  AND\n");
+        query.append(getCaregiverList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
+        query.append("              )");
+        return query.toString();
     }
 
     private String getCaregiverList_SSP_AdditionalWhereClause(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
@@ -270,6 +270,37 @@ public class CaregiverDao {
                     }
             );
             return new KeyValue("caregiverGuid", caregiverGuid);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Caregiver> getCaregiverListByStudentGuid(String studentGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      RELATIONSHIP_GUID,\n");
+        query.append("      STUDENT_GUID,\n");
+        query.append("      RELATIONSHIP.PERSON_GUID,\n");
+        query.append("      PERSON.PERSON_SURNAME,\n");
+        query.append("      PERSON.PERSON_GIVEN_NAME\n");
+        query.append("  FROM\n");
+        query.append("      HCW_DATA.RELATIONSHIP\n");
+        query.append("      LEFT JOIN HCW_DATA.PERSON ON PERSON.PERSON_GUID = RELATIONSHIP.PERSON_GUID\n");
+        query.append("  WHERE\n");
+        query.append("      STUDENT_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentGuid}, (rs, rowNum) -> {
+                Caregiver row = new Caregiver();
+                row.setCaregiverGuid(rs.getString("PERSON_GUID"));
+                row.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
+                row.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

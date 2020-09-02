@@ -4,6 +4,7 @@ import com.timsanalytics.hcw.common.beans.KeyValue;
 import com.timsanalytics.hcw.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.hcw.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.hcw.main.beans.Caregiver;
+import com.timsanalytics.hcw.main.beans.TierType;
 import com.timsanalytics.hcw.main.dao.CaregiverDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,9 @@ public class CaregiverService {
 
     public KeyValue deleteCaregiver(String caregiverGuid) {
         return this.caregiverDao.deleteCaregiver(caregiverGuid);
+    }
+
+    public List<Caregiver> getCaregiverListByStudentGuid(String studentGuid) {
+        return this.caregiverDao.getCaregiverListByStudentGuid(studentGuid);
     }
 }

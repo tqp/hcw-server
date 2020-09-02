@@ -135,11 +135,11 @@ public class CaseManagerDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                CaseManager item = new CaseManager();
-                item.setCaseManagerGuid(rs.getString("PERSON_GUID"));
-                item.setCaseManagerSurname(rs.getString("PERSON_SURNAME"));
-                item.setCaseManagerGivenName(rs.getString("PERSON_GIVEN_NAME"));
-                return item;
+                CaseManager row = new CaseManager();
+                row.setCaseManagerGuid(rs.getString("PERSON_GUID"));
+                row.setCaseManagerSurname(rs.getString("PERSON_SURNAME"));
+                row.setCaseManagerGivenName(rs.getString("PERSON_GIVEN_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -153,28 +153,27 @@ public class CaseManagerDao {
 
     private String getCaseManagerList_SSP_RootQuery(ServerSidePaginationRequest<CaseManager> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
-        StringBuilder rootQuery = new StringBuilder();
-
-        rootQuery.append("              SELECT");
-        rootQuery.append("                  PERSON.PERSON_GUID,");
-        rootQuery.append("                  PERSON.PERSON_SURNAME,");
-        rootQuery.append("                  PERSON.PERSON_GIVEN_NAME,");
-        rootQuery.append("                  PERSON.STATUS,");
-        rootQuery.append("                  PERSON.CREATED_ON,");
-        rootQuery.append("                  PERSON.CREATED_BY,");
-        rootQuery.append("                  PERSON.UPDATED_ON,");
-        rootQuery.append("                  PERSON.UPDATED_BY");
-        rootQuery.append("              FROM");
-        rootQuery.append("                  HCW_DATA.PERSON");
-        rootQuery.append("                  LEFT JOIN HCW_DATA.PERSON_TYPE ON PERSON_TYPE.PERSON_TYPE_GUID = PERSON.PERSON_TYPE_GUID");
-        rootQuery.append("              WHERE");
-        rootQuery.append("              (");
-        rootQuery.append("                  PERSON.STATUS = 'Active'");
-        rootQuery.append("                  AND PERSON_TYPE.PERSON_TYPE_NAME = 'Case Manager'");
-        rootQuery.append("                  AND\n");
-        rootQuery.append(getCaseManagerList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-        rootQuery.append("              )");
-        return rootQuery.toString();
+        StringBuilder query = new StringBuilder();
+        query.append("              SELECT");
+        query.append("                  PERSON.PERSON_GUID,");
+        query.append("                  PERSON.PERSON_SURNAME,");
+        query.append("                  PERSON.PERSON_GIVEN_NAME,");
+        query.append("                  PERSON.STATUS,");
+        query.append("                  PERSON.CREATED_ON,");
+        query.append("                  PERSON.CREATED_BY,");
+        query.append("                  PERSON.UPDATED_ON,");
+        query.append("                  PERSON.UPDATED_BY");
+        query.append("              FROM");
+        query.append("                  HCW_DATA.PERSON");
+        query.append("                  LEFT JOIN HCW_DATA.PERSON_TYPE ON PERSON_TYPE.PERSON_TYPE_GUID = PERSON.PERSON_TYPE_GUID");
+        query.append("              WHERE");
+        query.append("              (");
+        query.append("                  PERSON.STATUS = 'Active'");
+        query.append("                  AND PERSON_TYPE.PERSON_TYPE_NAME = 'Case Manager'");
+        query.append("                  AND\n");
+        query.append(getCaseManagerList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
+        query.append("              )");
+        return query.toString();
     }
 
     private String getCaseManagerList_SSP_AdditionalWhereClause(ServerSidePaginationRequest<CaseManager> serverSidePaginationRequest) {

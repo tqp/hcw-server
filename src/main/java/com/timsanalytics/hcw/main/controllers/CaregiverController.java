@@ -4,6 +4,7 @@ import com.timsanalytics.hcw.common.beans.KeyValue;
 import com.timsanalytics.hcw.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.hcw.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.hcw.main.beans.Caregiver;
+import com.timsanalytics.hcw.main.beans.TierType;
 import com.timsanalytics.hcw.main.services.CaregiverService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/caregiver")
@@ -99,6 +101,20 @@ public class CaregiverController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/student-relationship/{studentGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Student-Caregiver List", tags = {"Caregiver"}, description = "Student-Caregiver List", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Caregiver>> getCaregiverListByStudentGuid(@Parameter(description = "Student GUID", required = true) @PathVariable String studentGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.caregiverService.getCaregiverListByStudentGuid(studentGuid));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }
