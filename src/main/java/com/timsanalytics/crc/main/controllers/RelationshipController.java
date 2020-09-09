@@ -60,6 +60,20 @@ public class RelationshipController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/relation/{relationId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Relationship List By Relation ID", tags = {"Relationship"}, description = "Relationship List By Relation ID", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Relationship>> getRelationshipListByRelationId(@Parameter(description = "Relation GUID", required = true) @PathVariable Integer relationId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.relationshipService.getRelationshipListByRelationId(relationId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     // OTHER
 
     @ResponseBody

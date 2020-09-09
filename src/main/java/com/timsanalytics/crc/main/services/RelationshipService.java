@@ -25,6 +25,10 @@ public class RelationshipService {
         return this.relationshipDao.getRelationshipListByStudentId(studentId);
     }
 
+    public List<Relationship> getRelationshipListByRelationId(Integer relationId) {
+        return this.relationshipDao.getRelationshipListByRelationId(relationId);
+    }
+
     // OTHER
 
     public Relationship createRelationshipPerson(Relationship relationship) {
