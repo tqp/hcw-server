@@ -102,6 +102,41 @@ public class RelationshipDao {
         }
     }
 
+    public List<Relationship> getRelationshipListByRelationId(Integer relationId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Student.id,\n");
+        query.append("      Student.last_name,\n");
+        query.append("      Student.first_name,\n");
+        query.append("      RelationshipType.name,\n");
+        query.append("      StudentRelationship.blood_relative\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Person Student\n");
+        query.append("      LEFT JOIN CRC.StudentRelationship ON StudentRelationship.student_id = Student.id\n");
+        query.append("      LEFT JOIN CRC.RelationshipType ON RelationshipType.id = StudentRelationship.relationship_type_id\n");
+        query.append("  WHERE\n");
+        query.append("      Student.deleted = 0\n");
+        query.append("      AND StudentRelationship.person_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{relationId}, (rs, rowNum) -> {
+                Relationship row = new Relationship();
+                row.setPersonId(rs.getInt("id"));
+                row.setPersonSurname(rs.getString("last_name"));
+                row.setPersonGivenName(rs.getString("first_name"));
+                row.setRelationshipTypeName(rs.getString("name"));
+                row.setRelationshipBloodRelative(rs.getInt("blood_relative"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
     // OTHER
 
     public Relationship createRelationshipPerson(Relationship relationship) {
