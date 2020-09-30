@@ -23,7 +23,7 @@ public class GoogleAuthDao {
     }
 
     public void updateUserRecordFromGoogleAuth(User appUser, GoogleUser googleUser) {
-        this.logger.debug("AppUserDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
+        this.logger.trace("AppUserDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      USER\n");

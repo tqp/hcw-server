@@ -60,7 +60,7 @@ public class TokenExchangeService {
     }
 
     public void addItem(String key, String value) {
-        this.logger.debug("Adding Token Exchange Item: Key=" + shortId(key) + ", Value=" + shortId(value));
+        this.logger.trace("Adding Token Exchange Item: Key=" + shortId(key) + ", Value=" + shortId(value));
         map.put(key, value);
     }
 
@@ -87,7 +87,7 @@ public class TokenExchangeService {
     }
 
     public TokenExchange exchangeToken(TokenExchange shortLivedToken) {
-        this.logger.debug("TokenExchangeService -> exchangeToken: shortLivedToken=" + shortId(shortLivedToken.getKey()));
+        this.logger.trace("TokenExchangeService -> exchangeToken: shortLivedToken=" + shortId(shortLivedToken.getKey()));
         String token;
         token = map.get(shortLivedToken.getKey());
         System.out.println("Token: " + shortId(token));
