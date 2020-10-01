@@ -24,3 +24,12 @@ from
 rename table to oldTable;
 rename newTable to table;
 ```
+
+#### Spring Profiles Active
+To set "spring.profiles.active" the way you would when starting Tomcat, open ElasticBeanstalk, 
+go to Configuration -> Software -> Environment Properties. Then, set:  
+```text
+name = spring.profiles.active, value = prod
+```
+  
+Don't get fooled by all the websites that say to set SPRING_PROFILES_ACTIVE.
