@@ -3,6 +3,8 @@ package com.timsanalytics.crc.main.dao;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Caregiver;
+import com.timsanalytics.crc.main.beans.Relation;
+import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.dao.RowMappers.CaregiverRowMapper;
 import com.timsanalytics.crc.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -32,7 +34,6 @@ public class CaregiverDao {
         query.append("  INSERT INTO\n");
         query.append("      HCW_DATA.PERSON\n");
         query.append("      (\n");
-        query.append("          PERSON.PERSON_GUID,\n");
         query.append("          PERSON.PERSON_SURNAME,\n");
         query.append("          PERSON.PERSON_GIVEN_NAME,\n");
         query.append("          PERSON.PERSON_GENDER,\n");
@@ -43,7 +44,6 @@ public class CaregiverDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          ?,\n");
         query.append("          'Active'\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -51,16 +51,13 @@ public class CaregiverDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        caregiver.setCaregiverGuid(this.generateUuidService.GenerateUuid());
-                        this.logger.trace("New Caregiver GUID: " + caregiver.getCaregiverGuid());
-                        ps.setString(1, caregiver.getCaregiverGuid());
-                        ps.setString(2, caregiver.getCaregiverSurname());
-                        ps.setString(3, caregiver.getCaregiverGivenName());
-                        ps.setString(4, caregiver.getCaregiverGender());
+                        ps.setString(1, caregiver.getCaregiverSurname());
+                        ps.setString(2, caregiver.getCaregiverGivenName());
+                        ps.setString(3, caregiver.getCaregiverGender());
                         return ps;
                     }
             );
-            return this.getCaregiverDetail(caregiver.getCaregiverGuid());
+            return this.getCaregiverDetail(caregiver.getCaregiverId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -69,7 +66,39 @@ public class CaregiverDao {
             return null;
         }
     }
-    
+
+    public List<Caregiver> getCaregiverList() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      id,\n");
+        query.append("      last_name,\n");
+        query.append("      first_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Person\n");
+        query.append("  WHERE\n");
+        query.append("      person_type_id = 3 -- Caregiver\n");
+        query.append("      AND deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      last_name,\n");
+        query.append("      first_name \n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                Caregiver row = new Caregiver();
+                row.setCaregiverId(rs.getInt("id"));
+                row.setCaregiverSurname(rs.getString("last_name"));
+                row.setCaregiverGivenName(rs.getString("first_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
     public int getCaregiverList_SSP_TotalRecords(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
@@ -136,7 +165,7 @@ public class CaregiverDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Caregiver row = new Caregiver();
-                row.setCaregiverGuid(rs.getString("id"));
+                row.setCaregiverId(rs.getInt("id"));
                 row.setCaregiverSurname(rs.getString("last_name"));
                 row.setCaregiverGivenName(rs.getString("first_name"));
                 return row;
@@ -188,7 +217,42 @@ public class CaregiverDao {
         return whereClause.toString();
     }
 
-    public Caregiver getCaregiverDetail(String caregiverGuid) {
+    public List<Caregiver> getCaregiverListByStudentId(String studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      RELATIONSHIP_GUID,\n");
+        query.append("      STUDENT_GUID,\n");
+        query.append("      RELATIONSHIP.PERSON_GUID,\n");
+        query.append("      PERSON.PERSON_SURNAME,\n");
+        query.append("      PERSON.PERSON_GIVEN_NAME,\n");
+        query.append("      RELATIONSHIP.RELATIONSHIP_TYPE,\n");
+        query.append("      RELATIONSHIP.RELATIONSHIP_BLOOD_RELATIVE\n");
+        query.append("  FROM\n");
+        query.append("      HCW_DATA.RELATIONSHIP\n");
+        query.append("      LEFT JOIN HCW_DATA.PERSON ON PERSON.PERSON_GUID = RELATIONSHIP.PERSON_GUID\n");
+        query.append("  WHERE\n");
+        query.append("      STUDENT_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Caregiver row = new Caregiver();
+                row.setCaregiverId(rs.getInt("PERSON_GUID"));
+                row.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
+                row.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
+                row.setRelationshipType(rs.getString("RELATIONSHIP_TYPE"));
+                row.setRelationshipBloodRelative(rs.getInt("RELATIONSHIP_BLOOD_RELATIVE") == 1);
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Caregiver getCaregiverDetail(int caregiverId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      id,\n");
@@ -200,7 +264,41 @@ public class CaregiverDao {
         query.append("      id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{caregiverGuid}, new CaregiverRowMapper());
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{caregiverId}, new CaregiverRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Caregiver getCaregiverDetailByStudentId(int studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("  Student.id,\n");
+        query.append("          Relationship.person_id,\n");
+        query.append("          Caregiver.last_name,\n");
+        query.append("          Caregiver.first_name\n");
+        query.append("  FROM\n");
+        query.append("  CRC.Person Student\n");
+        query.append("  LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 13\n");
+        query.append("  LEFT JOIN CRC.Person Caregiver ON Caregiver.id = Relationship.person_id\n");
+        query.append("  WHERE\n");
+        query.append("  Student.id = ?\n");
+        query.append("  AND Student.person_type_id = 1\n");
+        query.append("  ORDER BY Relationship.updated_on DESC\n");
+        query.append("  LIMIT 1\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Caregiver row = new Caregiver();
+                row.setCaregiverId(rs.getInt("person_id"));
+                row.setCaregiverSurname(rs.getString("last_name"));
+                row.setCaregiverGivenName(rs.getString("first_name"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -226,11 +324,11 @@ public class CaregiverDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, caregiver.getCaregiverSurname());
                         ps.setString(2, caregiver.getCaregiverGivenName());
-                        ps.setString(3, caregiver.getCaregiverGuid());
+                        ps.setInt(3, caregiver.getCaregiverId());
                         return ps;
                     }
             );
-            return this.getCaregiverDetail(caregiver.getCaregiverGuid());
+            return this.getCaregiverDetail(caregiver.getCaregiverId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -268,38 +366,4 @@ public class CaregiverDao {
         }
     }
 
-    public List<Caregiver> getCaregiverListBystudentId(String studentId) {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      RELATIONSHIP_GUID,\n");
-        query.append("      STUDENT_GUID,\n");
-        query.append("      RELATIONSHIP.PERSON_GUID,\n");
-        query.append("      PERSON.PERSON_SURNAME,\n");
-        query.append("      PERSON.PERSON_GIVEN_NAME,\n");
-        query.append("      RELATIONSHIP.RELATIONSHIP_TYPE,\n");
-        query.append("      RELATIONSHIP.RELATIONSHIP_BLOOD_RELATIVE\n");
-        query.append("  FROM\n");
-        query.append("      HCW_DATA.RELATIONSHIP\n");
-        query.append("      LEFT JOIN HCW_DATA.PERSON ON PERSON.PERSON_GUID = RELATIONSHIP.PERSON_GUID\n");
-        query.append("  WHERE\n");
-        query.append("      STUDENT_GUID = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
-                Caregiver row = new Caregiver();
-                row.setCaregiverGuid(rs.getString("PERSON_GUID"));
-                row.setCaregiverSurname(rs.getString("PERSON_SURNAME"));
-                row.setCaregiverGivenName(rs.getString("PERSON_GIVEN_NAME"));
-                row.setRelationshipType(rs.getString("RELATIONSHIP_TYPE"));
-                row.setRelationshipBloodRelative(rs.getInt("RELATIONSHIP_BLOOD_RELATIVE") == 1);
-                return row;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
 }

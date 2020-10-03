@@ -25,8 +25,7 @@ public class RelationshipDao {
         this.printObjectService = printObjectService;
     }
 
-    public Relationship createRelationship(Relationship relationship) {
-        this.printObjectService.PrintObject("createRelationship -> relationship", relationship);
+    public Relationship createCaregiverRelationship(String username, Relationship relationship) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
         query.append("      CRC.StudentRelationship\n");
@@ -34,7 +33,10 @@ public class RelationshipDao {
         query.append("          student_id,\n");
         query.append("          person_id,\n");
         query.append("          relationship_type_id,\n");
-        query.append("          blood_relative,\n");
+        query.append("          created_on,\n");
+        query.append("          created_by,\n");
+        query.append("          updated_on,\n");
+        query.append("          updated_by,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
@@ -42,6 +44,9 @@ public class RelationshipDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
+        query.append("          now(),\n");
+        query.append("          ?,\n");
+        query.append("          now(),\n");
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
@@ -53,7 +58,8 @@ public class RelationshipDao {
                         ps.setInt(1, relationship.getStudentId());
                         ps.setInt(2, relationship.getPersonId());
                         ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setInt(4, relationship.getRelationshipBloodRelative());
+                        ps.setString(4, username);
+                        ps.setString(5, username);
                         return ps;
                     }
             );

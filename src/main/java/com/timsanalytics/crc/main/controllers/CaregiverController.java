@@ -5,6 +5,7 @@ import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.services.CaregiverService;
+import com.timsanalytics.crc.main.services.RelationshipService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,7 +46,21 @@ public class CaregiverController {
             return null;
         }
     }
-    
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Caregiver List", tags = {"Caregiver"}, description = "Get Caregiver List", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Caregiver>> getCaregiverList() {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.caregiverService.getCaregiverList());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Caregiver List (SSP)", tags = {"Caregiver"}, description = "Get Caregiver List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
@@ -63,12 +78,24 @@ public class CaregiverController {
         }
     }
 
-
-    @RequestMapping(value = "/{caregiverGuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{caregiverId}", method = RequestMethod.GET)
     @Operation(summary = "Get Caregiver Detail", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Caregiver> getCaregiverDetail(@Parameter(description = "Caregiver GUID", required = true) @PathVariable String caregiverGuid) {
+    public ResponseEntity<Caregiver> getCaregiverDetail(@Parameter(description = "Caregiver ID", required = true) @PathVariable int caregiverId) {
         try {
-            Caregiver caregiver = caregiverService.getCaregiverDetail(caregiverGuid);
+            Caregiver caregiver = caregiverService.getCaregiverDetail(caregiverId);
+            return ResponseEntity.ok()
+                    .body(caregiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
+    @Operation(summary = "Get Caregiver Detail by Student ID", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Caregiver> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+        try {
+            Caregiver caregiver = caregiverService.getCaregiverDetailByStudentId(studentId);
             return ResponseEntity.ok()
                     .body(caregiver);
         } catch (Exception e) {
@@ -109,11 +136,12 @@ public class CaregiverController {
     public ResponseEntity<List<Caregiver>> getCaregiverListBystudentId(@Parameter(description = "Student GUID", required = true) @PathVariable String studentId) {
         try {
             return ResponseEntity.ok()
-                    .body(this.caregiverService.getCaregiverListBystudentId(studentId));
+                    .body(this.caregiverService.getCaregiverListByStudentId(studentId));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
 }

@@ -10,7 +10,7 @@ public class CaregiverRowMapper implements RowMapper<Caregiver> {
 
     public Caregiver mapRow(ResultSet rs, int rowNum) throws SQLException {
         Caregiver row = new Caregiver();
-        row.setCaregiverGuid(rs.getString("id"));
+        row.setCaregiverId(rs.getInt("id"));
         row.setCaregiverSurname(rs.getString("last_name"));
         row.setCaregiverGivenName(rs.getString("first_name"));
         return row;

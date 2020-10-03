@@ -2,6 +2,7 @@ package com.timsanalytics.crc.main.dao;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.dao.RowMappers.CaseManagerRowMapper;
 import org.slf4j.Logger;
@@ -48,14 +49,46 @@ public class CaseManagerDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, caseManager.getCaseManagerGuid());
+                        ps.setInt(1, caseManager.getCaseManagerId());
                         ps.setString(2, caseManager.getCaseManagerSurname());
                         ps.setString(3, caseManager.getCaseManagerGivenName());
                         ps.setString(4, caseManager.getCaseManagerGender());
                         return ps;
                     }
             );
-            return this.getCaseManagerDetail(caseManager.getCaseManagerGuid());
+            return this.getCaseManagerDetail(caseManager.getCaseManagerId());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<CaseManager> getCaseManagerList() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      id,\n");
+        query.append("      last_name,\n");
+        query.append("      first_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Person\n");
+        query.append("  WHERE\n");
+        query.append("      person_type_id = 3 -- Case Manager\n");
+        query.append("      AND deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      last_name,\n");
+        query.append("      first_name \n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                CaseManager row = new CaseManager();
+                row.setCaseManagerId(rs.getInt("id"));
+                row.setCaseManagerSurname(rs.getString("last_name"));
+                row.setCaseManagerGivenName(rs.getString("first_name"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -131,7 +164,7 @@ public class CaseManagerDao {
                     pageSize
             }, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setCaseManagerGuid(rs.getString("id"));
+                row.setCaseManagerId(rs.getInt("id"));
                 row.setCaseManagerSurname(rs.getString("last_name"));
                 row.setCaseManagerGivenName(rs.getString("first_name"));
                 return row;
@@ -183,7 +216,7 @@ public class CaseManagerDao {
         return whereClause.toString();
     }
 
-    public CaseManager getCaseManagerDetail(String caseManagerGuid) {
+    public CaseManager getCaseManagerDetail(int caseManagerGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      id,\n");
@@ -221,11 +254,11 @@ public class CaseManagerDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, caseManager.getCaseManagerSurname());
                         ps.setString(2, caseManager.getCaseManagerGivenName());
-                        ps.setString(3, caseManager.getCaseManagerGuid());
+                        ps.setInt(3, caseManager.getCaseManagerId());
                         return ps;
                     }
             );
-            return this.getCaseManagerDetail(caseManager.getCaseManagerGuid());
+            return this.getCaseManagerDetail(caseManager.getCaseManagerId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

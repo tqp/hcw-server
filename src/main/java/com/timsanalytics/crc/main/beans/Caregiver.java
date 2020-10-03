@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Caregiver {
-    private String caregiverGuid;
+    private int caregiverId;
     private String caregiverSurname;
     private String caregiverGivenName;
     private String caregiverGender;
@@ -18,12 +18,12 @@ public class Caregiver {
     private String updatedOn;
     private String updatedBy;
 
-    public String getCaregiverGuid() {
-        return caregiverGuid;
+    public int getCaregiverId() {
+        return caregiverId;
     }
 
-    public void setCaregiverGuid(String caregiverGuid) {
-        this.caregiverGuid = caregiverGuid;
+    public void setCaregiverId(int caregiverId) {
+        this.caregiverId = caregiverId;
     }
 
     public String getCaregiverSurname() {

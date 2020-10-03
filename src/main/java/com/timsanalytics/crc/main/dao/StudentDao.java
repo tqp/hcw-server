@@ -4,6 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.utils.GenerateUuidService;
+import jdk.jfr.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,13 @@ public class StudentDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
+    private final UtilsDao utilsDao;
 
     @Autowired
-    public StudentDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
+    public StudentDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService, UtilsDao utilsDao) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
+        this.utilsDao = utilsDao;
     }
 
     public Student createStudent(Student student) {
@@ -62,7 +65,7 @@ public class StudentDao {
                         return ps;
                     }
             );
-            return this.getStudentDetail(student.getStudentId());
+            return this.getStudentDetail(this.utilsDao.getLastInsertId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

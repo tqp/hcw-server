@@ -1,5 +1,6 @@
 package com.timsanalytics.crc.main.controllers;
 
+import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.services.RelationshipService;
 import com.timsanalytics.crc.utils.PrintObjectService;
@@ -24,22 +25,22 @@ import java.util.List;
 public class RelationshipController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final RelationshipService relationshipService;
-    private final PrintObjectService printObjectService;
+    private final TokenService tokenService;
 
     @Autowired
-    public RelationshipController(RelationshipService relationshipService, PrintObjectService printObjectService) {
+    public RelationshipController(RelationshipService relationshipService, TokenService tokenService) {
         this.relationshipService = relationshipService;
-        this.printObjectService = printObjectService;
+        this.tokenService = tokenService;
     }
 
     @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Relationship", tags = {"Relationship"}, description = "Create Relationship", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Relationship> createRelationship(@RequestBody Relationship relationship) {
-        this.printObjectService.PrintObject("relationship", relationship);
+    @RequestMapping(value = "/caregiver", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Caregiver Relationship", tags = {"Relationship"}, description = "Create Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Relationship> createCaregiverRelationship(@RequestBody Relationship relationship, @RequestHeader (name="Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
             return ResponseEntity.ok()
-                    .body(relationshipService.createRelationship(relationship));
+                    .body(relationshipService.createCaregiverRelationship(username, relationship));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

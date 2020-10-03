@@ -4,6 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Caregiver;
+import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.dao.CaregiverDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,12 @@ public class CaregiverService {
         return this.caregiverDao.createCaregiver(caregiver);
     }
 
+    public List<Caregiver> getCaregiverList() {
+        return this.caregiverDao.getCaregiverList();
+    }
+
     public ServerSidePaginationResponse<Caregiver> getCaregiverList_SSP(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
-        ServerSidePaginationResponse<Caregiver> serverSidePaginationResponse = new ServerSidePaginationResponse<Caregiver>();
+        ServerSidePaginationResponse<Caregiver> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
         List<Caregiver> caregiverList = this.caregiverDao.getCaregiverList_SSP(serverSidePaginationRequest);
         serverSidePaginationResponse.setData(caregiverList);
@@ -33,8 +38,16 @@ public class CaregiverService {
         return serverSidePaginationResponse;
     }
 
-    public Caregiver getCaregiverDetail(String caregiverGuid) {
-        return this.caregiverDao.getCaregiverDetail(caregiverGuid);
+    public List<Caregiver> getCaregiverListByStudentId(String studentId) {
+        return this.caregiverDao.getCaregiverListByStudentId(studentId);
+    }
+
+    public Caregiver getCaregiverDetail(int caregiverId) {
+        return this.caregiverDao.getCaregiverDetail(caregiverId);
+    }
+
+    public Caregiver getCaregiverDetailByStudentId(int studentId) {
+        return this.caregiverDao.getCaregiverDetailByStudentId(studentId);
     }
 
     public Caregiver updateCaregiver(Caregiver caregiver) {
@@ -45,7 +58,4 @@ public class CaregiverService {
         return this.caregiverDao.deleteCaregiver(caregiverGuid);
     }
 
-    public List<Caregiver> getCaregiverListBystudentId(String studentId) {
-        return this.caregiverDao.getCaregiverListBystudentId(studentId);
-    }
 }

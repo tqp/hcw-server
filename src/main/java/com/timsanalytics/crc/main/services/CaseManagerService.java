@@ -3,6 +3,7 @@ package com.timsanalytics.crc.main.services;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.dao.CaseManagerDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,10 @@ public class CaseManagerService {
         return this.caseManagerDao.createCaseManager(caseManager);
     }
 
+    public List<CaseManager> getCaseManagerList() {
+        return this.caseManagerDao.getCaseManagerList();
+    }
+
     public ServerSidePaginationResponse<CaseManager> getCaseManagerList_SSP(ServerSidePaginationRequest<CaseManager> serverSidePaginationRequest) {
         ServerSidePaginationResponse<CaseManager> serverSidePaginationResponse = new ServerSidePaginationResponse<CaseManager>();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
@@ -33,8 +38,8 @@ public class CaseManagerService {
         return serverSidePaginationResponse;
     }
 
-    public CaseManager getCaseManagerDetail(String caseManagerGuid) {
-        return this.caseManagerDao.getCaseManagerDetail(caseManagerGuid);
+    public CaseManager getCaseManagerDetail(int caseManagerId) {
+        return this.caseManagerDao.getCaseManagerDetail(caseManagerId);
     }
 
     public CaseManager updateCaseManager(CaseManager caseManager) {
