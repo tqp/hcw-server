@@ -42,6 +42,10 @@ public class CaseManagerService {
         return this.caseManagerDao.getCaseManagerDetail(caseManagerId);
     }
 
+    public CaseManager getCaseManagerDetailByStudentId(int studentId) {
+        return this.caseManagerDao.getCaseManagerDetailByStudentId(studentId);
+    }
+
     public CaseManager updateCaseManager(CaseManager caseManager) {
         return this.caseManagerDao.updateCaseManager(caseManager);
     }

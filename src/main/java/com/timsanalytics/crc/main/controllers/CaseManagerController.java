@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/case-manager")
-@Tag(name = "CaseManager", description = "CaseManager")
+@Tag(name = "Case Manager", description = "CaseManager")
 public class CaseManagerController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final CaseManagerService caseManagerService;
@@ -36,7 +36,7 @@ public class CaseManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create CaseManager", tags = {"CaseManager"}, description = "Create CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create CaseManager", tags = {"Case Manager"}, description = "Create CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<CaseManager> createCaseManager(@RequestBody CaseManager caseManager) {
         try {
             return ResponseEntity.ok()
@@ -49,7 +49,7 @@ public class CaseManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Case Manager List", tags = {"CaseManager"}, description = "Get Case Manager List", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Case Manager List", tags = {"Case Manager"}, description = "Get Case Manager List", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<CaseManager>> getCaseManagerList() {
         try {
             return ResponseEntity.ok()
@@ -63,7 +63,7 @@ public class CaseManagerController {
     
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get CaseManager List (SSP)", tags = {"CaseManager"}, description = "Get CaseManager List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get CaseManager List (SSP)", tags = {"Case Manager"}, description = "Get CaseManager List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse<CaseManager>> getCaseManagerList_SSP(@RequestBody ServerSidePaginationRequest<CaseManager> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
@@ -80,7 +80,7 @@ public class CaseManagerController {
 
 
     @RequestMapping(value = "/{caseManagerId}", method = RequestMethod.GET)
-    @Operation(summary = "Get CaseManager Detail", tags = {"CaseManager"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get CaseManager Detail", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<CaseManager> getCaseManagerDetail(@Parameter(description = "CaseManager GUID", required = true) @PathVariable int caseManagerId) {
         try {
             CaseManager caseManager = caseManagerService.getCaseManagerDetail(caseManagerId);
@@ -92,9 +92,22 @@ public class CaseManagerController {
         }
     }
 
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
+    @Operation(summary = "Get Case Manager Detail by Student ID", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CaseManager> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+        try {
+            CaseManager caseManager = caseManagerService.getCaseManagerDetailByStudentId(studentId);
+            return ResponseEntity.ok()
+                    .body(caseManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update CaseManager", tags = {"CaseManager"}, description = "Update CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update CaseManager", tags = {"Case Manager"}, description = "Update CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<CaseManager> updateCaseManager(@RequestBody CaseManager caseManager) {
         try {
             return ResponseEntity.ok()
@@ -107,7 +120,7 @@ public class CaseManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/{caseManagerGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete CaseManager", tags = {"CaseManager"}, description = "Delete CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete CaseManager", tags = {"Case Manager"}, description = "Delete CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> deleteCaseManager(@Parameter(description = "CaseManager GUID", required = true) @PathVariable String caseManagerGuid) {
         try {
             return ResponseEntity.ok()

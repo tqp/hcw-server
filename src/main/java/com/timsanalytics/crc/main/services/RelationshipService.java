@@ -20,12 +20,24 @@ public class RelationshipService {
         return this.relationshipDao.createCaregiverRelationship(username, relationship);
     }
 
+    public Relationship createCaseManagerRelationship(String username, Relationship relationship) {
+        return this.relationshipDao.createCaseManagerRelationship(username, relationship);
+    }
+
+    public Relationship createSponsorRelationship(String username, Relationship relationship) {
+        return this.relationshipDao.createSponsorRelationship(username, relationship);
+    }
+
     public List<Relationship> getRelationshipListByStudentId(Integer studentId) {
         return this.relationshipDao.getRelationshipListByStudentId(studentId);
     }
 
     public List<Relationship> getRelationshipListByRelationId(Integer relationId) {
         return this.relationshipDao.getRelationshipListByRelationId(relationId);
+    }
+
+    public List<Relationship> getRelationshipListByCaregiverId(Integer relationId) {
+        return this.relationshipDao.getRelationshipListByCaregiverId(relationId);
     }
 
     // OTHER

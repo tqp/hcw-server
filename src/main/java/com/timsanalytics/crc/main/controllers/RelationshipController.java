@@ -35,12 +35,40 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/caregiver", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Caregiver Relationship", tags = {"Relationship"}, description = "Create Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Caregiver Relationship", tags = {"Relationship"}, description = "Create Caregiver Relationship", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Relationship> createCaregiverRelationship(@RequestBody Relationship relationship, @RequestHeader (name="Authorization") String token) {
         String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
             return ResponseEntity.ok()
                     .body(relationshipService.createCaregiverRelationship(username, relationship));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/case-manager", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Case Manager Relationship", tags = {"Relationship"}, description = "Create Case Manager Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Relationship> createCaseManagerRelationship(@RequestBody Relationship relationship, @RequestHeader (name="Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.createCaseManagerRelationship(username, relationship));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/sponsor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Sponsor Relationship", tags = {"Relationship"}, description = "Create Sponsor Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Relationship> createSponsorRelationship(@RequestBody Relationship relationship, @RequestHeader (name="Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.createSponsorRelationship(username, relationship));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -68,6 +96,20 @@ public class RelationshipController {
         try {
             return ResponseEntity.ok()
                     .body(this.relationshipService.getRelationshipListByRelationId(relationId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/caregiver/student/{caregiverId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Relationship List By Caregiver ID", tags = {"Relationship"}, description = "Relationship List By Caregiver ID", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Relationship>> getRelationshipListByCaregiverId(@Parameter(description = "Caregiver GUID", required = true) @PathVariable Integer caregiverId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.relationshipService.getRelationshipListByCaregiverId(caregiverId));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

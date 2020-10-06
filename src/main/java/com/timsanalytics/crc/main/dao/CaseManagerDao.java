@@ -19,10 +19,12 @@ import java.util.List;
 public class CaseManagerDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
+    private final UtilsDao utilsDao;
 
     @Autowired
-    public CaseManagerDao(JdbcTemplate mySqlAuthJdbcTemplate) {
+    public CaseManagerDao(JdbcTemplate mySqlAuthJdbcTemplate, UtilsDao utilsDao) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
+        this.utilsDao = utilsDao;
     }
 
     public CaseManager createCaseManager(CaseManager caseManager) {
@@ -30,33 +32,31 @@ public class CaseManagerDao {
         query.append("  INSERT INTO\n");
         query.append("      CRC.Person\n");
         query.append("      (\n");
-        query.append("          PERSON.PERSON_GUID,\n");
-        query.append("          PERSON.PERSON_SURNAME,\n");
-        query.append("          PERSON.PERSON_GIVEN_NAME,\n");
-        query.append("          PERSON.PERSON_GENDER,\n");
-        query.append("          PERSON.STATUS\n");
+        query.append("          last_name,\n");
+        query.append("          first_name,\n");
+        query.append("          person_type_id,\n");
+        query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          'Active'\n");
+        query.append("          2,\n");
+        query.append("          0\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, caseManager.getCaseManagerId());
-                        ps.setString(2, caseManager.getCaseManagerSurname());
-                        ps.setString(3, caseManager.getCaseManagerGivenName());
-                        ps.setString(4, caseManager.getCaseManagerGender());
+                        ps.setString(1, caseManager.getCaseManagerSurname());
+                        ps.setString(2, caseManager.getCaseManagerGivenName());
                         return ps;
                     }
             );
-            return this.getCaseManagerDetail(caseManager.getCaseManagerId());
+            int lastInsertId = this.utilsDao.getLastInsertId();
+            this.logger.debug("New Case Manager ID: " + lastInsertId);
+            return this.getCaseManagerDetail(lastInsertId);
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -75,7 +75,7 @@ public class CaseManagerDao {
         query.append("  FROM\n");
         query.append("      CRC.Person\n");
         query.append("  WHERE\n");
-        query.append("      person_type_id = 3 -- Case Manager\n");
+        query.append("      person_type_id = 2 -- Case Manager\n");
         query.append("      AND deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      last_name,\n");
@@ -238,6 +238,39 @@ public class CaseManagerDao {
         }
     }
 
+    public CaseManager getCaseManagerDetailByStudentId(int studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("  Student.id,\n");
+        query.append("          Relationship.person_id,\n");
+        query.append("          Caregiver.last_name,\n");
+        query.append("          Caregiver.first_name\n");
+        query.append("  FROM\n");
+        query.append("  CRC.Person Student\n");
+        query.append("  LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 15\n");
+        query.append("  LEFT JOIN CRC.Person Caregiver ON Caregiver.id = Relationship.person_id\n");
+        query.append("  WHERE\n");
+        query.append("  Student.id = ?\n");
+        query.append("  AND Student.person_type_id = 1\n");
+        query.append("  ORDER BY Relationship.updated_on DESC\n");
+        query.append("  LIMIT 1\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                CaseManager row = new CaseManager();
+                row.setCaseManagerId(rs.getInt("person_id"));
+                row.setCaseManagerSurname(rs.getString("last_name"));
+                row.setCaseManagerGivenName(rs.getString("first_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return new CaseManager();
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
     public CaseManager updateCaseManager(CaseManager caseManager) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
@@ -271,13 +304,13 @@ public class CaseManagerDao {
     public KeyValue deleteCaseManager(String caseManagerGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      HCW_DATA.PERSON\n");
+        query.append("      CRC.Person\n");
         query.append("  SET\n");
-        query.append("      STATUS = 'Deleted'\n");
+        query.append("      deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      PERSON_GUID = ?\n");
+        query.append("      id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("PERSON_GUID=" + caseManagerGuid);
+        this.logger.trace("id=" + caseManagerGuid);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {

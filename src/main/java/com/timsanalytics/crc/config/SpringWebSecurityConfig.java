@@ -176,6 +176,8 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "origin",
                         "responsetype",
                         "x-auth-token"
+
+//                        "append,delete,entries,foreach,get,has,keys,set,values,Authorization
                 )
         );
         configuration.setExposedHeaders(Collections.singletonList("x-auth-token"));

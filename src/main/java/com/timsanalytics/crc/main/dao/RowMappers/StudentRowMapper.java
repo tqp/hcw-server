@@ -10,12 +10,12 @@ public class StudentRowMapper implements RowMapper<Student> {
 
     public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
         Student row = new Student();
-        row.setStudentId(rs.getInt("PERSON_GUID"));
-        row.setStudentSurname(rs.getString("PERSON_SURNAME"));
-        row.setStudentGivenName(rs.getString("PERSON_GIVEN_NAME"));
-        row.setStudentGender(rs.getString("PERSON_GENDER"));
-        row.setStudentDateOfBirth(rs.getString("PERSON_DATE_OF_BIRTH"));
-        row.setStatus(rs.getString("STATUS"));
+        row.setStudentId(rs.getInt("id"));
+        row.setStudentSurname(rs.getString("last_name"));
+        row.setStudentGivenName(rs.getString("first_name"));
+        row.setStudentGender(rs.getString("gender"));
+        row.setStudentDateOfBirth(rs.getString("dob"));
+        row.setStatus(rs.getString("deleted"));
         return row;
     }
 }
