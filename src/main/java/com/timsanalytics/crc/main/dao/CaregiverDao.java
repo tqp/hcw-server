@@ -37,10 +37,14 @@ public class CaregiverDao {
         query.append("          last_name,\n");
         query.append("          first_name,\n");
         query.append("          person_type_id,\n");
+        query.append("          address,\n");
+        query.append("          phone,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          3,\n");
@@ -53,6 +57,8 @@ public class CaregiverDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, caregiver.getCaregiverSurname());
                         ps.setString(2, caregiver.getCaregiverGivenName());
+                        ps.setString(3, caregiver.getCaregiverAddress());
+                        ps.setString(4, caregiver.getCaregiverPhone());
                         return ps;
                     }
             );
@@ -257,7 +263,9 @@ public class CaregiverDao {
         query.append("  SELECT\n");
         query.append("      id,\n");
         query.append("      last_name,\n");
-        query.append("      first_name\n");
+        query.append("      first_name,\n");
+        query.append("      address,\n");
+        query.append("      phone\n");
         query.append("  FROM\n");
         query.append("      CRC.Person\n");
         query.append("  WHERE\n");
@@ -281,7 +289,9 @@ public class CaregiverDao {
         query.append("      Relationship.person_id,\n");
         query.append("      Relationship.effective_date,\n");
         query.append("      Caregiver.last_name,\n");
-        query.append("      Caregiver.first_name\n");
+        query.append("      Caregiver.first_name,\n");
+        query.append("      Caregiver.address,\n");
+        query.append("      Caregiver.phone\n");
         query.append("  FROM\n");
         query.append("      CRC.Person Student\n");
         query.append("      LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 13\n");
@@ -299,6 +309,8 @@ public class CaregiverDao {
                 row.setCaregiverId(rs.getInt("person_id"));
                 row.setCaregiverSurname(rs.getString("last_name"));
                 row.setCaregiverGivenName(rs.getString("first_name"));
+                row.setCaregiverAddress(rs.getString("address"));
+                row.setCaregiverPhone(rs.getString("phone"));
                 row.setRelationshipEffectiveDate(rs.getString("effective_date"));
                 return row;
             });
@@ -316,7 +328,9 @@ public class CaregiverDao {
         query.append("      CRC.Person\n");
         query.append("  SET\n");
         query.append("      last_name = ?,\n");
-        query.append("      first_name = ?\n");
+        query.append("      first_name = ?,\n");
+        query.append("      address = ?,\n");
+        query.append("      phone = ?\n");
         query.append("  WHERE\n");
         query.append("      id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -326,7 +340,9 @@ public class CaregiverDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, caregiver.getCaregiverSurname());
                         ps.setString(2, caregiver.getCaregiverGivenName());
-                        ps.setInt(3, caregiver.getCaregiverId());
+                        ps.setString(3, caregiver.getCaregiverAddress());
+                        ps.setString(4, caregiver.getCaregiverPhone());
+                        ps.setInt(5, caregiver.getCaregiverId());
                         return ps;
                     }
             );

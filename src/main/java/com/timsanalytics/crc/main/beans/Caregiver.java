@@ -10,6 +10,8 @@ public class Caregiver {
     private String caregiverSurname;
     private String caregiverGivenName;
     private String caregiverGender;
+    private String caregiverAddress;
+    private String caregiverPhone;
     // Joined Tables
     private String relationshipEffectiveDate;
     private String relationshipType;
@@ -51,6 +53,22 @@ public class Caregiver {
 
     public void setCaregiverGender(String caregiverGender) {
         this.caregiverGender = caregiverGender;
+    }
+
+    public String getCaregiverAddress() {
+        return caregiverAddress;
+    }
+
+    public void setCaregiverAddress(String caregiverAddress) {
+        this.caregiverAddress = caregiverAddress;
+    }
+
+    public String getCaregiverPhone() {
+        return caregiverPhone;
+    }
+
+    public void setCaregiverPhone(String caregiverPhone) {
+        this.caregiverPhone = caregiverPhone;
     }
 
     public String getRelationshipEffectiveDate() {

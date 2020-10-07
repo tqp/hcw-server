@@ -13,6 +13,8 @@ public class CaregiverRowMapper implements RowMapper<Caregiver> {
         row.setCaregiverId(rs.getInt("id"));
         row.setCaregiverSurname(rs.getString("last_name"));
         row.setCaregiverGivenName(rs.getString("first_name"));
+        row.setCaregiverAddress(rs.getString("address"));
+        row.setCaregiverPhone(rs.getString("phone"));
         return row;
     }
 }
