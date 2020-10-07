@@ -277,18 +277,20 @@ public class CaregiverDao {
     public Caregiver getCaregiverDetailByStudentId(int studentId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("  Student.id,\n");
-        query.append("          Relationship.person_id,\n");
-        query.append("          Caregiver.last_name,\n");
-        query.append("          Caregiver.first_name\n");
+        query.append("      Student.id as student_id,\n");
+        query.append("      Relationship.person_id,\n");
+        query.append("      Relationship.effective_date,\n");
+        query.append("      Caregiver.last_name,\n");
+        query.append("      Caregiver.first_name\n");
         query.append("  FROM\n");
-        query.append("  CRC.Person Student\n");
-        query.append("  LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 13\n");
-        query.append("  LEFT JOIN CRC.Person Caregiver ON Caregiver.id = Relationship.person_id\n");
+        query.append("      CRC.Person Student\n");
+        query.append("      LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 13\n");
+        query.append("      LEFT JOIN CRC.Person Caregiver ON Caregiver.id = Relationship.person_id\n");
         query.append("  WHERE\n");
-        query.append("  Student.id = ?\n");
-        query.append("  AND Student.person_type_id = 1\n");
-        query.append("  ORDER BY Relationship.updated_on DESC\n");
+        query.append("      Student.id = ?\n");
+        query.append("      AND Student.person_type_id = 1\n");
+        query.append("  ORDER BY\n");
+        query.append("      Relationship.updated_on DESC\n");
         query.append("  LIMIT 1\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
@@ -297,6 +299,7 @@ public class CaregiverDao {
                 row.setCaregiverId(rs.getInt("person_id"));
                 row.setCaregiverSurname(rs.getString("last_name"));
                 row.setCaregiverGivenName(rs.getString("first_name"));
+                row.setRelationshipEffectiveDate(rs.getString("effective_date"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

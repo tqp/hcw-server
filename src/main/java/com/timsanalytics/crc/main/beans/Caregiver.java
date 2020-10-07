@@ -2,6 +2,8 @@ package com.timsanalytics.crc.main.beans;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.sql.Date;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Caregiver {
     private int caregiverId;
@@ -9,6 +11,7 @@ public class Caregiver {
     private String caregiverGivenName;
     private String caregiverGender;
     // Joined Tables
+    private String relationshipEffectiveDate;
     private String relationshipType;
     private Boolean relationshipBloodRelative;
     // Metadata
@@ -48,6 +51,14 @@ public class Caregiver {
 
     public void setCaregiverGender(String caregiverGender) {
         this.caregiverGender = caregiverGender;
+    }
+
+    public String getRelationshipEffectiveDate() {
+        return relationshipEffectiveDate;
+    }
+
+    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
+        this.relationshipEffectiveDate = relationshipEffectiveDate;
     }
 
     public String getRelationshipType() {

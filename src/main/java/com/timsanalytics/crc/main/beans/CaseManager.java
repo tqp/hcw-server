@@ -8,6 +8,8 @@ public class CaseManager {
     private String caseManagerSurname;
     private String caseManagerGivenName;
     private String caseManagerGender;
+    // Joined Tables
+    private String relationshipEffectiveDate;
     // Metadata
     private String status;
     private String createdOn;
@@ -45,6 +47,14 @@ public class CaseManager {
 
     public void setCaseManagerGender(String caseManagerGender) {
         this.caseManagerGender = caseManagerGender;
+    }
+
+    public String getRelationshipEffectiveDate() {
+        return relationshipEffectiveDate;
+    }
+
+    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
+        this.relationshipEffectiveDate = relationshipEffectiveDate;
     }
 
     public String getStatus() {

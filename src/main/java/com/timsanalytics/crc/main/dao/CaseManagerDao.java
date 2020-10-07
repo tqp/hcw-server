@@ -243,6 +243,7 @@ public class CaseManagerDao {
         query.append("  SELECT\n");
         query.append("  Student.id,\n");
         query.append("          Relationship.person_id,\n");
+        query.append("      Relationship.effective_date,\n");
         query.append("          Caregiver.last_name,\n");
         query.append("          Caregiver.first_name\n");
         query.append("  FROM\n");
@@ -261,6 +262,7 @@ public class CaseManagerDao {
                 row.setCaseManagerId(rs.getInt("person_id"));
                 row.setCaseManagerSurname(rs.getString("last_name"));
                 row.setCaseManagerGivenName(rs.getString("first_name"));
+                row.setRelationshipEffectiveDate(rs.getString("effective_date"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

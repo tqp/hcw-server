@@ -32,12 +32,8 @@ public class RelationshipService {
         return this.relationshipDao.getRelationshipListByStudentId(studentId);
     }
 
-    public List<Relationship> getRelationshipListByRelationId(Integer relationId) {
-        return this.relationshipDao.getRelationshipListByRelationId(relationId);
-    }
-
-    public List<Relationship> getRelationshipListByCaregiverId(Integer relationId) {
-        return this.relationshipDao.getRelationshipListByCaregiverId(relationId);
+    public List<Relationship> getRelationshipListByPersonId(Integer personId) {
+        return this.relationshipDao.getRelationshipListByPersonId(personId);
     }
 
     // OTHER

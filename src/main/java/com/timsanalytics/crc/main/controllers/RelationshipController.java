@@ -3,7 +3,6 @@ package com.timsanalytics.crc.main.controllers;
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.services.RelationshipService;
-import com.timsanalytics.crc.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -77,7 +76,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Relationship List By Student ID", tags = {"Relationship"}, description = "Relationship List By Student ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Relationship List By Student ID", tags = {"Relationship"}, description = "Relationship List By Student ID", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<Relationship>> getRelationshipListByStudentId(@Parameter(description = "Student GUID", required = true) @PathVariable Integer studentId) {
         try {
             return ResponseEntity.ok()
@@ -90,26 +89,12 @@ public class RelationshipController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/relation/{relationId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Relationship List By Relation ID", tags = {"Relationship"}, description = "Relationship List By Relation ID", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Relationship>> getRelationshipListByRelationId(@Parameter(description = "Relation GUID", required = true) @PathVariable Integer relationId) {
+    @RequestMapping(value = "/person/{personId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Relationship List By Person ID", tags = {"Relationship"}, description = "Relationship List By Person ID", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Relationship>> getRelationshipListByPersonId(@Parameter(description = "Caregiver GUID", required = true) @PathVariable Integer personId) {
         try {
             return ResponseEntity.ok()
-                    .body(this.relationshipService.getRelationshipListByRelationId(relationId));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/caregiver/student/{caregiverId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Relationship List By Caregiver ID", tags = {"Relationship"}, description = "Relationship List By Caregiver ID", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Relationship>> getRelationshipListByCaregiverId(@Parameter(description = "Caregiver GUID", required = true) @PathVariable Integer caregiverId) {
-        try {
-            return ResponseEntity.ok()
-                    .body(this.relationshipService.getRelationshipListByCaregiverId(caregiverId));
+                    .body(this.relationshipService.getRelationshipListByPersonId(personId));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

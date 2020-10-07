@@ -1,11 +1,14 @@
 package com.timsanalytics.crc.main.beans;
 
+import java.sql.Date;
+
 public class Relationship {
     private Integer studentId;
     private Integer personId;
     private String personSurname;
     private String personGivenName;
     private Integer relationshipTypeId;
+    private String relationshipEffectiveDate;
     private String relationshipTypeName;
     private Integer relationshipBloodRelative;
 
@@ -47,6 +50,14 @@ public class Relationship {
 
     public void setRelationshipTypeId(Integer relationshipTypeId) {
         this.relationshipTypeId = relationshipTypeId;
+    }
+
+    public String getRelationshipEffectiveDate() {
+        return relationshipEffectiveDate;
+    }
+
+    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
+        this.relationshipEffectiveDate = relationshipEffectiveDate;
     }
 
     public String getRelationshipTypeName() {

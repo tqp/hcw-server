@@ -275,17 +275,20 @@ public class SponsorDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("  Student.id,\n");
-        query.append("          Relationship.person_id,\n");
-        query.append("          Sponsor.last_name,\n");
-        query.append("          Sponsor.first_name\n");
+        query.append("      Student.id as student_id,\n");
+        query.append("      Relationship.person_id,\n");
+        query.append("      Relationship.effective_date,\n");
+        query.append("      Sponsor.last_name,\n");
+        query.append("      Sponsor.first_name\n");
         query.append("  FROM\n");
-        query.append("  CRC.Person Student\n");
-        query.append("  LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 14 -- Sponsor\n");
-        query.append("  LEFT JOIN CRC.Person Sponsor ON Sponsor.id = Relationship.person_id\n");
+        query.append("      CRC.Person Student\n");
+        query.append("      LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 14\n");
+        query.append("      LEFT JOIN CRC.Person Sponsor ON Sponsor.id = Relationship.person_id\n");
         query.append("  WHERE\n");
-        query.append("  Student.id = ?\n");
-        query.append("  AND Student.person_type_id = 1\n");
-        query.append("  ORDER BY Relationship.updated_on DESC\n");
+        query.append("      Student.id = ?\n");
+        query.append("      AND Student.person_type_id = 1\n");
+        query.append("  ORDER BY\n");
+        query.append("      Relationship.updated_on DESC\n");
         query.append("  LIMIT 1\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
@@ -294,6 +297,7 @@ public class SponsorDao {
                 row.setSponsorId(rs.getInt("person_id"));
                 row.setSponsorSurname(rs.getString("last_name"));
                 row.setSponsorGivenName(rs.getString("first_name"));
+                row.setRelationshipEffectiveDate(rs.getString("effective_date"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

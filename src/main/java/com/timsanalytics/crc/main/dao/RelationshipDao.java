@@ -33,6 +33,7 @@ public class RelationshipDao {
         query.append("          student_id,\n");
         query.append("          person_id,\n");
         query.append("          relationship_type_id,\n");
+        query.append("          effective_date,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -41,6 +42,7 @@ public class RelationshipDao {
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -58,8 +60,9 @@ public class RelationshipDao {
                         ps.setInt(1, relationship.getStudentId());
                         ps.setInt(2, relationship.getPersonId());
                         ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setString(4, username);
+                        ps.setString(4, relationship.getRelationshipEffectiveDate());
                         ps.setString(5, username);
+                        ps.setString(6, username);
                         return ps;
                     }
             );
@@ -81,6 +84,7 @@ public class RelationshipDao {
         query.append("          student_id,\n");
         query.append("          person_id,\n");
         query.append("          relationship_type_id,\n");
+        query.append("          effective_date,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -89,6 +93,7 @@ public class RelationshipDao {
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -106,8 +111,9 @@ public class RelationshipDao {
                         ps.setInt(1, relationship.getStudentId());
                         ps.setInt(2, relationship.getPersonId());
                         ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setString(4, username);
+                        ps.setString(4, relationship.getRelationshipEffectiveDate());
                         ps.setString(5, username);
+                        ps.setString(6, username);
                         return ps;
                     }
             );
@@ -129,6 +135,7 @@ public class RelationshipDao {
         query.append("          student_id,\n");
         query.append("          person_id,\n");
         query.append("          relationship_type_id,\n");
+        query.append("          effective_date,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -137,6 +144,7 @@ public class RelationshipDao {
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -154,8 +162,9 @@ public class RelationshipDao {
                         ps.setInt(1, relationship.getStudentId());
                         ps.setInt(2, relationship.getPersonId());
                         ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setString(4, username);
+                        ps.setString(4, relationship.getRelationshipEffectiveDate());
                         ps.setString(5, username);
+                        ps.setString(6, username);
                         return ps;
                     }
             );
@@ -204,48 +213,14 @@ public class RelationshipDao {
         }
     }
 
-    public List<Relationship> getRelationshipListByRelationId(Integer relationId) {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      Student.id,\n");
-        query.append("      Student.last_name,\n");
-        query.append("      Student.first_name,\n");
-        query.append("      RelationshipType.name,\n");
-        query.append("      StudentRelationship.blood_relative\n");
-        query.append("  FROM\n");
-        query.append("      CRC.Person Student\n");
-        query.append("      LEFT JOIN CRC.StudentRelationship ON StudentRelationship.student_id = Student.id\n");
-        query.append("      LEFT JOIN CRC.RelationshipType ON RelationshipType.id = StudentRelationship.relationship_type_id\n");
-        query.append("  WHERE\n");
-        query.append("      Student.deleted = 0\n");
-        query.append("      AND StudentRelationship.person_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{relationId}, (rs, rowNum) -> {
-                Relationship row = new Relationship();
-                row.setPersonId(rs.getInt("id"));
-                row.setPersonSurname(rs.getString("last_name"));
-                row.setPersonGivenName(rs.getString("first_name"));
-                row.setRelationshipTypeName(rs.getString("name"));
-                row.setRelationshipBloodRelative(rs.getInt("blood_relative"));
-                return row;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public List<Relationship> getRelationshipListByCaregiverId(Integer studentId) {
+    public List<Relationship> getRelationshipListByPersonId(Integer personId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Person.id,\n");
         query.append("      Person.last_name,\n");
         query.append("      Person.first_name,\n");
-        query.append("      RelationshipType.name\n");
+        query.append("      RelationshipType.name,\n");
+        query.append("      StudentRelationship.effective_date\n");
         query.append("  FROM\n");
         query.append("      CRC.StudentRelationship\n");
         query.append("      LEFT JOIN CRC.Person ON Person.id = StudentRelationship.student_id\n");
@@ -255,11 +230,12 @@ public class RelationshipDao {
         query.append("      AND StudentRelationship.deleted = 0\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personId}, (rs, rowNum) -> {
                 Relationship row = new Relationship();
                 row.setPersonId(rs.getInt("id"));
                 row.setPersonSurname(rs.getString("last_name"));
                 row.setPersonGivenName(rs.getString("first_name"));
+                row.setRelationshipEffectiveDate(rs.getString("effective_date"));
                 row.setRelationshipTypeName(rs.getString("name"));
                 return row;
             });

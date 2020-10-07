@@ -8,6 +8,9 @@ public class Sponsor {
     private String sponsorSurname;
     private String sponsorGivenName;
     private String sponsorGender;
+    // Joined Tables
+    private String relationshipEffectiveDate;
+    private String relationshipType;
     // Metadata
     private String status;
     private String createdOn;
@@ -45,6 +48,22 @@ public class Sponsor {
 
     public void setSponsorGender(String sponsorGender) {
         this.sponsorGender = sponsorGender;
+    }
+
+    public String getRelationshipEffectiveDate() {
+        return relationshipEffectiveDate;
+    }
+
+    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
+        this.relationshipEffectiveDate = relationshipEffectiveDate;
+    }
+
+    public String getRelationshipType() {
+        return relationshipType;
+    }
+
+    public void setRelationshipType(String relationshipType) {
+        this.relationshipType = relationshipType;
     }
 
     public String getStatus() {
