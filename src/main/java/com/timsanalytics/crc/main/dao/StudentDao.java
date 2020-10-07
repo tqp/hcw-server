@@ -3,8 +3,6 @@ package com.timsanalytics.crc.main.dao;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Student;
-import com.timsanalytics.crc.utils.GenerateUuidService;
-import jdk.jfr.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +72,7 @@ public class StudentDao {
             return null;
         }
     }
-    
+
     public int getStudentList_SSP_TotalRecords(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
