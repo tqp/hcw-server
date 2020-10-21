@@ -12,10 +12,12 @@ public class Caregiver {
     private String caregiverGender;
     private String caregiverAddress;
     private String caregiverPhone;
+    private String caregiverEmail;
     // Joined Tables
     private String relationshipEffectiveDate;
     private String relationshipType;
     private Boolean relationshipBloodRelative;
+    private Integer studentCount;
     // Metadata
     private String status;
     private String createdOn;
@@ -71,6 +73,14 @@ public class Caregiver {
         this.caregiverPhone = caregiverPhone;
     }
 
+    public String getCaregiverEmail() {
+        return caregiverEmail;
+    }
+
+    public void setCaregiverEmail(String caregiverEmail) {
+        this.caregiverEmail = caregiverEmail;
+    }
+
     public String getRelationshipEffectiveDate() {
         return relationshipEffectiveDate;
     }
@@ -93,6 +103,14 @@ public class Caregiver {
 
     public void setRelationshipBloodRelative(Boolean relationshipBloodRelative) {
         this.relationshipBloodRelative = relationshipBloodRelative;
+    }
+
+    public Integer getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(Integer studentCount) {
+        this.studentCount = studentCount;
     }
 
     public String getStatus() {

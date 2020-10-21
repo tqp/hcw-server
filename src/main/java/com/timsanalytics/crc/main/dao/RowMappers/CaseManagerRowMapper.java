@@ -13,6 +13,8 @@ public class CaseManagerRowMapper implements RowMapper<CaseManager> {
         row.setCaseManagerId(rs.getInt("id"));
         row.setCaseManagerSurname(rs.getString("last_name"));
         row.setCaseManagerGivenName(rs.getString("first_name"));
+        row.setCaseManagerPhone(rs.getString("phone"));
+        row.setCaseManagerEmail(rs.getString("email"));
         return row;
     }
 }

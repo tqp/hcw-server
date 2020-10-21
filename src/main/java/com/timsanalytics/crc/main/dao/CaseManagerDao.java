@@ -167,6 +167,9 @@ public class CaseManagerDao {
                 row.setCaseManagerId(rs.getInt("id"));
                 row.setCaseManagerSurname(rs.getString("last_name"));
                 row.setCaseManagerGivenName(rs.getString("first_name"));
+                row.setCaseManagerPhone(rs.getString("phone"));
+                row.setCaseManagerEmail(rs.getString("email"));
+                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -185,13 +188,24 @@ public class CaseManagerDao {
         query.append("              SELECT\n");
         query.append("                  Person.id,\n");
         query.append("                  Person.first_name,\n");
-        query.append("                  Person.last_name\n");
+        query.append("                  Person.last_name,\n");
+        query.append("                  Person.phone,\n");
+        query.append("                  Person.email,\n");
+        query.append("                  (\n");
+        query.append("                      SELECT\n");
+        query.append("                          COUNT(*)\n");
+        query.append("                      FROM\n");
+        query.append("                          CRC.StudentRelationship\n");
+        query.append("                      WHERE\n");
+        query.append("                          StudentRelationship.person_id = Person.id\n");
+        query.append("                          AND StudentRelationship.relationship_type_id = 15\n");
+        query.append("                  ) AS student_count\n");
         query.append("              FROM\n");
         query.append("                  CRC.Person\n");
         query.append("              WHERE\n");
         query.append("              (\n");
-        query.append("                      Person.Deleted = 0\n");
-        query.append("                      AND Person.person_type_id = 2\n");
+        query.append("                  Person.Deleted = 0\n");
+        query.append("                  AND Person.person_type_id = 2\n");
         query.append("                  AND\n");
         query.append(getCaseManagerList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
         query.append("              )");
@@ -221,7 +235,9 @@ public class CaseManagerDao {
         query.append("  SELECT\n");
         query.append("      id,\n");
         query.append("      last_name,\n");
-        query.append("      first_name\n");
+        query.append("      first_name,\n");
+        query.append("      phone,\n");
+        query.append("      email\n");
         query.append("  FROM\n");
         query.append("      CRC.Person\n");
         query.append("  WHERE\n");

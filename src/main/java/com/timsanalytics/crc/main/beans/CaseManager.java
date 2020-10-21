@@ -8,8 +8,11 @@ public class CaseManager {
     private String caseManagerSurname;
     private String caseManagerGivenName;
     private String caseManagerGender;
+    private String caseManagerPhone;
+    private String caseManagerEmail;
     // Joined Tables
     private String relationshipEffectiveDate;
+    private Integer studentCount;
     // Metadata
     private String status;
     private String createdOn;
@@ -49,12 +52,36 @@ public class CaseManager {
         this.caseManagerGender = caseManagerGender;
     }
 
+    public String getCaseManagerPhone() {
+        return caseManagerPhone;
+    }
+
+    public void setCaseManagerPhone(String caseManagerPhone) {
+        this.caseManagerPhone = caseManagerPhone;
+    }
+
+    public String getCaseManagerEmail() {
+        return caseManagerEmail;
+    }
+
+    public void setCaseManagerEmail(String caseManagerEmail) {
+        this.caseManagerEmail = caseManagerEmail;
+    }
+
     public String getRelationshipEffectiveDate() {
         return relationshipEffectiveDate;
     }
 
     public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
         this.relationshipEffectiveDate = relationshipEffectiveDate;
+    }
+
+    public Integer getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(Integer studentCount) {
+        this.studentCount = studentCount;
     }
 
     public String getStatus() {

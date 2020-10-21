@@ -15,6 +15,7 @@ public class CaregiverRowMapper implements RowMapper<Caregiver> {
         row.setCaregiverGivenName(rs.getString("first_name"));
         row.setCaregiverAddress(rs.getString("address"));
         row.setCaregiverPhone(rs.getString("phone"));
+        row.setCaregiverEmail(rs.getString("email"));
         return row;
     }
 }

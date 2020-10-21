@@ -175,6 +175,10 @@ public class CaregiverDao {
                 row.setCaregiverId(rs.getInt("id"));
                 row.setCaregiverSurname(rs.getString("last_name"));
                 row.setCaregiverGivenName(rs.getString("first_name"));
+                row.setCaregiverPhone(rs.getString("phone"));
+                row.setCaregiverEmail(rs.getString("email"));
+                row.setCaregiverAddress(rs.getString("address"));
+                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -193,7 +197,19 @@ public class CaregiverDao {
         query.append("              SELECT\n");
         query.append("                  Person.id,\n");
         query.append("                  Person.first_name,\n");
-        query.append("                  Person.last_name\n");
+        query.append("                  Person.last_name,\n");
+        query.append("                  Person.phone,\n");
+        query.append("                  Person.email,\n");
+        query.append("                  Person.address,\n");
+        query.append("                  (\n");
+        query.append("                      SELECT\n");
+        query.append("                          COUNT(*)\n");
+        query.append("                      FROM\n");
+        query.append("                          CRC.StudentRelationship\n");
+        query.append("                      WHERE\n");
+        query.append("                          StudentRelationship.person_id = Person.id\n");
+        query.append("                          AND StudentRelationship.relationship_type_id = 13\n");
+        query.append("                  ) AS student_count\n");
         query.append("              FROM\n");
         query.append("                  CRC.Person\n");
         query.append("              WHERE\n");
@@ -265,7 +281,8 @@ public class CaregiverDao {
         query.append("      last_name,\n");
         query.append("      first_name,\n");
         query.append("      address,\n");
-        query.append("      phone\n");
+        query.append("      phone,\n");
+        query.append("      email\n");
         query.append("  FROM\n");
         query.append("      CRC.Person\n");
         query.append("  WHERE\n");
