@@ -57,4 +57,8 @@ public class CaregiverService {
         return this.caregiverDao.getCaregiverDetailByStudentId(studentId);
     }
 
+    public List<Caregiver> getCaregiverWithLoanList() {
+        return this.caregiverDao.getCaregiverWithLoanList();
+    }
+
 }

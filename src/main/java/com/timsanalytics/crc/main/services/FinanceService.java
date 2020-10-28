@@ -2,9 +2,9 @@ package com.timsanalytics.crc.main.services;
 
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.FinanceLoan;
-import com.timsanalytics.crc.main.beans.FinancePayment;
-import com.timsanalytics.crc.main.beans.Person;
+import com.timsanalytics.crc.main.beans.Loan;
+import com.timsanalytics.crc.main.beans.Payment;
+import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.FinanceDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,20 +20,20 @@ public class FinanceService {
         this.financeDao = financeDao;
     }
 
-    public ServerSidePaginationResponse<FinanceLoan> getLoanList_SSP(ServerSidePaginationRequest<FinanceLoan> serverSidePaginationRequest) {
-        ServerSidePaginationResponse<FinanceLoan> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
+    public ServerSidePaginationResponse<Loan> getLoanList_SSP(ServerSidePaginationRequest<Loan> serverSidePaginationRequest) {
+        ServerSidePaginationResponse<Loan> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
-        List<FinanceLoan> loanList = this.financeDao.getLoanList_SSP(serverSidePaginationRequest);
+        List<Loan> loanList = this.financeDao.getLoanList_SSP(serverSidePaginationRequest);
         serverSidePaginationResponse.setData(loanList);
         serverSidePaginationResponse.setLoadedRecords(loanList.size());
         serverSidePaginationResponse.setTotalRecords(this.financeDao.getLoanList_SSP_TotalRecords(serverSidePaginationRequest));
         return serverSidePaginationResponse;
     }
 
-    public ServerSidePaginationResponse<FinancePayment> getPaymentList_SSP(ServerSidePaginationRequest<FinancePayment> serverSidePaginationRequest) {
-        ServerSidePaginationResponse<FinancePayment> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
+    public ServerSidePaginationResponse<Payment> getPaymentList_SSP(ServerSidePaginationRequest<Payment> serverSidePaginationRequest) {
+        ServerSidePaginationResponse<Payment> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
-        List<FinancePayment> paymentList = this.financeDao.getPaymentList_SSP(serverSidePaginationRequest);
+        List<Payment> paymentList = this.financeDao.getPaymentList_SSP(serverSidePaginationRequest);
         serverSidePaginationResponse.setData(paymentList);
         serverSidePaginationResponse.setLoadedRecords(paymentList.size());
         serverSidePaginationResponse.setTotalRecords(this.financeDao.getPaymentList_SSP_TotalRecords(serverSidePaginationRequest));
@@ -46,5 +46,13 @@ public class FinanceService {
 
     public Double getTotalPaid() {
         return this.financeDao.getTotalPaid();
+    }
+
+    public List<Loan> getLoanListByCaregiverId(Integer caregiverId) {
+        return this.financeDao.getLoanListByCaregiverId(caregiverId);
+    }
+
+    public Payment addPayment(Payment payment) {
+        return this.financeDao.addPayment(payment);
     }
 }

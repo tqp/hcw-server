@@ -130,4 +130,17 @@ public class CaregiverController {
         }
     }
 
+    @RequestMapping(value = "/with-loan", method = RequestMethod.GET)
+    @Operation(summary = "Get Caregiver Detail by Student ID", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Caregiver>> getCaregiverWithLoanList() {
+        try {
+            List<Caregiver> caregiverList = caregiverService.getCaregiverWithLoanList();
+            return ResponseEntity.ok()
+                    .body(caregiverList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

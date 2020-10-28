@@ -1,11 +1,11 @@
 package com.timsanalytics.crc.main.beans;
 
-public class FinanceLoan {
+public class Loan {
     private Integer loanId;
     private Integer caregiverId;
     private String caregiverSurname;
     private String caregiverGivenName;
-    private String businessDescription;
+    private String loanDescription;
     private Double loanAmount;
     private Double amountPaid;
 
@@ -41,12 +41,12 @@ public class FinanceLoan {
         this.caregiverGivenName = caregiverGivenName;
     }
 
-    public String getBusinessDescription() {
-        return businessDescription;
+    public String getLoanDescription() {
+        return loanDescription;
     }
 
-    public void setBusinessDescription(String businessDescription) {
-        this.businessDescription = businessDescription;
+    public void setLoanDescription(String loanDescription) {
+        this.loanDescription = loanDescription;
     }
 
     public Double getLoanAmount() {

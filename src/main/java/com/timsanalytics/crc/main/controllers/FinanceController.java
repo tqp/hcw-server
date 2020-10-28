@@ -2,10 +2,11 @@ package com.timsanalytics.crc.main.controllers;
 
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.FinanceLoan;
-import com.timsanalytics.crc.main.beans.FinancePayment;
+import com.timsanalytics.crc.main.beans.Loan;
+import com.timsanalytics.crc.main.beans.Payment;
 import com.timsanalytics.crc.main.services.FinanceService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/finance")
@@ -28,13 +30,15 @@ public class FinanceController {
         this.financeService = financeService;
     }
 
+    // REPORTING
+
     @ResponseBody
     @RequestMapping(value = "/report-by-participant/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Loan List", description = "Loan List", tags = {"Finance"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ServerSidePaginationResponse<FinanceLoan>> getLoanList_SSP(@RequestBody ServerSidePaginationRequest<FinanceLoan> serverSidePaginationRequest) {
+    public ResponseEntity<ServerSidePaginationResponse<Loan>> getLoanList_SSP(@RequestBody ServerSidePaginationRequest<Loan> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
-            ServerSidePaginationResponse<FinanceLoan> container = this.financeService.getLoanList_SSP(serverSidePaginationRequest);
+            ServerSidePaginationResponse<Loan> container = this.financeService.getLoanList_SSP(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);
@@ -48,10 +52,10 @@ public class FinanceController {
     @ResponseBody
     @RequestMapping(value = "/payment-list/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Payment List", description = "Payment List", tags = {"Finance"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ServerSidePaginationResponse<FinancePayment>> getPaymentList_SSP(@RequestBody ServerSidePaginationRequest<FinancePayment> serverSidePaginationRequest) {
+    public ResponseEntity<ServerSidePaginationResponse<Payment>> getPaymentList_SSP(@RequestBody ServerSidePaginationRequest<Payment> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
-            ServerSidePaginationResponse<FinancePayment> container = this.financeService.getPaymentList_SSP(serverSidePaginationRequest);
+            ServerSidePaginationResponse<Payment> container = this.financeService.getPaymentList_SSP(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);
@@ -82,6 +86,37 @@ public class FinanceController {
         try {
             return ResponseEntity.ok()
                     .body(financeService.getTotalPaid());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // LOANS
+
+    @ResponseBody
+    @RequestMapping(value = "/loan/caregiver/{caregiverId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Sponsor List", tags = {"Sponsor"}, description = "Get Sponsor List", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Loan>> getLoanListByCaregiverId(@Parameter(description = "Caregiver ID", required = true) @PathVariable int caregiverId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.financeService.getLoanListByCaregiverId(caregiverId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    // PAYMENTS
+
+    @ResponseBody
+    @RequestMapping(value = "/payment/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Add Payment", description = "Add Payment", tags = {"Finance"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Payment> addPayment(@RequestBody Payment payment) {
+        try {
+            return ResponseEntity.ok()
+                    .body(financeService.addPayment(payment));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

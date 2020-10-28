@@ -371,4 +371,36 @@ public class CaregiverDao {
         }
     }
 
+    public List<Caregiver> getCaregiverWithLoanList() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Caregiver.caregiver_id,\n");
+        query.append("      Person_Caregiver.surname,\n");
+        query.append("      Person_Caregiver.given_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Microfinance_Loan\n");
+        query.append("      LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Microfinance_Loan.caregiver_id AND Person_Caregiver.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Microfinance_Loan.deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      Person_Caregiver.surname,\n");
+        query.append("      Person_Caregiver.given_name\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                Caregiver row = new Caregiver();
+                row.setCaregiverId(rs.getInt("caregiver_id"));
+                row.setCaregiverSurname(rs.getString("surname"));
+                row.setCaregiverGivenName(rs.getString("given_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
 }
