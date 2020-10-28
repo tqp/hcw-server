@@ -31,8 +31,8 @@ public class PersonDao {
         query.append("  INSERT INTO\n");
         query.append("      CRC.Person\n");
         query.append("      (\n");
-        query.append("          last_name,\n");
-        query.append("          first_name,\n");
+        query.append("          surname,\n");
+        query.append("          given_name,\n");
         query.append("          person_type_id,\n");
         query.append("          deleted\n");
         query.append("      )\n");

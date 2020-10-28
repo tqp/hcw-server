@@ -5,13 +5,10 @@ import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.services.CaregiverService;
-import com.timsanalytics.crc.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,13 +23,14 @@ import java.util.List;
 @RequestMapping("/api/v1/caregiver")
 @Tag(name = "Caregiver", description = "Caregiver")
 public class CaregiverController {
-    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final CaregiverService caregiverService;
 
     @Autowired
     public CaregiverController(CaregiverService caregiverService) {
         this.caregiverService = caregiverService;
     }
+
+    // BASIC CRUD
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -91,19 +89,6 @@ public class CaregiverController {
         }
     }
 
-    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Caregiver Detail by Student ID", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Caregiver> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
-        try {
-            Caregiver caregiver = caregiverService.getCaregiverDetailByStudentId(studentId);
-            return ResponseEntity.ok()
-                    .body(caregiver);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update Caregiver", tags = {"Caregiver"}, description = "Update Caregiver", security = @SecurityRequirement(name = "bearerAuth"))
@@ -130,17 +115,18 @@ public class CaregiverController {
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/student-relationship/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Student-Caregiver List", tags = {"Caregiver"}, description = "Student-Caregiver List", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Caregiver>> getCaregiverListBystudentId(@Parameter(description = "Student GUID", required = true) @PathVariable String studentId) {
+    // JOINED QUERIES
+
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
+    @Operation(summary = "Get Caregiver Detail by Student ID", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Caregiver> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
         try {
+            Caregiver caregiver = caregiverService.getCaregiverDetailByStudentId(studentId);
             return ResponseEntity.ok()
-                    .body(this.caregiverService.getCaregiverListByStudentId(studentId));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+                    .body(caregiver);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 

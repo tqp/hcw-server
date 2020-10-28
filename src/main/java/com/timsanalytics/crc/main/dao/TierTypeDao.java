@@ -23,10 +23,10 @@ public class TierTypeDao {
     public List<TierType> getTierTypeList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      id,\n");
+        query.append("      tier_type_id,\n");
         query.append("      name\n");
         query.append("  FROM\n");
-        query.append("      CRC.TierType\n");
+        query.append("      CRC.Ref_Tier_Type\n");
         query.append("  WHERE\n");
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
@@ -35,7 +35,7 @@ public class TierTypeDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 TierType row = new TierType();
-                row.setTierTypeId(rs.getInt("id"));
+                row.setTierTypeId(rs.getInt("tier_type_id"));
                 row.setTierTypeName(rs.getString("name"));
                 return row;
             });

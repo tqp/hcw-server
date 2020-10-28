@@ -10,9 +10,9 @@ public class CaseManagerRowMapper implements RowMapper<CaseManager> {
 
     public CaseManager mapRow(ResultSet rs, int rowNum) throws SQLException {
         CaseManager row = new CaseManager();
-        row.setCaseManagerId(rs.getInt("id"));
-        row.setCaseManagerSurname(rs.getString("last_name"));
-        row.setCaseManagerGivenName(rs.getString("first_name"));
+        row.setCaseManagerId(rs.getInt("case_manager_id"));
+        row.setCaseManagerSurname(rs.getString("surname"));
+        row.setCaseManagerGivenName(rs.getString("given_name"));
         row.setCaseManagerPhone(rs.getString("phone"));
         row.setCaseManagerEmail(rs.getString("email"));
         return row;

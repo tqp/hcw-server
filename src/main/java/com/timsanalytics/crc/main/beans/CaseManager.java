@@ -11,7 +11,8 @@ public class CaseManager {
     private String caseManagerPhone;
     private String caseManagerEmail;
     // Joined Tables
-    private String relationshipEffectiveDate;
+    private String relationshipStartDate;
+    private String relationshipEndDate;
     private Integer studentCount;
     // Metadata
     private String status;
@@ -68,12 +69,20 @@ public class CaseManager {
         this.caseManagerEmail = caseManagerEmail;
     }
 
-    public String getRelationshipEffectiveDate() {
-        return relationshipEffectiveDate;
+    public String getRelationshipStartDate() {
+        return relationshipStartDate;
     }
 
-    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
-        this.relationshipEffectiveDate = relationshipEffectiveDate;
+    public void setRelationshipStartDate(String relationshipStartDate) {
+        this.relationshipStartDate = relationshipStartDate;
+    }
+
+    public String getRelationshipEndDate() {
+        return relationshipEndDate;
+    }
+
+    public void setRelationshipEndDate(String relationshipEndDate) {
+        this.relationshipEndDate = relationshipEndDate;
     }
 
     public Integer getStudentCount() {

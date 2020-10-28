@@ -4,7 +4,8 @@
  #   ${application.title}
  #   ------------
  #
- #   Build:                 ${application.timestamp}
+ #   Application Build:     ${application.timestamp}
+ #   Maven Build:           ${application.maven.build.timestamp}
  #   Environment:           ${application.environment}
  #   Spring Boot:           ${spring-boot.version}
  #

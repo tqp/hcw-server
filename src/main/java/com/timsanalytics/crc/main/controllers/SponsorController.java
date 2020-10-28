@@ -34,6 +34,8 @@ public class SponsorController {
         this.sponsorService = sponsorService;
     }
 
+    // BASIC CRUD
+
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create Sponsor", tags = {"Sponsor"}, description = "Create Sponsor", security = @SecurityRequirement(name = "bearerAuth"))
@@ -91,19 +93,6 @@ public class SponsorController {
         }
     }
 
-    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Sponsor Detail by Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Sponsor> getSponsorDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
-        try {
-            Sponsor sponsor = sponsorService.getSponsorDetailByStudentId(studentId);
-            return ResponseEntity.ok()
-                    .body(sponsor);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update Sponsor", tags = {"Sponsor"}, description = "Update Sponsor", security = @SecurityRequirement(name = "bearerAuth"))
@@ -130,17 +119,18 @@ public class SponsorController {
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/student-relationship/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Student-Sponsor List", tags = {"Sponsor"}, description = "Student-Sponsor List", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Sponsor>> getSponsorListBystudentId(@Parameter(description = "Student GUID", required = true) @PathVariable String studentId) {
+    // JOINED QUERIES
+
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
+    @Operation(summary = "Get Sponsor Detail by Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Sponsor> getSponsorDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
         try {
+            Sponsor sponsor = sponsorService.getSponsorDetailByStudentId(studentId);
             return ResponseEntity.ok()
-                    .body(this.sponsorService.getSponsorListByStudentId(studentId));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+                    .body(sponsor);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
     

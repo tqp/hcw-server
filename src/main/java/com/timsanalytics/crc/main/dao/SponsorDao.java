@@ -2,6 +2,7 @@ package com.timsanalytics.crc.main.dao;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.dao.RowMappers.SponsorRowMapper;
 import com.timsanalytics.crc.utils.GenerateUuidService;
@@ -27,21 +28,21 @@ public class SponsorDao {
         this.utilsDao = utilsDao;
     }
 
+    // BASIC CRUD
+
     public Sponsor createSponsor(Sponsor sponsor) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Sponsor\n");
         query.append("      (\n");
-        query.append("          last_name,\n");
-        query.append("          first_name,\n");
-        query.append("          person_type_id,\n");
+        query.append("          surname,\n");
+        query.append("          given_name,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          5,\n");
         query.append("          0\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -69,24 +70,23 @@ public class SponsorDao {
     public List<Sponsor> getSponsorList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      id,\n");
-        query.append("      last_name,\n");
-        query.append("      first_name\n");
+        query.append("      sponsor_id,\n");
+        query.append("      surname,\n");
+        query.append("      given_name\n");
         query.append("  FROM\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Sponsor\n");
         query.append("  WHERE\n");
-        query.append("      person_type_id = 5 -- Sponsor\n");
-        query.append("      AND deleted = 0\n");
+        query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      last_name,\n");
-        query.append("      first_name \n");
+        query.append("      surname,\n");
+        query.append("      given_name\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 Sponsor row = new Sponsor();
-                row.setSponsorId(rs.getInt("id"));
-                row.setSponsorSurname(rs.getString("last_name"));
-                row.setSponsorGivenName(rs.getString("first_name"));
+                row.setSponsorId(rs.getInt("sponsor_id"));
+                row.setSponsorSurname(rs.getString("surname"));
+                row.setSponsorGivenName(rs.getString("given_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -124,7 +124,8 @@ public class SponsorDao {
         int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
         int pageSize = serverSidePaginationRequest.getPageSize();
 
-        String sortColumn = serverSidePaginationRequest.getSortColumn();
+        String defaultSortField = "surname";
+        String sortColumn = serverSidePaginationRequest.getSortColumn() != null ? serverSidePaginationRequest.getSortColumn() : defaultSortField;
         String sortDirection = serverSidePaginationRequest.getSortDirection();
 
         StringBuilder query = new StringBuilder();
@@ -147,8 +148,8 @@ public class SponsorDao {
 
         query.append("          ORDER BY\n");
         query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
-        query.append("              last_name,\n");
-        query.append("              first_name\n");
+        query.append("              surname,\n");
+        query.append("              given_name\n");
         query.append("      ) AS FILTER_SORT_QUERY\n");
         query.append("      -- END FILTER/SORT QUERY\n");
 
@@ -164,9 +165,11 @@ public class SponsorDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Sponsor row = new Sponsor();
-                row.setSponsorId(rs.getInt("id"));
-                row.setSponsorSurname(rs.getString("last_name"));
-                row.setSponsorGivenName(rs.getString("first_name"));
+                row.setSponsorId(rs.getInt("sponsor_id"));
+                row.setSponsorSurname(rs.getString("surname"));
+                row.setSponsorGivenName(rs.getString("given_name"));
+                row.setSponsorAddress(rs.getString("address"));
+                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -183,16 +186,26 @@ public class SponsorDao {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
         query.append("              SELECT\n");
-        query.append("                  Person.id,\n");
-        query.append("                  Person.first_name,\n");
-        query.append("                  Person.last_name\n");
+        query.append("                  sponsor_id,\n");
+        query.append("                  surname,\n");
+        query.append("                  given_name,\n");
+        query.append("                  address,\n");
+        query.append("                  (\n");
+        query.append("                      SELECT\n");
+        query.append("                          COUNT(*)\n");
+        query.append("                      FROM\n");
+        query.append("                          CRC.Rel_Student_Sponsor\n");
+        query.append("                      WHERE\n");
+        query.append("                          Rel_Student_Sponsor.sponsor_id = Person_Sponsor.sponsor_id\n");
+        query.append("                          AND deleted = 0\n");
+        query.append("                  ) as student_count\n");
         query.append("              FROM\n");
-        query.append("                  CRC.Person\n");
+        query.append("                  CRC.Person_Sponsor\n");
         query.append("              WHERE\n");
         query.append("              (\n");
-        query.append("                      Person.Deleted = 0\n");
-        query.append("                      AND Person.person_type_id = 5 -- Sponsor\n");
+        query.append("                  deleted = 0\n");
         query.append("                  AND\n");
+        query.append("                  ");
         query.append(getSponsorList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
         query.append("              )");
         return query.toString();
@@ -205,9 +218,9 @@ public class SponsorDao {
         // NAME FILTER CLAUSE
         if (!"".equalsIgnoreCase(nameFilter)) {
             whereClause.append("                  (\n");
-            whereClause.append("                    UPPER(PERSON.PERSON_SURNAME) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    UPPER(Person_Sponsor.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                    OR");
-            whereClause.append("                    UPPER(PERSON.PERSON_GIVEN_NAME) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    UPPER(Person_Sponsor.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                  )\n");
         } else {
             whereClause.append("                  (1=1)");
@@ -216,49 +229,17 @@ public class SponsorDao {
         return whereClause.toString();
     }
 
-    public List<Sponsor> getSponsorListByStudentId(String studentId) {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      RELATIONSHIP_GUID,\n");
-        query.append("      STUDENT_GUID,\n");
-        query.append("      RELATIONSHIP.PERSON_GUID,\n");
-        query.append("      PERSON.PERSON_SURNAME,\n");
-        query.append("      PERSON.PERSON_GIVEN_NAME,\n");
-        query.append("      RELATIONSHIP.RELATIONSHIP_BLOOD_RELATIVE\n");
-        query.append("  FROM\n");
-        query.append("      HCW_DATA.RELATIONSHIP\n");
-        query.append("      LEFT JOIN HCW_DATA.PERSON ON PERSON.PERSON_GUID = RELATIONSHIP.PERSON_GUID\n");
-        query.append("  WHERE\n");
-        query.append("      STUDENT_GUID = ?\n");
-        query.append("      AND RELATIONSHIP_TYPE = 14 -- Sponsor\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
-                Sponsor row = new Sponsor();
-                row.setSponsorId(rs.getInt("PERSON_GUID"));
-                row.setSponsorSurname(rs.getString("PERSON_SURNAME"));
-                row.setSponsorGivenName(rs.getString("PERSON_GIVEN_NAME"));
-                return row;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
     public Sponsor getSponsorDetail(int sponsorId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      id,\n");
-        query.append("      last_name,\n");
-        query.append("      first_name\n");
+        query.append("      sponsor_id,\n");
+        query.append("      surname,\n");
+        query.append("      given_name,\n");
+        query.append("      address\n");
         query.append("  FROM\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Sponsor\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      sponsor_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{sponsorId}, new SponsorRowMapper());
@@ -271,53 +252,16 @@ public class SponsorDao {
         }
     }
 
-    public Sponsor getSponsorDetailByStudentId(int studentId) {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("  Student.id,\n");
-        query.append("      Student.id as student_id,\n");
-        query.append("      Relationship.person_id,\n");
-        query.append("      Relationship.effective_date,\n");
-        query.append("      Sponsor.last_name,\n");
-        query.append("      Sponsor.first_name\n");
-        query.append("  FROM\n");
-        query.append("      CRC.Person Student\n");
-        query.append("      LEFT JOIN CRC.StudentRelationship Relationship on Relationship.student_id =  Student.id AND Relationship.relationship_type_id = 14\n");
-        query.append("      LEFT JOIN CRC.Person Sponsor ON Sponsor.id = Relationship.person_id\n");
-        query.append("  WHERE\n");
-        query.append("      Student.id = ?\n");
-        query.append("      AND Student.person_type_id = 1\n");
-        query.append("  ORDER BY\n");
-        query.append("      Relationship.updated_on DESC\n");
-        query.append("  LIMIT 1\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
-                Sponsor row = new Sponsor();
-                row.setSponsorId(rs.getInt("person_id"));
-                row.setSponsorSurname(rs.getString("last_name"));
-                row.setSponsorGivenName(rs.getString("first_name"));
-                row.setRelationshipEffectiveDate(rs.getString("effective_date"));
-                return row;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
     public Sponsor updateSponsor(Sponsor sponsor) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Sponsor\n");
         query.append("  SET\n");
-        query.append("      last_name = ?,\n");
-        query.append("      first_name = ?\n");
+        query.append("      surname = ?,\n");
+        query.append("      given_name = ?,\n");
+        query.append("      address = ?\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      sponsor_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
@@ -325,7 +269,8 @@ public class SponsorDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, sponsor.getSponsorSurname());
                         ps.setString(2, sponsor.getSponsorGivenName());
-                        ps.setInt(3, sponsor.getSponsorId());
+                        ps.setString(3, sponsor.getSponsorAddress());
+                        ps.setInt(4, sponsor.getSponsorId());
                         return ps;
                     }
             );
@@ -342,7 +287,7 @@ public class SponsorDao {
     public KeyValue deleteSponsor(String sponsorGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Sponsor\n");
         query.append("  SET\n");
         query.append("      deleted = 0\n");
         query.append("  WHERE\n");
@@ -361,6 +306,42 @@ public class SponsorDao {
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    // JOINED QUERIES
+
+    public Sponsor getSponsorDetailByStudentId(int studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Sponsor.sponsor_id,\n");
+        query.append("      Person_Sponsor.surname,\n");
+        query.append("      Person_Sponsor.given_name,\n");
+        query.append("      Rel_Student_Sponsor.start_date\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Rel_Student_Sponsor\n");
+        query.append("      LEFT JOIN CRC.Person_Sponsor ON Person_Sponsor.sponsor_id = Rel_Student_Sponsor.sponsor_id AND Person_Sponsor.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      student_id = ?\n");
+        query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      start_date DESC\n");
+        query.append("  LIMIT 0, 1\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Sponsor row = new Sponsor();
+                row.setSponsorId(rs.getInt("sponsor_id"));
+                row.setSponsorSurname(rs.getString("surname"));
+                row.setSponsorGivenName(rs.getString("given_name"));
+                row.setRelationshipStartDate(rs.getString("start_date"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return new Sponsor();
         } catch (Exception e) {
             this.logger.error("Exception: " + e);
             return null;

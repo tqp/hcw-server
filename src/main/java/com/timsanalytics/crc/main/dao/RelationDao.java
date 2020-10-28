@@ -88,7 +88,8 @@ public class RelationDao {
         int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
         int pageSize = serverSidePaginationRequest.getPageSize();
 
-        String sortColumn = serverSidePaginationRequest.getSortColumn();
+        String defaultSortField = "surname";
+        String sortColumn = serverSidePaginationRequest.getSortColumn() != null ? serverSidePaginationRequest.getSortColumn() : defaultSortField;
         String sortDirection = serverSidePaginationRequest.getSortDirection();
 
         StringBuilder query = new StringBuilder();
@@ -111,8 +112,8 @@ public class RelationDao {
 
         query.append("          ORDER BY\n");
         query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
-        query.append("              last_name,\n");
-        query.append("              first_name\n");
+        query.append("              surname,\n");
+        query.append("              given_name\n");
         query.append("      ) AS FILTER_SORT_QUERY\n");
         query.append("      -- END FILTER/SORT QUERY\n");
 
@@ -129,8 +130,8 @@ public class RelationDao {
             }, (rs, rowNum) -> {
                 Relation row = new Relation();
                 row.setRelationId(rs.getInt("id"));
-                row.setRelationSurname(rs.getString("last_name"));
-                row.setRelationGivenName(rs.getString("first_name"));
+                row.setRelationSurname(rs.getString("surname"));
+                row.setRelationGivenName(rs.getString("given_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -148,8 +149,8 @@ public class RelationDao {
         StringBuilder query = new StringBuilder();
         query.append("              SELECT\n");
         query.append("                  Person.id,\n");
-        query.append("                  Person.first_name,\n");
-        query.append("                  Person.last_name\n");
+        query.append("                  Person.given_name,\n");
+        query.append("                  Person.surname\n");
         query.append("              FROM\n");
         query.append("                  CRC.Person\n");
         query.append("              WHERE\n");
@@ -184,8 +185,8 @@ public class RelationDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      id,\n");
-        query.append("      last_name,\n");
-        query.append("      first_name\n");
+        query.append("      surname,\n");
+        query.append("      given_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Person\n");
         query.append("  WHERE\n");
@@ -195,8 +196,8 @@ public class RelationDao {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{relationGuid}, (rs, rowNum) -> {
                 Relation row = new Relation();
                 row.setRelationId(rs.getInt("id"));
-                row.setRelationSurname(rs.getString("last_name"));
-                row.setRelationGivenName(rs.getString("first_name"));
+                row.setRelationSurname(rs.getString("surname"));
+                row.setRelationGivenName(rs.getString("given_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -213,8 +214,8 @@ public class RelationDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Person\n");
         query.append("  SET\n");
-        query.append("      last_name = ?,\n");
-        query.append("      first_name = ?\n");
+        query.append("      surname = ?,\n");
+        query.append("      given_name = ?\n");
         query.append("  WHERE\n");
         query.append("      id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());

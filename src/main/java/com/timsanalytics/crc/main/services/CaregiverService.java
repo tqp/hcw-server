@@ -4,9 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Caregiver;
-import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.dao.CaregiverDao;
-import com.timsanalytics.crc.utils.PrintObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +18,8 @@ public class CaregiverService {
     public CaregiverService(CaregiverDao caregiverDao) {
         this.caregiverDao = caregiverDao;
     }
+
+    // BASIC CRUD
 
     public Caregiver createCaregiver(Caregiver caregiver) {
         return this.caregiverDao.createCaregiver(caregiver);
@@ -39,16 +39,8 @@ public class CaregiverService {
         return serverSidePaginationResponse;
     }
 
-    public List<Caregiver> getCaregiverListByStudentId(String studentId) {
-        return this.caregiverDao.getCaregiverListByStudentId(studentId);
-    }
-
     public Caregiver getCaregiverDetail(int caregiverId) {
         return this.caregiverDao.getCaregiverDetail(caregiverId);
-    }
-
-    public Caregiver getCaregiverDetailByStudentId(int studentId) {
-        return this.caregiverDao.getCaregiverDetailByStudentId(studentId);
     }
 
     public Caregiver updateCaregiver(Caregiver caregiver) {
@@ -57,6 +49,12 @@ public class CaregiverService {
 
     public KeyValue deleteCaregiver(String caregiverGuid) {
         return this.caregiverDao.deleteCaregiver(caregiverGuid);
+    }
+
+    // JOINED QUERIES
+
+    public Caregiver getCaregiverDetailByStudentId(int studentId) {
+        return this.caregiverDao.getCaregiverDetailByStudentId(studentId);
     }
 
 }

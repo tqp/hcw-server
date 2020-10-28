@@ -3,6 +3,7 @@ package com.timsanalytics.crc.main.dao;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Student;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,10 @@ public class StudentDao {
     public Student createStudent(Student student) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
-        query.append("      CRC.Person\n");
+        query.append("      Person_Student\n");
         query.append("      (\n");
-        query.append("          last_name,\n");
-        query.append("          first_name,\n");
+        query.append("          surname,\n");
+        query.append("          given_name,\n");
         query.append("          sex,\n");
         query.append("          dob,\n");
         query.append("          person_type_id,\n");
@@ -57,7 +58,7 @@ public class StudentDao {
                         ps.setString(2, student.getStudentGivenName());
                         ps.setString(3, student.getStudentGender());
                         ps.setString(4, student.getStudentDateOfBirth());
-                        ps.setInt(5, student.getTierTypeId());
+                        ps.setInt(5, student.getRelationshipTierTypeId());
                         return ps;
                     }
             );
@@ -99,7 +100,8 @@ public class StudentDao {
         int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
         int pageSize = serverSidePaginationRequest.getPageSize();
 
-        String sortColumn = serverSidePaginationRequest.getSortColumn();
+        String defaultSortField = "surname";
+        String sortColumn = serverSidePaginationRequest.getSortColumn() != null ? serverSidePaginationRequest.getSortColumn() : defaultSortField;
         String sortDirection = serverSidePaginationRequest.getSortDirection();
 
         StringBuilder query = new StringBuilder();
@@ -121,15 +123,15 @@ public class StudentDao {
         query.append("          -- END ROOT QUERY\n");
 
         query.append("          ORDER BY\n");
+        query.append("              "); // Spacing for output
         query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
-        query.append("              last_name,\n");
-        query.append("              first_name\n");
+        query.append("              surname,\n");
+        query.append("              given_name\n");
         query.append("      ) AS FILTER_SORT_QUERY\n");
         query.append("      -- END FILTER/SORT QUERY\n");
 
         query.append("  LIMIT ?, ?\n");
         query.append("  -- END PAGINATION QUERY\n");
-
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
 
@@ -139,9 +141,14 @@ public class StudentDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Student row = new Student();
-                row.setStudentId(rs.getInt("id"));
-                row.setStudentSurname(rs.getString("last_name"));
-                row.setStudentGivenName(rs.getString("first_name"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                row.setCaregiverSurname(rs.getString("caregiver_surname"));
+                row.setCaregiverGivenName(rs.getString("caregiver_given_name"));
+                row.setCaregiverAddress(rs.getString("caregiver_address"));
+                row.setCaregiverPhone(rs.getString("caregiver_phone"));
+                row.setRelationshipTierTypeName(rs.getString("tier_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -158,18 +165,44 @@ public class StudentDao {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
         query.append("              SELECT\n");
-        query.append("                  Person.id,\n");
-        query.append("                  Person.first_name,\n");
-        query.append("                  Person.last_name\n");
+        query.append("                  Person_Student.student_id,\n");
+        query.append("                  Person_Student.surname,\n");
+        query.append("                  Person_Student.given_name,\n");
+        query.append("                  Person_Student.sex,\n");
+        query.append("                  Person_Student.dob,\n");
+        query.append("                  Person_Student.school,\n");
+        query.append("                  Person_Student.grade,\n");
+        query.append("                  Person_Caregiver.caregiver_id,\n");
+        query.append("                  Person_Caregiver.surname AS caregiver_surname,\n");
+        query.append("                  Person_Caregiver.given_name AS caregiver_given_name,\n");
+        query.append("                  Person_Caregiver.address AS caregiver_address,\n");
+        query.append("                  Person_Caregiver.phone AS caregiver_phone,\n");
+        query.append("                  Rel_Student_Caregiver.start_date,\n");
+        query.append("                  Ref_Tier_Type.tier_type_id,\n");
+        query.append("                  Ref_Tier_Type.name AS tier_type_name\n");
         query.append("              FROM\n");
-        query.append("                  CRC.Person\n");
+        query.append("                  CRC.Person_Student\n");
+        query.append("                  LEFT JOIN CRC.Rel_Student_Caregiver ON Rel_Student_Caregiver.student_id = Person_Student.student_id AND Rel_Student_Caregiver.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Rel_Student_Caregiver.caregiver_id AND Person_Caregiver.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Ref_Tier_Type on Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
+        query.append("                  LEFT OUTER JOIN CRC.Rel_Student_Caregiver effectiveDateComparison ON\n");
+        query.append("                  (\n");
+        query.append("                      Rel_Student_Caregiver.student_id = Person_Student.student_id\n");
+        query.append("                      AND\n");
+        query.append("                      (\n");
+        query.append("                          Rel_Student_Caregiver.start_date < effectiveDateComparison.start_date OR\n");
+        query.append("                          (\n");
+        query.append("                              Rel_Student_Caregiver.start_date = effectiveDateComparison.start_date AND Rel_Student_Caregiver.student_id > effectiveDateComparison.student_id\n");
+        query.append("                          )\n");
+        query.append("                      )\n");
+        query.append("                  )\n");
         query.append("              WHERE\n");
         query.append("              (\n");
-        query.append("                      Person.Deleted = 0\n");
-        query.append("                      AND Person.person_type_id = 1\n");
-        query.append("                  AND\n");
+        query.append("                  Person_Student.deleted = 0\n");
+        query.append("                  AND effectiveDateComparison.student_id IS NULL\n");
+        query.append("                  AND ");
         query.append(getStudentList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-        query.append("              )");
+        query.append("              )\n");
         return query.toString();
     }
 
@@ -180,12 +213,12 @@ public class StudentDao {
         // NAME FILTER CLAUSE
         if (!"".equalsIgnoreCase(nameFilter)) {
             whereClause.append("                  (\n");
-            whereClause.append("                    UPPER(Person.last_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
-            whereClause.append("                    OR");
-            whereClause.append("                    UPPER(Person.first_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    UPPER(Person_Student.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    OR\n");
+            whereClause.append("                    UPPER(Person_Student.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                  )\n");
         } else {
-            whereClause.append("                  (1=1)");
+            whereClause.append("                  (1=1)\n");
         }
 
         return whereClause.toString();
@@ -194,37 +227,30 @@ public class StudentDao {
     public Student getStudentDetail(Integer studentId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Person.id,\n");
-        query.append("      last_name,\n");
-        query.append("      first_name,\n");
+        query.append("      student_id,\n");
+        query.append("      surname,\n");
+        query.append("      given_name,\n");
         query.append("      sex,\n");
         query.append("      dob,\n");
         query.append("      school,\n");
         query.append("      grade,\n");
-        query.append("      address,\n");
-        query.append("      phone,\n");
-        query.append("      tier_type_id,\n");
-        query.append("      TierType.name tier_type_name\n");
+        query.append("      impairment\n");
         query.append("  FROM\n");
-        query.append("      CRC.Person\n");
-        query.append("      LEFT JOIN CRC.TierType ON CRC.TierType.id = Person.tier_type_id\n");
+        query.append("      CRC.Person_Student\n");
         query.append("  WHERE\n");
-        query.append("      Person.id = ?\n");
+        query.append("      student_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
                 Student row = new Student();
-                row.setStudentId(rs.getInt("id"));
-                row.setStudentSurname(rs.getString("last_name"));
-                row.setStudentGivenName(rs.getString("first_name"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
                 row.setStudentGender(rs.getString("sex"));
                 row.setStudentDateOfBirth(rs.getString("dob"));
                 row.setStudentSchool(rs.getString("school"));
                 row.setStudentGrade(rs.getString("grade"));
-                row.setStudentAddress(rs.getString("address"));
-                row.setStudentPhone(rs.getString("phone"));
-                row.setTierTypeId(rs.getInt("tier_type_id"));
-                row.setTierTypeName(rs.getString("tier_type_name"));
+                row.setStudentImpairment(rs.getString("impairment"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -239,19 +265,17 @@ public class StudentDao {
     public Student updateStudent(Student student) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Student\n");
         query.append("  SET\n");
-        query.append("      last_name = ?,\n");
-        query.append("      first_name = ?,\n");
+        query.append("      surname = ?,\n");
+        query.append("      given_name = ?,\n");
         query.append("      sex = ?,\n");
         query.append("      dob = ?,\n");
         query.append("      school = ?,\n");
         query.append("      grade = ?,\n");
-        query.append("      address = ?,\n");
-        query.append("      phone = ?,\n");
-        query.append("      tier_type_id = ?\n");
+        query.append("      impairment = ?\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      student_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
@@ -263,10 +287,8 @@ public class StudentDao {
                         ps.setString(4, student.getStudentDateOfBirth());
                         ps.setString(5, student.getStudentSchool());
                         ps.setString(6, student.getStudentGrade());
-                        ps.setString(7, student.getStudentAddress());
-                        ps.setString(8, student.getStudentPhone());
-                        ps.setInt(9, student.getTierTypeId());
-                        ps.setInt(10, student.getStudentId());
+                        ps.setString(7, student.getStudentImpairment());
+                        ps.setInt(8, student.getStudentId());
                         return ps;
                     }
             );
@@ -283,11 +305,11 @@ public class StudentDao {
     public KeyValue deleteStudent(String studentId) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Student\n");
         query.append("  SET\n");
         query.append("      deleted = 1'\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      student_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("id=" + studentId);
         try {

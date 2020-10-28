@@ -20,6 +20,8 @@ public class CaseManagerService {
         this.caseManagerDao = caseManagerDao;
     }
 
+    // BASIC CRUD
+
     public CaseManager createCaseManager(CaseManager caseManager) {
         return this.caseManagerDao.createCaseManager(caseManager);
     }
@@ -42,15 +44,17 @@ public class CaseManagerService {
         return this.caseManagerDao.getCaseManagerDetail(caseManagerId);
     }
 
-    public CaseManager getCaseManagerDetailByStudentId(int studentId) {
-        return this.caseManagerDao.getCaseManagerDetailByStudentId(studentId);
-    }
-
     public CaseManager updateCaseManager(CaseManager caseManager) {
         return this.caseManagerDao.updateCaseManager(caseManager);
     }
 
     public KeyValue deleteCaseManager(String caseManagerGuid) {
         return this.caseManagerDao.deleteCaseManager(caseManagerGuid);
+    }
+
+    // JOINED QUERIES
+
+    public CaseManager getCaseManagerDetailByStudentId(int studentId) {
+        return this.caseManagerDao.getCaseManagerDetailByStudentId(studentId);
     }
 }

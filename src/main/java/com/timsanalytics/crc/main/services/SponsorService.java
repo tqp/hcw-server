@@ -19,6 +19,8 @@ public class SponsorService {
         this.sponsorDao = sponsorDao;
     }
 
+    // BASIC CRUD
+
     public Sponsor createSponsor(Sponsor sponsor) {
         return this.sponsorDao.createSponsor(sponsor);
     }
@@ -37,16 +39,8 @@ public class SponsorService {
         return serverSidePaginationResponse;
     }
 
-    public List<Sponsor> getSponsorListByStudentId(String studentId) {
-        return this.sponsorDao.getSponsorListByStudentId(studentId);
-    }
-
     public Sponsor getSponsorDetail(int sponsorId) {
         return this.sponsorDao.getSponsorDetail(sponsorId);
-    }
-
-    public Sponsor getSponsorDetailByStudentId(int studentId) {
-        return this.sponsorDao.getSponsorDetailByStudentId(studentId);
     }
 
     public Sponsor updateSponsor(Sponsor sponsor) {
@@ -55,6 +49,12 @@ public class SponsorService {
 
     public KeyValue deleteSponsor(String sponsorGuid) {
         return this.sponsorDao.deleteSponsor(sponsorGuid);
+    }
+
+    // JOINED QUERIES
+
+    public Sponsor getSponsorDetailByStudentId(int studentId) {
+        return this.sponsorDao.getSponsorDetailByStudentId(studentId);
     }
 
 }

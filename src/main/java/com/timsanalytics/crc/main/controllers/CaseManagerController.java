@@ -34,6 +34,8 @@ public class CaseManagerController {
         this.caseManagerService = caseManagerService;
     }
 
+    // BASIC CRUD
+
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create CaseManager", tags = {"Case Manager"}, description = "Create CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
@@ -92,19 +94,6 @@ public class CaseManagerController {
         }
     }
 
-    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Case Manager Detail by Student ID", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<CaseManager> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
-        try {
-            CaseManager caseManager = caseManagerService.getCaseManagerDetailByStudentId(studentId);
-            return ResponseEntity.ok()
-                    .body(caseManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update CaseManager", tags = {"Case Manager"}, description = "Update CaseManager", security = @SecurityRequirement(name = "bearerAuth"))
@@ -125,6 +114,21 @@ public class CaseManagerController {
         try {
             return ResponseEntity.ok()
                     .body(caseManagerService.deleteCaseManager(caseManagerGuid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // JOINED QUERIES
+
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
+    @Operation(summary = "Get Case Manager Detail by Student ID", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CaseManager> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+        try {
+            CaseManager caseManager = caseManagerService.getCaseManagerDetailByStudentId(studentId);
+            return ResponseEntity.ok()
+                    .body(caseManager);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

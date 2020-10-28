@@ -1,6 +1,7 @@
 package com.timsanalytics.crc.main.dao;
 
-import com.timsanalytics.crc.main.beans.Relationship;
+import com.timsanalytics.crc.main.beans.Student;
+import com.timsanalytics.crc.main.beans.StudentRelationship;
 import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +26,17 @@ public class RelationshipDao {
         this.printObjectService = printObjectService;
     }
 
-    public Relationship createCaregiverRelationship(String username, Relationship relationship) {
+    // CAREGIVER
+
+    public StudentRelationship createCaregiverRelationship(String username, StudentRelationship relationship) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
-        query.append("      CRC.StudentRelationship\n");
+        query.append("      CRC.Rel_Student_Caregiver\n");
         query.append("      (\n");
         query.append("          student_id,\n");
-        query.append("          person_id,\n");
-        query.append("          relationship_type_id,\n");
-        query.append("          effective_date,\n");
+        query.append("          caregiver_id,\n");
+        query.append("          start_date,\n");
+        query.append("          tier_type_id,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -58,9 +61,9 @@ public class RelationshipDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setInt(1, relationship.getStudentId());
-                        ps.setInt(2, relationship.getPersonId());
-                        ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setString(4, relationship.getRelationshipEffectiveDate());
+                        ps.setInt(2, relationship.getRelationshipPersonId());
+                        ps.setString(3, relationship.getRelationshipStartDate());
+                        ps.setInt(4, relationship.getRelationshipTierTypeId());
                         ps.setString(5, username);
                         ps.setString(6, username);
                         return ps;
@@ -76,132 +79,32 @@ public class RelationshipDao {
         }
     }
 
-    public Relationship createCaseManagerRelationship(String username, Relationship relationship) {
-        StringBuilder query = new StringBuilder();
-        query.append("  INSERT INTO\n");
-        query.append("      CRC.StudentRelationship\n");
-        query.append("      (\n");
-        query.append("          student_id,\n");
-        query.append("          person_id,\n");
-        query.append("          relationship_type_id,\n");
-        query.append("          effective_date,\n");
-        query.append("          created_on,\n");
-        query.append("          created_by,\n");
-        query.append("          updated_on,\n");
-        query.append("          updated_by,\n");
-        query.append("          deleted\n");
-        query.append("      )\n");
-        query.append("      VALUES\n");
-        query.append("      (\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          now(),\n");
-        query.append("          ?,\n");
-        query.append("          now(),\n");
-        query.append("          ?,\n");
-        query.append("          0\n");
-        query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            this.mySqlAuthJdbcTemplate.update(
-                    connection -> {
-                        PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, relationship.getStudentId());
-                        ps.setInt(2, relationship.getPersonId());
-                        ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setString(4, relationship.getRelationshipEffectiveDate());
-                        ps.setString(5, username);
-                        ps.setString(6, username);
-                        return ps;
-                    }
-            );
-            return relationship;
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public Relationship createSponsorRelationship(String username, Relationship relationship) {
-        StringBuilder query = new StringBuilder();
-        query.append("  INSERT INTO\n");
-        query.append("      CRC.StudentRelationship\n");
-        query.append("      (\n");
-        query.append("          student_id,\n");
-        query.append("          person_id,\n");
-        query.append("          relationship_type_id,\n");
-        query.append("          effective_date,\n");
-        query.append("          created_on,\n");
-        query.append("          created_by,\n");
-        query.append("          updated_on,\n");
-        query.append("          updated_by,\n");
-        query.append("          deleted\n");
-        query.append("      )\n");
-        query.append("      VALUES\n");
-        query.append("      (\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          now(),\n");
-        query.append("          ?,\n");
-        query.append("          now(),\n");
-        query.append("          ?,\n");
-        query.append("          0\n");
-        query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            this.mySqlAuthJdbcTemplate.update(
-                    connection -> {
-                        PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, relationship.getStudentId());
-                        ps.setInt(2, relationship.getPersonId());
-                        ps.setInt(3, relationship.getRelationshipTypeId());
-                        ps.setString(4, relationship.getRelationshipEffectiveDate());
-                        ps.setString(5, username);
-                        ps.setString(6, username);
-                        return ps;
-                    }
-            );
-            return relationship;
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public List<Relationship> getRelationshipListByStudentId(Integer studentId) {
+    public List<StudentRelationship> getStudentListByCaregiverId(Integer caregiverId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Relation.id,\n");
-        query.append("      Relation.last_name,\n");
-        query.append("      Relation.first_name,\n");
-        query.append("      RelationshipType.name,\n");
-        query.append("      StudentRelationship.blood_relative\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Rel_Student_Caregiver.start_date,\n");
+        query.append("      Ref_Tier_Type.tier_type_id AS tier_type_id,\n");;
+        query.append("      Ref_Tier_Type.name AS tier_type_name\n");
         query.append("  FROM\n");
-        query.append("      CRC.Person Relation\n");
-        query.append("      LEFT JOIN CRC.StudentRelationship ON StudentRelationship.person_id = Relation.id\n");
-        query.append("      LEFT JOIN CRC.RelationshipType ON RelationshipType.id = StudentRelationship.relationship_type_id\n");
+        query.append("      CRC.Rel_Student_Caregiver\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Caregiver.student_id AND Person_Student.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Tier_Type ON Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      Relation.deleted = 0\n");
-        query.append("      AND StudentRelationship.student_id = ?\n");
+        query.append("      Rel_Student_Caregiver.caregiver_id = ?\n");
+        query.append("      AND Rel_Student_Caregiver.deleted = 0\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
-                Relationship row = new Relationship();
-                row.setPersonId(rs.getInt("id"));
-                row.setPersonSurname(rs.getString("last_name"));
-                row.setPersonGivenName(rs.getString("first_name"));
-                row.setRelationshipTypeName(rs.getString("name"));
-                row.setRelationshipBloodRelative(rs.getInt("blood_relative"));
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{caregiverId}, (rs, rowNum) -> {
+                StudentRelationship row = new StudentRelationship();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                row.setRelationshipStartDate(rs.getString("start_date"));
+                row.setRelationshipTierTypeId(rs.getInt("tier_type_id"));
+                row.setRelationshipTierTypeName(rs.getString("tier_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -213,30 +116,77 @@ public class RelationshipDao {
         }
     }
 
-    public List<Relationship> getRelationshipListByPersonId(Integer personId) {
+    // CASE MANAGER
+
+    public StudentRelationship createCaseManagerRelationship(String username, StudentRelationship relationship) {
         StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      Person.id,\n");
-        query.append("      Person.last_name,\n");
-        query.append("      Person.first_name,\n");
-        query.append("      RelationshipType.name,\n");
-        query.append("      StudentRelationship.effective_date\n");
-        query.append("  FROM\n");
-        query.append("      CRC.StudentRelationship\n");
-        query.append("      LEFT JOIN CRC.Person ON Person.id = StudentRelationship.student_id\n");
-        query.append("      LEFT JOIN CRC.RelationshipType ON RelationshipType.id = StudentRelationship.relationship_type_id\n");
-        query.append("  WHERE\n");
-        query.append("      person_id = ?\n");
-        query.append("      AND StudentRelationship.deleted = 0\n");
+        query.append("  INSERT INTO\n");
+        query.append("      CRC.Rel_Student_Case_Manager\n");
+        query.append("      (\n");
+        query.append("          student_id,\n");
+        query.append("          case_manager_id,\n");
+        query.append("          start_date,\n");
+        query.append("          created_on,\n");
+        query.append("          created_by,\n");
+        query.append("          updated_on,\n");
+        query.append("          updated_by,\n");
+        query.append("          deleted\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          now(),\n");
+        query.append("          ?,\n");
+        query.append("          now(),\n");
+        query.append("          ?,\n");
+        query.append("          0\n");
+        query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personId}, (rs, rowNum) -> {
-                Relationship row = new Relationship();
-                row.setPersonId(rs.getInt("id"));
-                row.setPersonSurname(rs.getString("last_name"));
-                row.setPersonGivenName(rs.getString("first_name"));
-                row.setRelationshipEffectiveDate(rs.getString("effective_date"));
-                row.setRelationshipTypeName(rs.getString("name"));
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, relationship.getStudentId());
+                        ps.setInt(2, relationship.getRelationshipPersonId());
+                        ps.setString(3, relationship.getRelationshipStartDate());
+                        ps.setString(4, username);
+                        ps.setString(5, username);
+                        return ps;
+                    }
+            );
+            return relationship;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<StudentRelationship> getStudentListByCaseManagerId(Integer caseManagerId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Rel_Student_Case_Manager.start_date\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Rel_Student_Case_Manager\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Case_Manager.student_id AND Person_Student.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Rel_Student_Case_Manager.case_manager_id = ?\n");
+        query.append("      AND Rel_Student_Case_Manager.deleted = 0\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{caseManagerId}, (rs, rowNum) -> {
+                StudentRelationship row = new StudentRelationship();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                row.setRelationshipStartDate(rs.getString("start_date"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -247,45 +197,197 @@ public class RelationshipDao {
             return null;
         }
     }
+
+    // SPONSOR
+
+    public StudentRelationship createSponsorRelationship(String username, StudentRelationship relationship) {
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      CRC.Rel_Student_Sponsor\n");
+        query.append("      (\n");
+        query.append("          student_id,\n");
+        query.append("          sponsor_id,\n");
+        query.append("          start_date,\n");
+        query.append("          created_on,\n");
+        query.append("          created_by,\n");
+        query.append("          updated_on,\n");
+        query.append("          updated_by,\n");
+        query.append("          deleted\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          now(),\n");
+        query.append("          ?,\n");
+        query.append("          now(),\n");
+        query.append("          ?,\n");
+        query.append("          0\n");
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, relationship.getStudentId());
+                        ps.setInt(2, relationship.getRelationshipPersonId());
+                        ps.setString(3, relationship.getRelationshipStartDate());
+                        ps.setString(4, username);
+                        ps.setString(5, username);
+                        return ps;
+                    }
+            );
+            return relationship;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<StudentRelationship> getStudentListBySponsorId(Integer sponsorId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Rel_Student_Sponsor.start_date\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Rel_Student_Sponsor\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Sponsor.student_id AND Person_Student.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Rel_Student_Sponsor.sponsor_id = ?\n");
+        query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{sponsorId}, (rs, rowNum) -> {
+                StudentRelationship row = new StudentRelationship();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                row.setRelationshipStartDate(rs.getString("start_date"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+//    public List<StudentRelationship> getRelationshipListByStudentId(Integer studentId) {
+//        StringBuilder query = new StringBuilder();
+//        query.append("  SELECT\n");
+//        query.append("      Relation.id,\n");
+//        query.append("      Relation.surname,\n");
+//        query.append("      Relation.given_name,\n");
+//        query.append("      RelationshipType.name,\n");
+//        query.append("      StudentRelationship.blood_relative\n");
+//        query.append("  FROM\n");
+//        query.append("      CRC.Person Relation\n");
+//        query.append("      LEFT JOIN CRC.StudentRelationship ON StudentRelationship.person_id = Relation.id\n");
+//        query.append("      LEFT JOIN CRC.RelationshipType ON RelationshipType.id = StudentRelationship.relationship_type_id\n");
+//        query.append("  WHERE\n");
+//        query.append("      Relation.deleted = 0\n");
+//        query.append("      AND StudentRelationship.student_id = ?\n");
+//        this.logger.trace("SQL:\n" + query.toString());
+//        try {
+//            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+//                StudentRelationship row = new StudentRelationship();
+//                row.setRelationshipId(rs.getInt("id"));
+//                row.setRelationshipSurname(rs.getString("surname"));
+//                row.setRelationshipGivenName(rs.getString("given_name"));
+//                row.setRelationshipType(rs.getString("name"));
+//                row.setRelationshipBloodRelative(rs.getInt("blood_relative"));
+//                return row;
+//            });
+//        } catch (EmptyResultDataAccessException e) {
+//            this.logger.error("EmptyResultDataAccessException: " + e);
+//            return null;
+//        } catch (Exception e) {
+//            this.logger.error("Exception: " + e);
+//            return null;
+//        }
+//    }
+
+//    public List<StudentRelationship> getRelationshipListByPersonId(Integer personId) {
+//        StringBuilder query = new StringBuilder();
+//        query.append("  SELECT\n");
+//        query.append("      Person.id,\n");
+//        query.append("      Person.surname,\n");
+//        query.append("      Person.given_name,\n");
+//        query.append("      RelationshipType.name,\n");
+//        query.append("      StudentRelationship.start_date\n");
+//        query.append("  FROM\n");
+//        query.append("      CRC.StudentRelationship\n");
+//        query.append("      LEFT JOIN CRC.Person ON Person.id = StudentRelationship.student_id\n");
+//        query.append("      LEFT JOIN CRC.RelationshipType ON RelationshipType.id = StudentRelationship.relationship_type_id\n");
+//        query.append("  WHERE\n");
+//        query.append("      person_id = ?\n");
+//        query.append("      AND StudentRelationship.deleted = 0\n");
+//        this.logger.trace("SQL:\n" + query.toString());
+//        try {
+//            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personId}, (rs, rowNum) -> {
+//                StudentRelationship row = new StudentRelationship();
+//                row.setRelationshipId(rs.getInt("id"));
+//                row.setRelationshipSurname(rs.getString("surname"));
+//                row.setRelationshipGivenName(rs.getString("given_name"));
+//                row.setRelationshipStartDate(rs.getString("start_date"));
+//                row.setRelationshipType(rs.getString("name"));
+//                return row;
+//            });
+//        } catch (EmptyResultDataAccessException e) {
+//            this.logger.error("EmptyResultDataAccessException: " + e);
+//            return null;
+//        } catch (Exception e) {
+//            this.logger.error("Exception: " + e);
+//            return null;
+//        }
+//    }
 
     // OTHER
 
-    public Relationship createRelationshipPerson(Relationship relationship) {
-        this.printObjectService.PrintObject("createRelationshipPerson -> relationship", relationship);
-        StringBuilder query = new StringBuilder();
-        query.append("  INSERT INTO\n");
-        query.append("      CRC.Person\n");
-        query.append("      (\n");
-        query.append("          last_name,\n");
-        query.append("          first_name,\n");
-        query.append("          person_type_id,\n");
-        query.append("          deleted\n");
-        query.append("      )\n");
-        query.append("      VALUES\n");
-        query.append("      (\n");
-        query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          4,\n");
-        query.append("          0\n");
-        query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            this.mySqlAuthJdbcTemplate.update(
-                    connection -> {
-                        PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, relationship.getPersonSurname());
-                        ps.setString(2, relationship.getPersonGivenName());
-                        return ps;
-                    }
-            );
-            return relationship;
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
+//    public StudentRelationship createRelationshipPerson(StudentRelationship relationship) {
+//        this.printObjectService.PrintObject("createRelationshipPerson -> relationship", relationship);
+//        StringBuilder query = new StringBuilder();
+//        query.append("  INSERT INTO\n");
+//        query.append("      CRC.Person\n");
+//        query.append("      (\n");
+//        query.append("          surname,\n");
+//        query.append("          given_name,\n");
+//        query.append("          person_type_id,\n");
+//        query.append("          deleted\n");
+//        query.append("      )\n");
+//        query.append("      VALUES\n");
+//        query.append("      (\n");
+//        query.append("          ?,\n");
+//        query.append("          ?,\n");
+//        query.append("          4,\n");
+//        query.append("          0\n");
+//        query.append("      )\n");
+//        this.logger.trace("SQL:\n" + query.toString());
+//        try {
+//            this.mySqlAuthJdbcTemplate.update(
+//                    connection -> {
+//                        PreparedStatement ps = connection.prepareStatement(query.toString());
+//                        ps.setString(1, relationship.getRelationshipSurname());
+//                        ps.setString(2, relationship.getRelationshipGivenName());
+//                        return ps;
+//                    }
+//            );
+//            return relationship;
+//        } catch (EmptyResultDataAccessException e) {
+//            this.logger.error("EmptyResultDataAccessException: " + e);
+//            return null;
+//        } catch (Exception e) {
+//            this.logger.error("Exception: " + e);
+//            return null;
+//        }
+//    }
 
 }

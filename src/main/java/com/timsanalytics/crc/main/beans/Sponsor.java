@@ -7,16 +7,17 @@ public class Sponsor {
     private int sponsorId;
     private String sponsorSurname;
     private String sponsorGivenName;
-    private String sponsorGender;
+    private String sponsorAddress;
     // Joined Tables
-    private String relationshipEffectiveDate;
-    private String relationshipType;
+    private String relationshipStartDate;
+    private String relationshipEndDate;
+    private Integer studentCount;
     // Metadata
-    private String status;
     private String createdOn;
     private String createdBy;
     private String updatedOn;
     private String updatedBy;
+    private String deleted;
 
     public int getSponsorId() {
         return sponsorId;
@@ -42,36 +43,36 @@ public class Sponsor {
         this.sponsorGivenName = sponsorGivenName;
     }
 
-    public String getSponsorGender() {
-        return sponsorGender;
+    public String getSponsorAddress() {
+        return sponsorAddress;
     }
 
-    public void setSponsorGender(String sponsorGender) {
-        this.sponsorGender = sponsorGender;
+    public void setSponsorAddress(String sponsorAddress) {
+        this.sponsorAddress = sponsorAddress;
     }
 
-    public String getRelationshipEffectiveDate() {
-        return relationshipEffectiveDate;
+    public String getRelationshipStartDate() {
+        return relationshipStartDate;
     }
 
-    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
-        this.relationshipEffectiveDate = relationshipEffectiveDate;
+    public void setRelationshipStartDate(String relationshipStartDate) {
+        this.relationshipStartDate = relationshipStartDate;
     }
 
-    public String getRelationshipType() {
-        return relationshipType;
+    public String getRelationshipEndDate() {
+        return relationshipEndDate;
     }
 
-    public void setRelationshipType(String relationshipType) {
-        this.relationshipType = relationshipType;
+    public void setRelationshipEndDate(String relationshipEndDate) {
+        this.relationshipEndDate = relationshipEndDate;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getStudentCount() {
+        return studentCount;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStudentCount(Integer studentCount) {
+        this.studentCount = studentCount;
     }
 
     public String getCreatedOn() {
@@ -104,5 +105,13 @@ public class Sponsor {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
     }
 }

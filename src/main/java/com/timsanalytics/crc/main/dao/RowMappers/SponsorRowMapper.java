@@ -10,9 +10,10 @@ public class SponsorRowMapper implements RowMapper<Sponsor> {
 
     public Sponsor mapRow(ResultSet rs, int rowNum) throws SQLException {
         Sponsor row = new Sponsor();
-        row.setSponsorId(rs.getInt("id"));
-        row.setSponsorSurname(rs.getString("last_name"));
-        row.setSponsorGivenName(rs.getString("first_name"));
+        row.setSponsorId(rs.getInt("sponsor_id"));
+        row.setSponsorSurname(rs.getString("surname"));
+        row.setSponsorGivenName(rs.getString("given_name"));
+        row.setSponsorAddress(rs.getString("address"));
         return row;
     }
 }

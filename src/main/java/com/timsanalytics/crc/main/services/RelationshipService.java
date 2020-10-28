@@ -1,6 +1,7 @@
 package com.timsanalytics.crc.main.services;
 
-import com.timsanalytics.crc.main.beans.Relationship;
+import com.timsanalytics.crc.main.beans.Student;
+import com.timsanalytics.crc.main.beans.StudentRelationship;
 import com.timsanalytics.crc.main.dao.RelationshipDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,29 +17,47 @@ public class RelationshipService {
         this.relationshipDao = relationshipDao;
     }
 
-    public Relationship createCaregiverRelationship(String username, Relationship relationship) {
+    // CAREGIVER
+
+    public StudentRelationship createCaregiverRelationship(String username, StudentRelationship relationship) {
         return this.relationshipDao.createCaregiverRelationship(username, relationship);
     }
 
-    public Relationship createCaseManagerRelationship(String username, Relationship relationship) {
+    public List<StudentRelationship> getStudentListByCaregiverId(Integer caregiverId) {
+        return this.relationshipDao.getStudentListByCaregiverId(caregiverId);
+    }
+
+    // CASE MANAGER
+
+    public StudentRelationship createCaseManagerRelationship(String username, StudentRelationship relationship) {
         return this.relationshipDao.createCaseManagerRelationship(username, relationship);
     }
 
-    public Relationship createSponsorRelationship(String username, Relationship relationship) {
+    public List<StudentRelationship> getStudentListByCaseManagerId(Integer caseManagerId) {
+        return this.relationshipDao.getStudentListByCaseManagerId(caseManagerId);
+    }
+
+    // SPONSOR
+
+    public StudentRelationship createSponsorRelationship(String username, StudentRelationship relationship) {
         return this.relationshipDao.createSponsorRelationship(username, relationship);
     }
 
-    public List<Relationship> getRelationshipListByStudentId(Integer studentId) {
-        return this.relationshipDao.getRelationshipListByStudentId(studentId);
+    public List<StudentRelationship> getStudentListBySponsorId(Integer sponsorId) {
+        return this.relationshipDao.getStudentListBySponsorId(sponsorId);
     }
 
-    public List<Relationship> getRelationshipListByPersonId(Integer personId) {
-        return this.relationshipDao.getRelationshipListByPersonId(personId);
-    }
+//    public List<StudentRelationship> getRelationshipListByStudentId(Integer studentId) {
+//        return this.relationshipDao.getRelationshipListByStudentId(studentId);
+//    }
+
+//    public List<StudentRelationship> getRelationshipListByPersonId(Integer personId) {
+//        return this.relationshipDao.getRelationshipListByPersonId(personId);
+//    }
 
     // OTHER
 
-    public Relationship createRelationshipPerson(Relationship relationship) {
-        return this.relationshipDao.createRelationshipPerson(relationship);
-    }
+//    public StudentRelationship createRelationshipPerson(StudentRelationship relationship) {
+//        return this.relationshipDao.createRelationshipPerson(relationship);
+//    }
 }

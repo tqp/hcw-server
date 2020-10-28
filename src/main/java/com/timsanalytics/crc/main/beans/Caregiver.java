@@ -2,8 +2,6 @@ package com.timsanalytics.crc.main.beans;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.sql.Date;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Caregiver {
     private int caregiverId;
@@ -14,8 +12,10 @@ public class Caregiver {
     private String caregiverPhone;
     private String caregiverEmail;
     // Joined Tables
-    private String relationshipEffectiveDate;
-    private String relationshipType;
+    private String relationshipStartDate;
+    private String relationshipEndDate;
+    private Integer relationshipTierTypeID;
+    private String relationshipTierTypeName;
     private Boolean relationshipBloodRelative;
     private Integer studentCount;
     // Metadata
@@ -81,20 +81,36 @@ public class Caregiver {
         this.caregiverEmail = caregiverEmail;
     }
 
-    public String getRelationshipEffectiveDate() {
-        return relationshipEffectiveDate;
+    public String getRelationshipStartDate() {
+        return relationshipStartDate;
     }
 
-    public void setRelationshipEffectiveDate(String relationshipEffectiveDate) {
-        this.relationshipEffectiveDate = relationshipEffectiveDate;
+    public void setRelationshipStartDate(String relationshipStartDate) {
+        this.relationshipStartDate = relationshipStartDate;
     }
 
-    public String getRelationshipType() {
-        return relationshipType;
+    public String getRelationshipEndDate() {
+        return relationshipEndDate;
     }
 
-    public void setRelationshipType(String relationshipType) {
-        this.relationshipType = relationshipType;
+    public void setRelationshipEndDate(String relationshipEndDate) {
+        this.relationshipEndDate = relationshipEndDate;
+    }
+
+    public Integer getRelationshipTierTypeID() {
+        return relationshipTierTypeID;
+    }
+
+    public void setRelationshipTierTypeID(Integer relationshipTierTypeID) {
+        this.relationshipTierTypeID = relationshipTierTypeID;
+    }
+
+    public String getRelationshipTierTypeName() {
+        return relationshipTierTypeName;
+    }
+
+    public void setRelationshipTierTypeName(String relationshipTierTypeName) {
+        this.relationshipTierTypeName = relationshipTierTypeName;
     }
 
     public Boolean getRelationshipBloodRelative() {

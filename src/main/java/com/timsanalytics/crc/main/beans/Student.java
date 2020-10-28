@@ -11,17 +11,21 @@ public class Student {
     private String studentDateOfBirth;
     private String studentSchool;
     private String studentGrade;
-    private String studentAddress;
-    private String studentPhone;
+    private String studentImpairment;
     // Joined Table Data
-    private Integer tierTypeId;
-    private String tierTypeName;
+    private Integer caregiverId;
+    private String caregiverSurname;
+    private String caregiverGivenName;
+    private String caregiverAddress;
+    private String caregiverPhone;
+    private Integer relationshipTierTypeId;
+    private String relationshipTierTypeName;
     // Metadata
-    private String status;
     private String createdOn;
     private String createdBy;
     private String updatedOn;
     private String updatedBy;
+    private String deleted;
 
     public Integer getStudentId() {
         return studentId;
@@ -79,44 +83,68 @@ public class Student {
         this.studentGrade = studentGrade;
     }
 
-    public String getStudentAddress() {
-        return studentAddress;
+    public String getStudentImpairment() {
+        return studentImpairment;
     }
 
-    public void setStudentAddress(String studentAddress) {
-        this.studentAddress = studentAddress;
+    public void setStudentImpairment(String studentImpairment) {
+        this.studentImpairment = studentImpairment;
     }
 
-    public String getStudentPhone() {
-        return studentPhone;
+    public Integer getCaregiverId() {
+        return caregiverId;
     }
 
-    public void setStudentPhone(String studentPhone) {
-        this.studentPhone = studentPhone;
+    public void setCaregiverId(Integer caregiverId) {
+        this.caregiverId = caregiverId;
     }
 
-    public Integer getTierTypeId() {
-        return tierTypeId;
+    public String getCaregiverSurname() {
+        return caregiverSurname;
     }
 
-    public void setTierTypeId(Integer tierTypeId) {
-        this.tierTypeId = tierTypeId;
+    public void setCaregiverSurname(String caregiverSurname) {
+        this.caregiverSurname = caregiverSurname;
     }
 
-    public String getTierTypeName() {
-        return tierTypeName;
+    public String getCaregiverGivenName() {
+        return caregiverGivenName;
     }
 
-    public void setTierTypeName(String tierTypeName) {
-        this.tierTypeName = tierTypeName;
+    public void setCaregiverGivenName(String caregiverGivenName) {
+        this.caregiverGivenName = caregiverGivenName;
     }
 
-    public String getStatus() {
-        return status;
+    public String getCaregiverAddress() {
+        return caregiverAddress;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCaregiverAddress(String caregiverAddress) {
+        this.caregiverAddress = caregiverAddress;
+    }
+
+    public String getCaregiverPhone() {
+        return caregiverPhone;
+    }
+
+    public void setCaregiverPhone(String caregiverPhone) {
+        this.caregiverPhone = caregiverPhone;
+    }
+
+    public Integer getRelationshipTierTypeId() {
+        return relationshipTierTypeId;
+    }
+
+    public void setRelationshipTierTypeId(Integer relationshipTierTypeId) {
+        this.relationshipTierTypeId = relationshipTierTypeId;
+    }
+
+    public String getRelationshipTierTypeName() {
+        return relationshipTierTypeName;
+    }
+
+    public void setRelationshipTierTypeName(String relationshipTierTypeName) {
+        this.relationshipTierTypeName = relationshipTierTypeName;
     }
 
     public String getCreatedOn() {
@@ -149,5 +177,13 @@ public class Student {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
     }
 }
