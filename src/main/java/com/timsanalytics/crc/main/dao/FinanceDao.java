@@ -76,7 +76,7 @@ public class FinanceDao {
                 row.setCaregiverId(rs.getInt("caregiver_id"));
                 row.setCaregiverSurname(rs.getString("surname"));
                 row.setCaregiverGivenName(rs.getString("given_name"));
-                row.setLoanDescription(rs.getString("business_description"));
+                row.setLoanDescription(rs.getString("description"));
                 row.setLoanAmount(rs.getDouble("amount"));
                 row.setAmountPaid(rs.getDouble("amount_paid"));
                 return row;
@@ -99,11 +99,11 @@ public class FinanceDao {
         query.append("                  Person_Caregiver.caregiver_id,\n");
         query.append("                  Person_Caregiver.surname,\n");
         query.append("                  Person_Caregiver.given_name,\n");
-        query.append("                  business_description,\n");
+        query.append("                  description,\n");
         query.append("                  amount,\n");
         query.append("                  (\n");
         query.append("                      SELECT\n");
-        query.append("                          SUM(payment_amount) AS amount_paid\n");
+        query.append("                          SUM(amount) AS amount_paid\n");
         query.append("                      FROM\n");
         query.append("                          CRC.Microfinance_Payment\n");
         query.append("                      WHERE\n");
@@ -319,7 +319,7 @@ public class FinanceDao {
     public Double getTotalPaid() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      SUM(payment_amount)\n");
+        query.append("      SUM(amount)\n");
         query.append("  FROM\n");
         query.append("      CRC.Microfinance_Payment\n");
         query.append("  WHERE\n");
