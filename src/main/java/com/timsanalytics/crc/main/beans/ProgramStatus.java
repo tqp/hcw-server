@@ -1,34 +1,49 @@
 package com.timsanalytics.crc.main.beans;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProgramStatus {
-    private Integer programStatusId;
-    private String programStatusName;
-    private Boolean hasChildren;
+    private String programStudentStatusId;
+    private String programStatusStartDate;
+    private String programStatusLevelOne;
+    private String programStatusLevelTwo;
+    private String programStatusLevelThree;
 
-    public Integer getProgramStatusId() {
-        return programStatusId;
+    public String getProgramStudentStatusId() {
+        return programStudentStatusId;
     }
 
-    public void setProgramStatusId(Integer programStatusId) {
-        this.programStatusId = programStatusId;
+    public void setProgramStudentStatusId(String programStudentStatusId) {
+        this.programStudentStatusId = programStudentStatusId;
     }
 
-    public String getProgramStatusName() {
-        return programStatusName;
+    public String getProgramStatusStartDate() {
+        return programStatusStartDate;
     }
 
-    public void setProgramStatusName(String programStatusName) {
-        this.programStatusName = programStatusName;
+    public void setProgramStatusStartDate(String programStatusStartDate) {
+        this.programStatusStartDate = programStatusStartDate;
     }
 
-    public Boolean getHasChildren() {
-        return hasChildren;
+    public String getProgramStatusLevelOne() {
+        return programStatusLevelOne;
     }
 
-    public void setHasChildren(Boolean hasChildren) {
-        this.hasChildren = hasChildren;
+    public void setProgramStatusLevelOne(String programStatusLevelOne) {
+        this.programStatusLevelOne = programStatusLevelOne;
+    }
+
+    public String getProgramStatusLevelTwo() {
+        return programStatusLevelTwo;
+    }
+
+    public void setProgramStatusLevelTwo(String programStatusLevelTwo) {
+        this.programStatusLevelTwo = programStatusLevelTwo;
+    }
+
+    public String getProgramStatusLevelThree() {
+        return programStatusLevelThree;
+    }
+
+    public void setProgramStatusLevelThree(String programStatusLevelThree) {
+        this.programStatusLevelThree = programStatusLevelThree;
     }
 }
