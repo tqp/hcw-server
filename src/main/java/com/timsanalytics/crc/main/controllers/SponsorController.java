@@ -25,7 +25,6 @@ import java.util.List;
 @RequestMapping("/api/v1/sponsor")
 @Tag(name = "Sponsor", description = "Sponsor")
 public class SponsorController {
-
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final SponsorService sponsorService;
 

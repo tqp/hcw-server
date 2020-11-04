@@ -20,26 +20,6 @@ public class FinanceService {
         this.financeDao = financeDao;
     }
 
-    public ServerSidePaginationResponse<Loan> getLoanList_SSP(ServerSidePaginationRequest<Loan> serverSidePaginationRequest) {
-        ServerSidePaginationResponse<Loan> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
-        serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
-        List<Loan> loanList = this.financeDao.getLoanList_SSP(serverSidePaginationRequest);
-        serverSidePaginationResponse.setData(loanList);
-        serverSidePaginationResponse.setLoadedRecords(loanList.size());
-        serverSidePaginationResponse.setTotalRecords(this.financeDao.getLoanList_SSP_TotalRecords(serverSidePaginationRequest));
-        return serverSidePaginationResponse;
-    }
-
-    public ServerSidePaginationResponse<Payment> getPaymentList_SSP(ServerSidePaginationRequest<Payment> serverSidePaginationRequest) {
-        ServerSidePaginationResponse<Payment> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
-        serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
-        List<Payment> paymentList = this.financeDao.getPaymentList_SSP(serverSidePaginationRequest);
-        serverSidePaginationResponse.setData(paymentList);
-        serverSidePaginationResponse.setLoadedRecords(paymentList.size());
-        serverSidePaginationResponse.setTotalRecords(this.financeDao.getPaymentList_SSP_TotalRecords(serverSidePaginationRequest));
-        return serverSidePaginationResponse;
-    }
-
     public Double getTotalCommitted() {
         return this.financeDao.getTotalCommitted();
     }
@@ -52,7 +32,4 @@ public class FinanceService {
         return this.financeDao.getLoanListByCaregiverId(caregiverId);
     }
 
-    public Payment addPayment(Payment payment) {
-        return this.financeDao.addPayment(payment);
-    }
 }

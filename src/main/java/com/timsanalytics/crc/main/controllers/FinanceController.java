@@ -5,6 +5,7 @@ import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Loan;
 import com.timsanalytics.crc.main.beans.Payment;
 import com.timsanalytics.crc.main.services.FinanceService;
+import com.timsanalytics.crc.main.services.LoanService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,10 +25,13 @@ import java.util.List;
 @Tag(name = "Finance", description = "Finance")
 public class FinanceController {
     private final FinanceService financeService;
+    private final LoanService loanService;
 
     @Autowired
-    public FinanceController(FinanceService financeService) {
+    public FinanceController(FinanceService financeService,
+                             LoanService loanService) {
         this.financeService = financeService;
+        this.loanService = loanService;
     }
 
     // REPORTING
@@ -38,7 +42,7 @@ public class FinanceController {
     public ResponseEntity<ServerSidePaginationResponse<Loan>> getLoanList_SSP(@RequestBody ServerSidePaginationRequest<Loan> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
-            ServerSidePaginationResponse<Loan> container = this.financeService.getLoanList_SSP(serverSidePaginationRequest);
+            ServerSidePaginationResponse<Loan> container = this.loanService.getLoanList_SSP(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);
@@ -49,22 +53,6 @@ public class FinanceController {
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/payment-list/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Payment List", description = "Payment List", tags = {"Finance"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ServerSidePaginationResponse<Payment>> getPaymentList_SSP(@RequestBody ServerSidePaginationRequest<Payment> serverSidePaginationRequest) {
-        long startTime = new Date().getTime();
-        try {
-            ServerSidePaginationResponse<Payment> container = this.financeService.getPaymentList_SSP(serverSidePaginationRequest);
-            container.setRequestTime(new Date().getTime() - startTime);
-            return ResponseEntity.ok()
-                    .body(container);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
 
     @ResponseBody
     @RequestMapping(value = "/total-committed", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,21 +93,6 @@ public class FinanceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    // PAYMENTS
-
-    @ResponseBody
-    @RequestMapping(value = "/payment/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Add Payment", description = "Add Payment", tags = {"Finance"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Payment> addPayment(@RequestBody Payment payment) {
-        try {
-            return ResponseEntity.ok()
-                    .body(financeService.addPayment(payment));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
     }
 }
