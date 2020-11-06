@@ -10,7 +10,9 @@ public class Visit {
     // Joined Tables
     private String studentSurname;
     private String studentGivenName;
+    private Integer visitTypeId;
     private String visitTypeName;
+    private Integer interactionTypeId;
     private String interactionTypeName;
 
     public Integer getStudentVisitId() {
@@ -77,12 +79,28 @@ public class Visit {
         this.studentGivenName = studentGivenName;
     }
 
+    public Integer getVisitTypeId() {
+        return visitTypeId;
+    }
+
+    public void setVisitTypeId(Integer visitTypeId) {
+        this.visitTypeId = visitTypeId;
+    }
+
     public String getVisitTypeName() {
         return visitTypeName;
     }
 
     public void setVisitTypeName(String visitTypeName) {
         this.visitTypeName = visitTypeName;
+    }
+
+    public Integer getInteractionTypeId() {
+        return interactionTypeId;
+    }
+
+    public void setInteractionTypeId(Integer interactionTypeId) {
+        this.interactionTypeId = interactionTypeId;
     }
 
     public String getInteractionTypeName() {

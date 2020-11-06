@@ -232,7 +232,9 @@ public class VisitDao {
         query.append("      visit_date,\n");
         query.append("      caregiver_comments,\n");
         query.append("      case_manager_comments,\n");
+        query.append("      Ref_Visit_Type.visit_type_id AS visit_type_id,\n");
         query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
+        query.append("      Ref_Interaction_Type.interaction_type_id AS interaction_type_id,\n");
         query.append("      Ref_Interaction_Type.name AS interaction_type_name,\n");
         query.append("      Person_Student.student_id,\n");
         query.append("      Person_Student.surname,\n");
@@ -253,7 +255,9 @@ public class VisitDao {
                 row.setVisitDate(rs.getString("visit_date"));
                 row.setCaregiverComments(rs.getString("caregiver_comments"));
                 row.setCaseManagerComments(rs.getString("case_manager_comments"));
+                row.setVisitTypeId(rs.getInt("visit_type_id"));
                 row.setVisitTypeName(rs.getString("visit_type_name"));
+                row.setInteractionTypeId(rs.getInt("interaction_type_id"));
                 row.setInteractionTypeName(rs.getString("interaction_type_name"));
                 row.setStudentId(rs.getInt("student_id"));
                 row.setCaseManagerId(rs.getInt("case_manager_id"));
@@ -275,8 +279,11 @@ public class VisitDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Student_Visit\n");
         query.append("  SET\n");
-        query.append("      student_id = ?,\n");
-        query.append("      case_manager_id = ?\n");
+        query.append("      visit_date = ?,\n");
+        query.append("      visit_type_id = ?,\n");
+        query.append("      interaction_type_id = ?,\n");
+        query.append("      caregiver_comments = ?,\n");
+        query.append("      case_manager_comments = ?\n");
         query.append("  WHERE\n");
         query.append("      student_visit_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -284,9 +291,12 @@ public class VisitDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, visit.getStudentId());
-                        ps.setInt(2, visit.getCaseManagerId());
-                        ps.setInt(2, visit.getStudentVisitId());
+                        ps.setString(1, visit.getVisitDate());
+                        ps.setInt(2, visit.getVisitTypeId());
+                        ps.setInt(3, visit.getInteractionTypeId());
+                        ps.setString(4, visit.getCaregiverComments());
+                        ps.setString(5, visit.getCaseManagerComments());
+                        ps.setInt(6, visit.getStudentVisitId());
                         return ps;
                     }
             );
