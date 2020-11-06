@@ -273,9 +273,10 @@ public class CaregiverDao {
         query.append("      surname = ?,\n");
         query.append("      given_name = ?,\n");
         query.append("      address = ?,\n");
-        query.append("      phone = ?\n");
+        query.append("      phone = ?,\n");
+        query.append("      email = ?\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      caregiver_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
@@ -285,7 +286,8 @@ public class CaregiverDao {
                         ps.setString(2, caregiver.getCaregiverGivenName());
                         ps.setString(3, caregiver.getCaregiverAddress());
                         ps.setString(4, caregiver.getCaregiverPhone());
-                        ps.setInt(5, caregiver.getCaregiverId());
+                        ps.setString(5, caregiver.getCaregiverEmail());
+                        ps.setInt(6, caregiver.getCaregiverId());
                         return ps;
                     }
             );
