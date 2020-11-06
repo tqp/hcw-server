@@ -35,9 +35,9 @@ public class CaregiverDao {
         query.append("      (\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
-        query.append("          person_type_id,\n");
         query.append("          address,\n");
         query.append("          phone,\n");
+        query.append("          email,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
@@ -46,7 +46,7 @@ public class CaregiverDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          3,\n");
+        query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -58,6 +58,7 @@ public class CaregiverDao {
                         ps.setString(2, caregiver.getCaregiverGivenName());
                         ps.setString(3, caregiver.getCaregiverAddress());
                         ps.setString(4, caregiver.getCaregiverPhone());
+                        ps.setString(5, caregiver.getCaregiverEmail());
                         return ps;
                     }
             );
@@ -303,7 +304,7 @@ public class CaregiverDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Person_Caregiver\n");
         query.append("  SET\n");
-        query.append("      deleted = 0\n");
+        query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      caregiver_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());

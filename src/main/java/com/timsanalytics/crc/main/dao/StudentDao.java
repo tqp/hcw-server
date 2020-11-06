@@ -29,14 +29,15 @@ public class StudentDao {
     public Student createStudent(Student student) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
-        query.append("      Person_Student\n");
+        query.append("      CRC.Person_Student\n");
         query.append("      (\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
         query.append("          sex,\n");
         query.append("          dob,\n");
-        query.append("          person_type_id,\n");
-        query.append("          tier_type_id,\n");
+        query.append("          school,\n");
+        query.append("          grade,\n");
+        query.append("          impairment,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
@@ -46,7 +47,8 @@ public class StudentDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          1,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -58,7 +60,9 @@ public class StudentDao {
                         ps.setString(2, student.getStudentGivenName());
                         ps.setString(3, student.getStudentGender());
                         ps.setString(4, student.getStudentDateOfBirth());
-                        ps.setInt(5, student.getRelationshipTierTypeId());
+                        ps.setString(5, student.getStudentSchool());
+                        ps.setString(6, student.getStudentGrade());
+                        ps.setString(7, student.getStudentImpairment());
                         return ps;
                     }
             );
@@ -307,7 +311,7 @@ public class StudentDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Person_Student\n");
         query.append("  SET\n");
-        query.append("      deleted = 1'\n");
+        query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());

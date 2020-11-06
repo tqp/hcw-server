@@ -37,10 +37,12 @@ public class SponsorDao {
         query.append("      (\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
+        query.append("          address,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          0\n");
@@ -52,6 +54,7 @@ public class SponsorDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, sponsor.getSponsorSurname());
                         ps.setString(2, sponsor.getSponsorGivenName());
+                        ps.setString(3, sponsor.getSponsorAddress());
                         return ps;
                     }
             );
@@ -289,9 +292,9 @@ public class SponsorDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Person_Sponsor\n");
         query.append("  SET\n");
-        query.append("      deleted = 0\n");
+        query.append("      deleted = 1\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      sponsor_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("PERSON_GUID=" + sponsorGuid);
         try {

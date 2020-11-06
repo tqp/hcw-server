@@ -31,18 +31,20 @@ public class CaseManagerDao {
     public CaseManager createCaseManager(CaseManager caseManager) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
-        query.append("      CRC.Person\n");
+        query.append("      CRC.Person_Case_Manager\n");
         query.append("      (\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
-        query.append("          person_type_id,\n");
+        query.append("          phone,\n");
+        query.append("          address,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          2,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -52,6 +54,8 @@ public class CaseManagerDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, caseManager.getCaseManagerSurname());
                         ps.setString(2, caseManager.getCaseManagerGivenName());
+                        ps.setString(3, caseManager.getCaseManagerPhone());
+                        ps.setString(4, caseManager.getCaseManagerEmail());
                         return ps;
                     }
             );
@@ -293,7 +297,7 @@ public class CaseManagerDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Person_Case_Manager\n");
         query.append("  SET\n");
-        query.append("      deleted = 0\n");
+        query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      case_manager_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
