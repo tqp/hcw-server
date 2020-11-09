@@ -3,7 +3,6 @@ package com.timsanalytics.crc.main.dao;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Payment;
-import com.timsanalytics.crc.main.beans.Payment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class PaymentDao {
         query.append("  INSERT INTO\n");
         query.append("      CRC.Microfinance_Payment\n");
         query.append("      (\n");
-        query.append("          payment_id,\n");
+        query.append("          loan_id,\n");
         query.append("          date,\n");
         query.append("          amount,\n");
         query.append("          deleted\n");
@@ -49,7 +48,7 @@ public class PaymentDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, payment.getPaymentId());
+                        ps.setInt(1, payment.getLoanId());
                         ps.setString(2, payment.getPaymentDate());
                         ps.setDouble(3, payment.getPaymentAmount());
                         return ps;

@@ -1,18 +1,69 @@
 package com.timsanalytics.crc.main.beans;
 
 public class ProgramStatus {
-    private String programStudentStatusId;
+    private Integer studentId;
+    private Integer programStatusLevelOneId;
+    private String programStatusLevelOneName;
+    private Integer programStatusLevelTwoId;
+    private String programStatusLevelTwoName;
+    private Integer programStatusLevelThreeId;
+    private String programStatusLevelThreeName;
     private String programStatusStartDate;
-    private String programStatusLevelOne;
-    private String programStatusLevelTwo;
-    private String programStatusLevelThree;
 
-    public String getProgramStudentStatusId() {
-        return programStudentStatusId;
+    public Integer getStudentId() {
+        return studentId;
     }
 
-    public void setProgramStudentStatusId(String programStudentStatusId) {
-        this.programStudentStatusId = programStudentStatusId;
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
+
+    public Integer getProgramStatusLevelOneId() {
+        return programStatusLevelOneId;
+    }
+
+    public void setProgramStatusLevelOneId(Integer programStatusLevelOneId) {
+        this.programStatusLevelOneId = programStatusLevelOneId;
+    }
+
+    public String getProgramStatusLevelOneName() {
+        return programStatusLevelOneName;
+    }
+
+    public void setProgramStatusLevelOneName(String programStatusLevelOneName) {
+        this.programStatusLevelOneName = programStatusLevelOneName;
+    }
+
+    public Integer getProgramStatusLevelTwoId() {
+        return programStatusLevelTwoId;
+    }
+
+    public void setProgramStatusLevelTwoId(Integer programStatusLevelTwoId) {
+        this.programStatusLevelTwoId = programStatusLevelTwoId;
+    }
+
+    public String getProgramStatusLevelTwoName() {
+        return programStatusLevelTwoName;
+    }
+
+    public void setProgramStatusLevelTwoName(String programStatusLevelTwoName) {
+        this.programStatusLevelTwoName = programStatusLevelTwoName;
+    }
+
+    public Integer getProgramStatusLevelThreeId() {
+        return programStatusLevelThreeId;
+    }
+
+    public void setProgramStatusLevelThreeId(Integer programStatusLevelThreeId) {
+        this.programStatusLevelThreeId = programStatusLevelThreeId;
+    }
+
+    public String getProgramStatusLevelThreeName() {
+        return programStatusLevelThreeName;
+    }
+
+    public void setProgramStatusLevelThreeName(String programStatusLevelThreeName) {
+        this.programStatusLevelThreeName = programStatusLevelThreeName;
     }
 
     public String getProgramStatusStartDate() {
@@ -21,29 +72,5 @@ public class ProgramStatus {
 
     public void setProgramStatusStartDate(String programStatusStartDate) {
         this.programStatusStartDate = programStatusStartDate;
-    }
-
-    public String getProgramStatusLevelOne() {
-        return programStatusLevelOne;
-    }
-
-    public void setProgramStatusLevelOne(String programStatusLevelOne) {
-        this.programStatusLevelOne = programStatusLevelOne;
-    }
-
-    public String getProgramStatusLevelTwo() {
-        return programStatusLevelTwo;
-    }
-
-    public void setProgramStatusLevelTwo(String programStatusLevelTwo) {
-        this.programStatusLevelTwo = programStatusLevelTwo;
-    }
-
-    public String getProgramStatusLevelThree() {
-        return programStatusLevelThree;
-    }
-
-    public void setProgramStatusLevelThree(String programStatusLevelThree) {
-        this.programStatusLevelThree = programStatusLevelThree;
     }
 }

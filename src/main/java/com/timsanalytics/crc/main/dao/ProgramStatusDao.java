@@ -85,18 +85,22 @@ public class ProgramStatusDao {
     public ProgramStatus getProgramStatusDetailByStudentId(int studentId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Rel_Student_Program_Status.student_program_status_id,\n");
-        query.append("      start_date,\n");
-        query.append("      level_one.name AS level_one_status,\n");
-        query.append("      level_two.name AS level_two_status,\n");
-        query.append("      level_three.name AS level_three_status\n");
+        query.append("      student_id,\n");
+        query.append("      program_status_level_one_id,\n");
+        query.append("      level_one.name AS program_status_level_one_name,\n");
+        query.append("      program_status_level_two_id,\n");
+        query.append("      level_two.name AS program_status_level_two_name,\n");
+        query.append("      program_status_level_three_id,\n");
+        query.append("      level_three.name AS program_status_level_three_name,\n");
+        query.append("      start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Program_Status\n");
-        query.append("      LEFT JOIN CRC.Ref_Program_Status level_one ON level_one.program_status_id = Rel_Student_Program_Status.program_status_level_one\n");
-        query.append("      LEFT JOIN CRC.Ref_Program_Status level_two ON level_two.program_status_id = Rel_Student_Program_Status.program_status_level_two\n");
-        query.append("      LEFT JOIN CRC.Ref_Program_Status level_three ON level_three.program_status_id = Rel_Student_Program_Status.program_status_level_three\n");
+        query.append("      LEFT JOIN CRC.Ref_Program_Status level_one ON level_one.program_status_id = Rel_Student_Program_Status.program_status_level_one_id\n");
+        query.append("      LEFT JOIN CRC.Ref_Program_Status level_two ON level_two.program_status_id = Rel_Student_Program_Status.program_status_level_two_id\n");
+        query.append("      LEFT JOIN CRC.Ref_Program_Status level_three ON level_three.program_status_id = Rel_Student_Program_Status.program_status_level_three_id\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
+        query.append("      AND Rel_Student_Program_Status.deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      start_date DESC\n");
         query.append("  LIMIT 0, 1\n");
@@ -104,11 +108,14 @@ public class ProgramStatusDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
                 ProgramStatus row = new ProgramStatus();
-                row.setProgramStudentStatusId(rs.getString("student_program_status_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setProgramStatusLevelOneId(rs.getInt("program_status_level_one_id"));
+                row.setProgramStatusLevelOneName(rs.getString("program_status_level_one_name"));
+                row.setProgramStatusLevelTwoId(rs.getInt("program_status_level_two_id"));
+                row.setProgramStatusLevelTwoName(rs.getString("program_status_level_two_name"));
+                row.setProgramStatusLevelThreeId(rs.getInt("program_status_level_three_id"));
+                row.setProgramStatusLevelThreeName(rs.getString("program_status_level_three_name"));
                 row.setProgramStatusStartDate(rs.getString("start_date"));
-                row.setProgramStatusLevelOne(rs.getString("level_one_status"));
-                row.setProgramStatusLevelTwo(rs.getString("level_two_status"));
-                row.setProgramStatusLevelThree(rs.getString("level_three_status"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

@@ -1,6 +1,6 @@
 package com.timsanalytics.crc.main.dao;
 
-import com.timsanalytics.crc.main.beans.Student;
+import com.timsanalytics.crc.main.beans.ProgramStatus;
 import com.timsanalytics.crc.main.beans.StudentRelationship;
 import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
@@ -86,7 +86,7 @@ public class RelationshipDao {
         query.append("      Person_Student.surname,\n");
         query.append("      Person_Student.given_name,\n");
         query.append("      Rel_Student_Caregiver.start_date,\n");
-        query.append("      Ref_Tier_Type.tier_type_id AS tier_type_id,\n");;
+        query.append("      Ref_Tier_Type.tier_type_id AS tier_type_id,\n");
         query.append("      Ref_Tier_Type.name AS tier_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Caregiver\n");
@@ -279,6 +279,53 @@ public class RelationshipDao {
             return null;
         }
     }
+
+    // PROGRAM STATUS
+
+    public ProgramStatus createProgramStatusEntry(String username, ProgramStatus programStatus) {
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      CRC.Rel_Student_Program_Status\n");
+        query.append("      (\n");
+        query.append("          student_id,\n");
+        query.append("          program_status_level_one_id,\n");
+        query.append("          program_status_level_two_id,\n");
+        query.append("          program_status_level_three_id,\n");
+        query.append("          start_date,\n");
+        query.append("          deleted\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          0\n");
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, programStatus.getStudentId());
+                        ps.setInt(2, programStatus.getProgramStatusLevelOneId());
+                        ps.setInt(3, programStatus.getProgramStatusLevelTwoId());
+                        ps.setInt(4, programStatus.getProgramStatusLevelThreeId());
+                        ps.setString(5, programStatus.getProgramStatusStartDate());
+                        return ps;
+                    }
+            );
+            return programStatus;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
 
 //    public List<StudentRelationship> getRelationshipListByStudentId(Integer studentId) {
 //        StringBuilder query = new StringBuilder();

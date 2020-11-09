@@ -1,6 +1,7 @@
 package com.timsanalytics.crc.main.controllers;
 
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
+import com.timsanalytics.crc.main.beans.ProgramStatus;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.beans.StudentRelationship;
 import com.timsanalytics.crc.main.services.RelationshipService;
@@ -37,7 +38,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/caregiver", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Caregiver Relationship", tags = {"Relationship"}, description = "Create Caregiver Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Caregiver Relationship", description = "Create Caregiver Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<StudentRelationship> createCaregiverRelationship(@RequestBody StudentRelationship relationship, @RequestHeader(name = "Authorization") String token) {
         String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
@@ -51,7 +52,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/caregiver/{caregiverId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Student List By Caregiver ID", tags = {"Relationship"}, description = "Get Student List By Caregiver ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Student List By Caregiver ID", description = "Get Student List By Caregiver ID", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<StudentRelationship>> getStudentListByCaregiverId(@Parameter(description = "Caregiver ID", required = true) @PathVariable Integer caregiverId) {
         try {
             return ResponseEntity.ok()
@@ -67,7 +68,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/case-manager", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Case Manager Relationship", tags = {"Relationship"}, description = "Create Case Manager Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Case Manager Relationship", description = "Create Case Manager Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<StudentRelationship> createCaseManagerRelationship(@RequestBody StudentRelationship relationship, @RequestHeader(name = "Authorization") String token) {
         String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
@@ -81,7 +82,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/case-manager/{caseManagerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Student List By Case Manager ID", tags = {"Relationship"}, description = "Get Student List By Case Manager ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Student List By Case Manager ID", description = "Get Student List By Case Manager ID", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<StudentRelationship>> getStudentListByCaseManagerId(@Parameter(description = "Case Manager ID", required = true) @PathVariable Integer caseManagerId) {
         try {
             return ResponseEntity.ok()
@@ -97,7 +98,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/sponsor", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Sponsor Relationship", tags = {"Relationship"}, description = "Create Sponsor Relationship", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Sponsor Relationship", description = "Create Sponsor Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<StudentRelationship> createSponsorRelationship(@RequestBody StudentRelationship relationship, @RequestHeader(name = "Authorization") String token) {
         String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
@@ -111,7 +112,7 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/sponsor/{sponsorId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Student List By Sponsor ID", tags = {"Relationship"}, description = "Get Student List By Sponsor ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Student List By Sponsor ID", description = "Get Student List By Sponsor ID", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<StudentRelationship>> getStudentListBySponsorId(@Parameter(description = "Sponsor ID", required = true) @PathVariable Integer sponsorId) {
         try {
             return ResponseEntity.ok()
@@ -120,6 +121,22 @@ public class RelationshipController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    // PROGRAM STATUS
+
+    @ResponseBody
+    @RequestMapping(value = "/program-status", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Program Status Entry", description = "Create Program Status Entry", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<ProgramStatus> createProgramStatusEntry(@RequestBody ProgramStatus programStatus, @RequestHeader(name = "Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.createProgramStatusEntry(username, programStatus));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

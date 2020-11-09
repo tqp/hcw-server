@@ -376,7 +376,7 @@ public class CaregiverDao {
 
     public List<Caregiver> getCaregiverWithLoanList() {
         StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
+        query.append("  SELECT DISTINCT\n");
         query.append("      Person_Caregiver.caregiver_id,\n");
         query.append("      Person_Caregiver.surname,\n");
         query.append("      Person_Caregiver.given_name\n");
