@@ -24,10 +24,10 @@ public class RelationshipTypeDao {
     public List<RelationshipType> getRelationshipTypeList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      id,\n");
-        query.append("      name\n");
+        query.append("      relationship_type_id,\n");
+        query.append("      name AS relationship_type_name\n");
         query.append("  FROM\n");
-        query.append("      CRC.RelationshipType\n");
+        query.append("      CRC.Ref_Relationship_Type\n");
         query.append("  WHERE\n");
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
@@ -36,8 +36,8 @@ public class RelationshipTypeDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 RelationshipType row = new RelationshipType();
-                row.setRelationshipTypeId(rs.getInt("id"));
-                row.setRelationshipTypeName(rs.getString("name"));
+                row.setRelationshipTypeId(rs.getInt("relationship_type_id"));
+                row.setRelationshipTypeName(rs.getString("relationship_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

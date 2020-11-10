@@ -340,12 +340,15 @@ public class CaregiverDao {
         query.append("      Person_Caregiver.address,\n");
         query.append("      Person_Caregiver.phone,\n");
         query.append("      Rel_Student_Caregiver.start_date,\n");
+        query.append("      Rel_Student_Caregiver.relationship_type_id,\n");
+        query.append("      Ref_Relationship_Type.name AS relationship_type_name,\n");
         query.append("      Ref_Tier_Type.tier_type_id AS tier_type_id,\n");
         query.append("      Ref_Tier_Type.name AS tier_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Caregiver\n");
         query.append("      LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Rel_Student_Caregiver.caregiver_id AND Person_Caregiver.deleted = 0\n");
         query.append("      LEFT JOIN CRC.Ref_Tier_Type ON Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Relationship_Type ON Ref_Relationship_Type.relationship_type_id = Rel_Student_Caregiver.relationship_type_id AND Ref_Relationship_Type.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         query.append("      AND Rel_Student_Caregiver.deleted = 0\n");
@@ -362,6 +365,8 @@ public class CaregiverDao {
                 row.setCaregiverAddress(rs.getString("address"));
                 row.setCaregiverPhone(rs.getString("phone"));
                 row.setRelationshipStartDate(rs.getString("start_date"));
+                row.setRelationshipTypeID(rs.getInt("relationship_type_id"));
+                row.setRelationshipTypeName(rs.getString("relationship_type_name"));
                 row.setRelationshipTierTypeID(rs.getInt("tier_type_id"));
                 row.setRelationshipTierTypeName(rs.getString("tier_type_name"));
                 return row;

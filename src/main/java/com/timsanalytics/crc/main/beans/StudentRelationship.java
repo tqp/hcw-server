@@ -6,6 +6,7 @@ public class StudentRelationship {
     private Integer relationshipPersonId;
     private String relationshipStartDate;
     private Integer relationshipTierTypeId;
+    private Integer relationshipTypeId;
     private Integer relationshipBloodRelative;
     // Joined Tables
     private String studentSurname;
@@ -50,6 +51,14 @@ public class StudentRelationship {
 
     public void setRelationshipTierTypeId(Integer relationshipTierTypeId) {
         this.relationshipTierTypeId = relationshipTierTypeId;
+    }
+
+    public Integer getRelationshipTypeId() {
+        return relationshipTypeId;
+    }
+
+    public void setRelationshipTypeId(Integer relationshipTypeId) {
+        this.relationshipTypeId = relationshipTypeId;
     }
 
     public Integer getRelationshipBloodRelative() {

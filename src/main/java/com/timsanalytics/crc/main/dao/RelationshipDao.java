@@ -37,6 +37,7 @@ public class RelationshipDao {
         query.append("          caregiver_id,\n");
         query.append("          start_date,\n");
         query.append("          tier_type_id,\n");
+        query.append("          relationship_type_id,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -45,6 +46,7 @@ public class RelationshipDao {
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -64,8 +66,9 @@ public class RelationshipDao {
                         ps.setInt(2, relationship.getRelationshipPersonId());
                         ps.setString(3, relationship.getRelationshipStartDate());
                         ps.setInt(4, relationship.getRelationshipTierTypeId());
-                        ps.setString(5, username);
+                        ps.setInt(5, relationship.getRelationshipTypeId());
                         ps.setString(6, username);
+                        ps.setString(7, username);
                         return ps;
                     }
             );

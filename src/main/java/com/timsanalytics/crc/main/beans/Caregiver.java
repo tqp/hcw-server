@@ -14,6 +14,8 @@ public class Caregiver {
     // Joined Tables
     private String relationshipStartDate;
     private String relationshipEndDate;
+    private Integer relationshipTypeID;
+    private String relationshipTypeName;
     private Integer relationshipTierTypeID;
     private String relationshipTierTypeName;
     private Boolean relationshipBloodRelative;
@@ -95,6 +97,22 @@ public class Caregiver {
 
     public void setRelationshipEndDate(String relationshipEndDate) {
         this.relationshipEndDate = relationshipEndDate;
+    }
+
+    public Integer getRelationshipTypeID() {
+        return relationshipTypeID;
+    }
+
+    public void setRelationshipTypeID(Integer relationshipTypeID) {
+        this.relationshipTypeID = relationshipTypeID;
+    }
+
+    public String getRelationshipTypeName() {
+        return relationshipTypeName;
+    }
+
+    public void setRelationshipTypeName(String relationshipTypeName) {
+        this.relationshipTypeName = relationshipTypeName;
     }
 
     public Integer getRelationshipTierTypeID() {
