@@ -20,6 +20,7 @@ public class Caregiver {
     private String relationshipTierTypeName;
     private Boolean relationshipBloodRelative;
     private Integer studentCount;
+    private Integer familyOfOriginTypeId;
     // Metadata
     private String status;
     private String createdOn;
@@ -145,6 +146,14 @@ public class Caregiver {
 
     public void setStudentCount(Integer studentCount) {
         this.studentCount = studentCount;
+    }
+
+    public Integer getFamilyOfOriginTypeId() {
+        return familyOfOriginTypeId;
+    }
+
+    public void setFamilyOfOriginTypeId(Integer familyOfOriginTypeId) {
+        this.familyOfOriginTypeId = familyOfOriginTypeId;
     }
 
     public String getStatus() {

@@ -341,6 +341,7 @@ public class CaregiverDao {
         query.append("      Person_Caregiver.phone,\n");
         query.append("      Rel_Student_Caregiver.start_date,\n");
         query.append("      Rel_Student_Caregiver.relationship_type_id,\n");
+        query.append("      Rel_Student_Caregiver.family_of_origin_type_id,\n");
         query.append("      Ref_Relationship_Type.name AS relationship_type_name,\n");
         query.append("      Ref_Tier_Type.tier_type_id AS tier_type_id,\n");
         query.append("      Ref_Tier_Type.name AS tier_type_name\n");
@@ -366,6 +367,7 @@ public class CaregiverDao {
                 row.setCaregiverPhone(rs.getString("phone"));
                 row.setRelationshipStartDate(rs.getString("start_date"));
                 row.setRelationshipTypeID(rs.getInt("relationship_type_id"));
+                row.setFamilyOfOriginTypeId(rs.getInt("family_of_origin_type_id"));
                 row.setRelationshipTypeName(rs.getString("relationship_type_name"));
                 row.setRelationshipTierTypeID(rs.getInt("tier_type_id"));
                 row.setRelationshipTierTypeName(rs.getString("tier_type_name"));
