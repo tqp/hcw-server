@@ -3,6 +3,7 @@ package com.timsanalytics.crc.main.controllers;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.services.StudentService;
 import com.timsanalytics.crc.utils.PrintObjectService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/student")
@@ -35,7 +37,7 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Student", tags = {"Student"}, description = "Create Student", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Student", description = "Create Student", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         try {
             return ResponseEntity.ok()
@@ -45,10 +47,24 @@ public class StudentController {
             return null;
         }
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Student List", description = "Get Student List", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Student>> getStudentList() {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.studentService.getStudentList());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
     
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Student List (SSP)", tags = {"Student"}, description = "Get Student List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Student List (SSP)", description = "Get Student List (SSP)", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse<Student>> getStudentList_SSP(@RequestBody ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
@@ -65,7 +81,7 @@ public class StudentController {
 
 
     @RequestMapping(value = "/{studentId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Student Detail", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Student Detail", description = "Get Student Detail", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Student> getStudentDetail(@Parameter(description = "Student GUID", required = true) @PathVariable Integer studentId) {
         try {
             Student student = studentService.getStudentDetail(studentId);
@@ -79,7 +95,7 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update Student", tags = {"Student"}, description = "Update Student", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update Student", description = "Update Student", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
         try {
             return ResponseEntity.ok()
@@ -92,7 +108,7 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value = "/{studentId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete Student", tags = {"Student"}, description = "Delete Student", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete Student", description = "Delete Student", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> deleteStudent(@Parameter(description = "Student GUID", required = true) @PathVariable String studentId) {
         try {
             return ResponseEntity.ok()

@@ -32,11 +32,20 @@ public class VisitDao {
         query.append("  INSERT INTO\n");
         query.append("      CRC.Student_Visit\n");
         query.append("      (\n");
-        query.append("          student_visit_id,\n");
+        query.append("          student_id,\n");
+        query.append("          visit_date,\n");
+        query.append("          visit_type_id,\n");
+        query.append("          interaction_type_id,\n");
+        query.append("          caregiver_comments,\n");
+        query.append("          case_manager_comments,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          0\n");
@@ -46,7 +55,12 @@ public class VisitDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, visit.getStudentVisitId());
+                        ps.setInt(1, visit.getStudentId());
+                        ps.setString(2, visit.getVisitDate());
+                        ps.setInt(3, visit.getVisitTypeId());
+                        ps.setInt(4, visit.getInteractionTypeId());
+                        ps.setString(5, visit.getCaregiverComments());
+                        ps.setString(6, visit.getCaseManagerComments());
                         return ps;
                     }
             );
@@ -78,7 +92,7 @@ public class VisitDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 Visit row = new Visit();
-                row.setStudentVisitId(rs.getInt("student_visit_id"));
+                row.setVisitId(rs.getInt("student_visit_id"));
                 row.setStudentId(rs.getInt("student_id"));
                 row.setCaseManagerId(rs.getInt("case_manager_id"));
                 return row;
@@ -119,8 +133,9 @@ public class VisitDao {
         int pageSize = serverSidePaginationRequest.getPageSize();
 
         String defaultSortField = "visit_date";
+        String defaultSortDirection = "DESC";
         String sortColumn = serverSidePaginationRequest.getSortColumn() != null ? serverSidePaginationRequest.getSortColumn() : defaultSortField;
-        String sortDirection = serverSidePaginationRequest.getSortDirection();
+        String sortDirection = serverSidePaginationRequest.getSortDirection()  != null ? serverSidePaginationRequest.getSortDirection() : defaultSortDirection;
 
         StringBuilder query = new StringBuilder();
         query.append("  -- PAGINATION QUERY\n");
@@ -142,7 +157,7 @@ public class VisitDao {
 
         query.append("          ORDER BY\n");
         query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
-        query.append("              visit_date,\n");
+        query.append("              visit_date DESC,\n");
         query.append("              surname,\n");
         query.append("              given_name\n");
         query.append("      ) AS FILTER_SORT_QUERY\n");
@@ -160,7 +175,7 @@ public class VisitDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Visit row = new Visit();
-                row.setStudentVisitId(rs.getInt("student_visit_id"));
+                row.setVisitId(rs.getInt("student_visit_id"));
                 row.setVisitDate(rs.getString("visit_date"));
                 row.setVisitTypeName(rs.getString("visit_type_name"));
                 row.setInteractionTypeName(rs.getString("interaction_type_name"));
@@ -251,7 +266,7 @@ public class VisitDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{visitId}, (rs, rowNum) -> {
                 Visit row = new Visit();
-                row.setStudentVisitId(rs.getInt("student_visit_id"));
+                row.setVisitId(rs.getInt("student_visit_id"));
                 row.setVisitDate(rs.getString("visit_date"));
                 row.setCaregiverComments(rs.getString("caregiver_comments"));
                 row.setCaseManagerComments(rs.getString("case_manager_comments"));
@@ -296,11 +311,11 @@ public class VisitDao {
                         ps.setInt(3, visit.getInteractionTypeId());
                         ps.setString(4, visit.getCaregiverComments());
                         ps.setString(5, visit.getCaseManagerComments());
-                        ps.setInt(6, visit.getStudentVisitId());
+                        ps.setInt(6, visit.getVisitId());
                         return ps;
                     }
             );
-            return this.getVisitDetail(visit.getStudentVisitId());
+            return this.getVisitDetail(visit.getVisitId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -329,6 +344,55 @@ public class VisitDao {
                     }
             );
             return new KeyValue("visitId", visitId);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    // JOINED TABLES
+
+    public List<Visit> getVisitListByStudentId(Integer studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      student_visit_id,\n");
+        query.append("      student_id,\n");
+        query.append("      case_manager_id,\n");
+        query.append("      visit_date,\n");
+        query.append("      Student_Visit.visit_type_id,\n");
+        query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
+        query.append("      Student_Visit.interaction_type_id,\n");
+        query.append("      Ref_Interaction_Type.name AS interaction_type_name,\n");
+        query.append("      caregiver_comments,\n");
+        query.append("      case_manager_comments\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Visit\n");
+        query.append("      LEFT JOIN CRC.Ref_Visit_Type ON Ref_Visit_Type.visit_type_id = Student_Visit.visit_type_id\n");
+        query.append("      LEFT JOIN CRC.Ref_Interaction_Type ON Ref_Interaction_Type.interaction_type_id = Student_Visit.interaction_type_id\n");
+        query.append("  WHERE\n");
+        query.append("      student_id = ?\n");
+        query.append("      AND Student_Visit.deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      visit_date DESC\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Visit row = new Visit();
+                row.setVisitId(rs.getInt("student_visit_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setVisitDate(rs.getString("visit_date"));
+                row.setVisitTypeId(rs.getInt("visit_type_id"));
+                row.setVisitTypeName(rs.getString("visit_type_name"));
+                row.setInteractionTypeId(rs.getInt("interaction_type_id"));
+                row.setInteractionTypeName(rs.getString("interaction_type_name"));
+                row.setCaregiverComments(rs.getString("caregiver_comments"));
+                row.setCaseManagerComments(rs.getString("case_manager_comments"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

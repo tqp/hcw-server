@@ -117,4 +117,20 @@ public class VisitController {
             return null;
         }
     }
+
+    // JOINED TABLES
+
+    @ResponseBody
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Visit List by Student ID", description = "Get Visit List by Student ID", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Visit>> getVisitListByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.visitService.getVisitListByStudentId(studentId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }

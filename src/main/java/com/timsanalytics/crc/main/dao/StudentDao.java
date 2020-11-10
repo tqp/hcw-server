@@ -2,6 +2,7 @@ package com.timsanalytics.crc.main.dao;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
@@ -69,6 +70,37 @@ public class StudentDao {
             int lastInsertId = this.utilsDao.getLastInsertId();
             this.logger.debug("New Student ID: " + lastInsertId);
             return this.getStudentDetail(lastInsertId);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Student> getStudentList() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      student_id,\n");
+        query.append("      surname,\n");
+        query.append("      given_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Person_Student\n");
+        query.append("  WHERE\n");
+        query.append("      deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      surname,\n");
+        query.append("      given_name\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                Student row = new Student();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

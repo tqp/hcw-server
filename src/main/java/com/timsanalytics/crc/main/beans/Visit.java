@@ -1,26 +1,26 @@
 package com.timsanalytics.crc.main.beans;
 
 public class Visit {
-    private Integer studentVisitId;
+    private Integer visitId;
     private Integer studentId;
     private Integer caseManagerId;
     private String visitDate;
+    private Integer visitTypeId;
+    private Integer interactionTypeId;
     private String caregiverComments;
     private String caseManagerComments;
     // Joined Tables
     private String studentSurname;
     private String studentGivenName;
-    private Integer visitTypeId;
     private String visitTypeName;
-    private Integer interactionTypeId;
     private String interactionTypeName;
 
-    public Integer getStudentVisitId() {
-        return studentVisitId;
+    public Integer getVisitId() {
+        return visitId;
     }
 
-    public void setStudentVisitId(Integer studentVisitId) {
-        this.studentVisitId = studentVisitId;
+    public void setVisitId(Integer visitId) {
+        this.visitId = visitId;
     }
 
     public Integer getStudentId() {
@@ -45,6 +45,22 @@ public class Visit {
 
     public void setVisitDate(String visitDate) {
         this.visitDate = visitDate;
+    }
+
+    public Integer getVisitTypeId() {
+        return visitTypeId;
+    }
+
+    public void setVisitTypeId(Integer visitTypeId) {
+        this.visitTypeId = visitTypeId;
+    }
+
+    public Integer getInteractionTypeId() {
+        return interactionTypeId;
+    }
+
+    public void setInteractionTypeId(Integer interactionTypeId) {
+        this.interactionTypeId = interactionTypeId;
     }
 
     public String getCaregiverComments() {
@@ -79,28 +95,12 @@ public class Visit {
         this.studentGivenName = studentGivenName;
     }
 
-    public Integer getVisitTypeId() {
-        return visitTypeId;
-    }
-
-    public void setVisitTypeId(Integer visitTypeId) {
-        this.visitTypeId = visitTypeId;
-    }
-
     public String getVisitTypeName() {
         return visitTypeName;
     }
 
     public void setVisitTypeName(String visitTypeName) {
         this.visitTypeName = visitTypeName;
-    }
-
-    public Integer getInteractionTypeId() {
-        return interactionTypeId;
-    }
-
-    public void setInteractionTypeId(Integer interactionTypeId) {
-        this.interactionTypeId = interactionTypeId;
     }
 
     public String getInteractionTypeName() {

@@ -50,4 +50,10 @@ public class VisitService {
     public KeyValue deleteVisit(String visitGuid) {
         return this.visitDao.deleteVisit(visitGuid);
     }
+
+    // JOINED TABLES
+
+    public List<Visit> getVisitListByStudentId(Integer studentId) {
+        return this.visitDao.getVisitListByStudentId(studentId);
+    }
 }

@@ -3,6 +3,7 @@ package com.timsanalytics.crc.main.services;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.StudentDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class StudentService {
 
     public Student createStudent(Student student) {
         return this.studentDao.createStudent(student);
+    }
+
+    public List<Student> getStudentList() {
+        return this.studentDao.getStudentList();
     }
 
     public ServerSidePaginationResponse<Student> getStudentList_SSP(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
