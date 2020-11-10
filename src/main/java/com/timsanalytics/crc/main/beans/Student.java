@@ -11,7 +11,9 @@ public class Student {
     private String studentDateOfBirth;
     private String studentSchool;
     private String studentGrade;
-    private String studentImpairment;
+    private Integer schoolLevelId;
+    private Integer classLevelId;
+    private Integer impairmentTypeId;
     // Joined Table Data
     private Integer caregiverId;
     private String caregiverSurname;
@@ -20,6 +22,9 @@ public class Student {
     private String caregiverPhone;
     private Integer relationshipTierTypeId;
     private String relationshipTierTypeName;
+    private String schoolLevelName;
+    private String classLevelName;
+    private String impairmentTypeName;
     // Metadata
     private String createdOn;
     private String createdBy;
@@ -83,12 +88,28 @@ public class Student {
         this.studentGrade = studentGrade;
     }
 
-    public String getStudentImpairment() {
-        return studentImpairment;
+    public Integer getSchoolLevelId() {
+        return schoolLevelId;
     }
 
-    public void setStudentImpairment(String studentImpairment) {
-        this.studentImpairment = studentImpairment;
+    public void setSchoolLevelId(Integer schoolLevelId) {
+        this.schoolLevelId = schoolLevelId;
+    }
+
+    public Integer getClassLevelId() {
+        return classLevelId;
+    }
+
+    public void setClassLevelId(Integer classLevelId) {
+        this.classLevelId = classLevelId;
+    }
+
+    public Integer getImpairmentTypeId() {
+        return impairmentTypeId;
+    }
+
+    public void setImpairmentTypeId(Integer impairmentTypeId) {
+        this.impairmentTypeId = impairmentTypeId;
     }
 
     public Integer getCaregiverId() {
@@ -145,6 +166,30 @@ public class Student {
 
     public void setRelationshipTierTypeName(String relationshipTierTypeName) {
         this.relationshipTierTypeName = relationshipTierTypeName;
+    }
+
+    public String getSchoolLevelName() {
+        return schoolLevelName;
+    }
+
+    public void setSchoolLevelName(String schoolLevelName) {
+        this.schoolLevelName = schoolLevelName;
+    }
+
+    public String getClassLevelName() {
+        return classLevelName;
+    }
+
+    public void setClassLevelName(String classLevelName) {
+        this.classLevelName = classLevelName;
+    }
+
+    public String getImpairmentTypeName() {
+        return impairmentTypeName;
+    }
+
+    public void setImpairmentTypeName(String impairmentTypeName) {
+        this.impairmentTypeName = impairmentTypeName;
     }
 
     public String getCreatedOn() {

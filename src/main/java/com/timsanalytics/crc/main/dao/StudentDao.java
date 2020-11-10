@@ -38,7 +38,7 @@ public class StudentDao {
         query.append("          dob,\n");
         query.append("          school,\n");
         query.append("          grade,\n");
-        query.append("          impairment,\n");
+        query.append("          impairment_type_id,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
@@ -63,7 +63,7 @@ public class StudentDao {
                         ps.setString(4, student.getStudentDateOfBirth());
                         ps.setString(5, student.getStudentSchool());
                         ps.setString(6, student.getStudentGrade());
-                        ps.setString(7, student.getStudentImpairment());
+                        ps.setInt(7, student.getImpairmentTypeId());
                         return ps;
                     }
             );
@@ -273,9 +273,17 @@ public class StudentDao {
         query.append("      dob,\n");
         query.append("      school,\n");
         query.append("      grade,\n");
-        query.append("      impairment\n");
+        query.append("      school_level_id,\n");
+        query.append("      school_level.name AS school_level_name,\n");
+        query.append("      class_level_id,\n");
+        query.append("      class_level.name AS class_level_name,\n");
+        query.append("      Person_Student.impairment_type_id,\n");
+        query.append("      Ref_Impairment_Type.impairment_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Person_Student\n");
+        query.append("      LEFT JOIN CRC.Ref_School_Class_Type school_level ON school_level.school_class_type_id = Person_Student.school_level_id AND school_level.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_School_Class_Type class_level ON class_level.school_class_type_id = Person_Student.class_level_id AND class_level.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Impairment_Type ON Ref_Impairment_Type.impairment_type_id = Person_Student.impairment_type_id AND Ref_Impairment_Type.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -289,7 +297,12 @@ public class StudentDao {
                 row.setStudentDateOfBirth(rs.getString("dob"));
                 row.setStudentSchool(rs.getString("school"));
                 row.setStudentGrade(rs.getString("grade"));
-                row.setStudentImpairment(rs.getString("impairment"));
+                row.setSchoolLevelId(rs.getInt("school_level_id"));
+                row.setSchoolLevelName(rs.getString("school_level_name"));
+                row.setClassLevelId(rs.getInt("class_level_id"));
+                row.setClassLevelName(rs.getString("class_level_name"));
+                row.setImpairmentTypeId(rs.getInt("impairment_type_id"));
+                row.setImpairmentTypeName(rs.getString("impairment_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -311,8 +324,9 @@ public class StudentDao {
         query.append("      sex = ?,\n");
         query.append("      dob = ?,\n");
         query.append("      school = ?,\n");
-        query.append("      grade = ?,\n");
-        query.append("      impairment = ?\n");
+        query.append("      school_level_id = ?,\n");
+        query.append("      class_level_id = ?,\n");
+        query.append("      impairment_type_id = ?\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -325,9 +339,10 @@ public class StudentDao {
                         ps.setString(3, student.getStudentGender());
                         ps.setString(4, student.getStudentDateOfBirth());
                         ps.setString(5, student.getStudentSchool());
-                        ps.setString(6, student.getStudentGrade());
-                        ps.setString(7, student.getStudentImpairment());
-                        ps.setInt(8, student.getStudentId());
+                        ps.setInt(6, student.getSchoolLevelId());
+                        ps.setInt(7, student.getClassLevelId());
+                        ps.setInt(8, student.getImpairmentTypeId());
+                        ps.setInt(9, student.getStudentId());
                         return ps;
                     }
             );

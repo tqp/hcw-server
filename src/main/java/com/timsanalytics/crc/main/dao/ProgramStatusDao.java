@@ -2,7 +2,6 @@ package com.timsanalytics.crc.main.dao;
 
 import com.timsanalytics.crc.main.beans.ProgramStatus;
 import com.timsanalytics.crc.main.beans.ProgramStatusPackage;
-import com.timsanalytics.crc.main.beans.Sponsor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +24,19 @@ public class ProgramStatusDao {
     public ProgramStatusPackage getProgramStatusPackage(Integer programStatusId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      program_status_id,\n");
+        query.append("      program_status_type_id,\n");
         query.append("      name,\n");
         query.append("      child_field_title\n");
         query.append("  FROM\n");
-        query.append("      CRC.Ref_Program_Status\n");
+        query.append("      CRC.Ref_Program_Status_Type\n");
         query.append("  WHERE\n");
-        query.append("      program_status_id = ?\n");
+        query.append("      program_status_type_id = ?\n");
         query.append("      AND deleted = 0\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{programStatusId}, (rs, rowNum) -> {
                 ProgramStatusPackage row = new ProgramStatusPackage();
-                row.setProgramStatusId(rs.getInt("program_status_id"));
+                row.setProgramStatusId(rs.getInt("program_status_type_id"));
                 row.setProgramStatusName(rs.getString("name"));
                 row.setChildFieldTitle(rs.getString("child_field_title"));
                 return row;
@@ -53,13 +52,13 @@ public class ProgramStatusDao {
     public List<ProgramStatusPackage> getProgramStatusChildList(Integer parentId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      program_status_id,\n");
+        query.append("      program_status_type_id,\n");
         query.append("      name\n");
         query.append("  FROM\n");
-        query.append("      CRC.Ref_Program_Status\n");
+        query.append("      CRC.Ref_Program_Status_Type\n");
         query.append("  WHERE\n");
         query.append("      parent_id = ?\n");
-        query.append("      AND program_status_id != 0\n");
+        query.append("      AND program_status_type_id != 0\n");
         query.append("      AND deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      name\n");
@@ -67,7 +66,7 @@ public class ProgramStatusDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{parentId}, (rs, rowNum) -> {
                 ProgramStatusPackage row = new ProgramStatusPackage();
-                row.setProgramStatusId(rs.getInt("program_status_id"));
+                row.setProgramStatusId(rs.getInt("program_status_type_id"));
                 row.setProgramStatusName(rs.getString("name"));
                 return row;
             });
@@ -95,9 +94,9 @@ public class ProgramStatusDao {
         query.append("      start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Program_Status\n");
-        query.append("      LEFT JOIN CRC.Ref_Program_Status level_one ON level_one.program_status_id = Rel_Student_Program_Status.program_status_level_one_id\n");
-        query.append("      LEFT JOIN CRC.Ref_Program_Status level_two ON level_two.program_status_id = Rel_Student_Program_Status.program_status_level_two_id\n");
-        query.append("      LEFT JOIN CRC.Ref_Program_Status level_three ON level_three.program_status_id = Rel_Student_Program_Status.program_status_level_three_id\n");
+        query.append("      LEFT JOIN CRC.Ref_Program_Status_Type level_one ON level_one.program_status_type_id = Rel_Student_Program_Status.program_status_level_one_id\n");
+        query.append("      LEFT JOIN CRC.Ref_Program_Status_Type level_two ON level_two.program_status_type_id = Rel_Student_Program_Status.program_status_level_two_id\n");
+        query.append("      LEFT JOIN CRC.Ref_Program_Status_Type level_three ON level_three.program_status_type_id = Rel_Student_Program_Status.program_status_level_three_id\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         query.append("      AND Rel_Student_Program_Status.deleted = 0\n");
