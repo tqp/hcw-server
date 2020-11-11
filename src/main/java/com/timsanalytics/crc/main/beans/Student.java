@@ -11,8 +11,9 @@ public class Student {
     private String studentDateOfBirth;
     private String studentSchool;
     private String studentGrade;
-    private Integer schoolLevelId;
-    private Integer classLevelId;
+    private Integer schoolLevelTypeId;
+    private Integer classLevelTypeId;
+    private Integer classRepeatYearTypeId;
     private Integer impairmentTypeId;
     // Joined Table Data
     private Integer caregiverId;
@@ -22,8 +23,8 @@ public class Student {
     private String caregiverPhone;
     private Integer relationshipTierTypeId;
     private String relationshipTierTypeName;
-    private String schoolLevelName;
-    private String classLevelName;
+    private String schoolLevelTypeName;
+    private String classLevelTypeName;
     private String impairmentTypeName;
     // Metadata
     private String createdOn;
@@ -88,20 +89,28 @@ public class Student {
         this.studentGrade = studentGrade;
     }
 
-    public Integer getSchoolLevelId() {
-        return schoolLevelId;
+    public Integer getSchoolLevelTypeId() {
+        return schoolLevelTypeId;
     }
 
-    public void setSchoolLevelId(Integer schoolLevelId) {
-        this.schoolLevelId = schoolLevelId;
+    public void setSchoolLevelTypeId(Integer schoolLevelTypeId) {
+        this.schoolLevelTypeId = schoolLevelTypeId;
     }
 
-    public Integer getClassLevelId() {
-        return classLevelId;
+    public Integer getClassLevelTypeId() {
+        return classLevelTypeId;
     }
 
-    public void setClassLevelId(Integer classLevelId) {
-        this.classLevelId = classLevelId;
+    public void setClassLevelTypeId(Integer classLevelTypeId) {
+        this.classLevelTypeId = classLevelTypeId;
+    }
+
+    public Integer getClassRepeatYearTypeId() {
+        return classRepeatYearTypeId;
+    }
+
+    public void setClassRepeatYearTypeId(Integer classRepeatYearTypeId) {
+        this.classRepeatYearTypeId = classRepeatYearTypeId;
     }
 
     public Integer getImpairmentTypeId() {
@@ -168,20 +177,20 @@ public class Student {
         this.relationshipTierTypeName = relationshipTierTypeName;
     }
 
-    public String getSchoolLevelName() {
-        return schoolLevelName;
+    public String getSchoolLevelTypeName() {
+        return schoolLevelTypeName;
     }
 
-    public void setSchoolLevelName(String schoolLevelName) {
-        this.schoolLevelName = schoolLevelName;
+    public void setSchoolLevelTypeName(String schoolLevelTypeName) {
+        this.schoolLevelTypeName = schoolLevelTypeName;
     }
 
-    public String getClassLevelName() {
-        return classLevelName;
+    public String getClassLevelTypeName() {
+        return classLevelTypeName;
     }
 
-    public void setClassLevelName(String classLevelName) {
-        this.classLevelName = classLevelName;
+    public void setClassLevelTypeName(String classLevelTypeName) {
+        this.classLevelTypeName = classLevelTypeName;
     }
 
     public String getImpairmentTypeName() {
