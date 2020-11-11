@@ -12,15 +12,16 @@ public class Caregiver {
     private String caregiverPhone;
     private String caregiverEmail;
     // Joined Tables
+    private Integer relationshipId;
     private String relationshipStartDate;
     private String relationshipEndDate;
-    private Integer relationshipTypeID;
+    private Integer relationshipTypeId;
     private String relationshipTypeName;
-    private Integer relationshipTierTypeID;
+    private Integer relationshipTierTypeId;
     private String relationshipTierTypeName;
+    private Integer relationshipFamilyOfOriginTypeId;
     private Boolean relationshipBloodRelative;
     private Integer studentCount;
-    private Integer familyOfOriginTypeId;
     // Metadata
     private String status;
     private String createdOn;
@@ -84,6 +85,14 @@ public class Caregiver {
         this.caregiverEmail = caregiverEmail;
     }
 
+    public Integer getRelationshipId() {
+        return relationshipId;
+    }
+
+    public void setRelationshipId(Integer relationshipId) {
+        this.relationshipId = relationshipId;
+    }
+
     public String getRelationshipStartDate() {
         return relationshipStartDate;
     }
@@ -100,12 +109,12 @@ public class Caregiver {
         this.relationshipEndDate = relationshipEndDate;
     }
 
-    public Integer getRelationshipTypeID() {
-        return relationshipTypeID;
+    public Integer getRelationshipTypeId() {
+        return relationshipTypeId;
     }
 
-    public void setRelationshipTypeID(Integer relationshipTypeID) {
-        this.relationshipTypeID = relationshipTypeID;
+    public void setRelationshipTypeId(Integer relationshipTypeId) {
+        this.relationshipTypeId = relationshipTypeId;
     }
 
     public String getRelationshipTypeName() {
@@ -116,12 +125,12 @@ public class Caregiver {
         this.relationshipTypeName = relationshipTypeName;
     }
 
-    public Integer getRelationshipTierTypeID() {
-        return relationshipTierTypeID;
+    public Integer getRelationshipTierTypeId() {
+        return relationshipTierTypeId;
     }
 
-    public void setRelationshipTierTypeID(Integer relationshipTierTypeID) {
-        this.relationshipTierTypeID = relationshipTierTypeID;
+    public void setRelationshipTierTypeId(Integer relationshipTierTypeId) {
+        this.relationshipTierTypeId = relationshipTierTypeId;
     }
 
     public String getRelationshipTierTypeName() {
@@ -130,6 +139,14 @@ public class Caregiver {
 
     public void setRelationshipTierTypeName(String relationshipTierTypeName) {
         this.relationshipTierTypeName = relationshipTierTypeName;
+    }
+
+    public Integer getRelationshipFamilyOfOriginTypeId() {
+        return relationshipFamilyOfOriginTypeId;
+    }
+
+    public void setRelationshipFamilyOfOriginTypeId(Integer relationshipFamilyOfOriginTypeId) {
+        this.relationshipFamilyOfOriginTypeId = relationshipFamilyOfOriginTypeId;
     }
 
     public Boolean getRelationshipBloodRelative() {
@@ -146,14 +163,6 @@ public class Caregiver {
 
     public void setStudentCount(Integer studentCount) {
         this.studentCount = studentCount;
-    }
-
-    public Integer getFamilyOfOriginTypeId() {
-        return familyOfOriginTypeId;
-    }
-
-    public void setFamilyOfOriginTypeId(Integer familyOfOriginTypeId) {
-        this.familyOfOriginTypeId = familyOfOriginTypeId;
     }
 
     public String getStatus() {

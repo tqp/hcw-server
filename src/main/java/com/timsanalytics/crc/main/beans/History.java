@@ -1,27 +1,28 @@
 package com.timsanalytics.crc.main.beans;
 
 public class History {
-    private Integer historyTypeId;
-    private String historyTypeName;
+    private Integer entityTypeId;
+    private String entityTypeName;
     private Integer entityId;
-    private Integer deletedStatus;
+    private String entityDescription;
+    private Integer relationshipId;
     private String startDate;
-    private String historyDescription;
+    private Integer deletedStatus;
 
-    public Integer getHistoryTypeId() {
-        return historyTypeId;
+    public Integer getEntityTypeId() {
+        return entityTypeId;
     }
 
-    public void setHistoryTypeId(Integer historyTypeId) {
-        this.historyTypeId = historyTypeId;
+    public void setEntityTypeId(Integer entityTypeId) {
+        this.entityTypeId = entityTypeId;
     }
 
-    public String getHistoryTypeName() {
-        return historyTypeName;
+    public String getEntityTypeName() {
+        return entityTypeName;
     }
 
-    public void setHistoryTypeName(String historyTypeName) {
-        this.historyTypeName = historyTypeName;
+    public void setEntityTypeName(String entityTypeName) {
+        this.entityTypeName = entityTypeName;
     }
 
     public Integer getEntityId() {
@@ -32,12 +33,20 @@ public class History {
         this.entityId = entityId;
     }
 
-    public Integer getDeletedStatus() {
-        return deletedStatus;
+    public String getEntityDescription() {
+        return entityDescription;
     }
 
-    public void setDeletedStatus(Integer deletedStatus) {
-        this.deletedStatus = deletedStatus;
+    public void setEntityDescription(String entityDescription) {
+        this.entityDescription = entityDescription;
+    }
+
+    public Integer getRelationshipId() {
+        return relationshipId;
+    }
+
+    public void setRelationshipId(Integer relationshipId) {
+        this.relationshipId = relationshipId;
     }
 
     public String getStartDate() {
@@ -48,11 +57,11 @@ public class History {
         this.startDate = startDate;
     }
 
-    public String getHistoryDescription() {
-        return historyDescription;
+    public Integer getDeletedStatus() {
+        return deletedStatus;
     }
 
-    public void setHistoryDescription(String historyDescription) {
-        this.historyDescription = historyDescription;
+    public void setDeletedStatus(Integer deletedStatus) {
+        this.deletedStatus = deletedStatus;
     }
 }

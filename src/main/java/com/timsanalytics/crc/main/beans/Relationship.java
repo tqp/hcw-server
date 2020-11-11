@@ -1,12 +1,14 @@
 package com.timsanalytics.crc.main.beans;
 
-public class StudentRelationship {
+public class Relationship {
     private Integer studentId;
+    private Integer relationshipId;
+    private Integer relationshipEntityId;
     private String relationshipType;
-    private Integer relationshipPersonId;
     private String relationshipStartDate;
     private Integer relationshipTierTypeId;
     private Integer relationshipTypeId;
+    private Integer relationshipFamilyOfOriginTypeId;
     private Integer relationshipBloodRelative;
     // Joined Tables
     private String studentSurname;
@@ -21,20 +23,28 @@ public class StudentRelationship {
         this.studentId = studentId;
     }
 
+    public Integer getRelationshipId() {
+        return relationshipId;
+    }
+
+    public void setRelationshipId(Integer relationshipId) {
+        this.relationshipId = relationshipId;
+    }
+
+    public Integer getRelationshipEntityId() {
+        return relationshipEntityId;
+    }
+
+    public void setRelationshipEntityId(Integer relationshipEntityId) {
+        this.relationshipEntityId = relationshipEntityId;
+    }
+
     public String getRelationshipType() {
         return relationshipType;
     }
 
     public void setRelationshipType(String relationshipType) {
         this.relationshipType = relationshipType;
-    }
-
-    public Integer getRelationshipPersonId() {
-        return relationshipPersonId;
-    }
-
-    public void setRelationshipPersonId(Integer relationshipPersonId) {
-        this.relationshipPersonId = relationshipPersonId;
     }
 
     public String getRelationshipStartDate() {
@@ -59,6 +69,14 @@ public class StudentRelationship {
 
     public void setRelationshipTypeId(Integer relationshipTypeId) {
         this.relationshipTypeId = relationshipTypeId;
+    }
+
+    public Integer getRelationshipFamilyOfOriginTypeId() {
+        return relationshipFamilyOfOriginTypeId;
+    }
+
+    public void setRelationshipFamilyOfOriginTypeId(Integer relationshipFamilyOfOriginTypeId) {
+        this.relationshipFamilyOfOriginTypeId = relationshipFamilyOfOriginTypeId;
     }
 
     public Integer getRelationshipBloodRelative() {

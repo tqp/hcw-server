@@ -1,8 +1,9 @@
 package com.timsanalytics.crc.main.services;
 
+import com.timsanalytics.crc.common.beans.KeyValue;
+import com.timsanalytics.crc.common.beans.KeyValueLong;
 import com.timsanalytics.crc.main.beans.ProgramStatus;
-import com.timsanalytics.crc.main.beans.Student;
-import com.timsanalytics.crc.main.beans.StudentRelationship;
+import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.dao.RelationshipDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,31 +21,39 @@ public class RelationshipService {
 
     // CAREGIVER
 
-    public StudentRelationship createCaregiverRelationship(String username, StudentRelationship relationship) {
+    public Relationship createCaregiverRelationship(String username, Relationship relationship) {
         return this.relationshipDao.createCaregiverRelationship(username, relationship);
     }
 
-    public List<StudentRelationship> getStudentListByCaregiverId(Integer caregiverId) {
+    public List<Relationship> getStudentListByCaregiverId(Integer caregiverId) {
         return this.relationshipDao.getStudentListByCaregiverId(caregiverId);
+    }
+
+    public Relationship updateCaregiverRelationship(String username, Relationship relationship) {
+        return this.relationshipDao.updateCaregiverRelationship(username, relationship);
+    }
+
+    public KeyValueLong deleteCaregiverRelationship(Integer relationshipId) {
+        return this.relationshipDao.deleteCaregiverRelationship(relationshipId);
     }
 
     // CASE MANAGER
 
-    public StudentRelationship createCaseManagerRelationship(String username, StudentRelationship relationship) {
+    public Relationship createCaseManagerRelationship(String username, Relationship relationship) {
         return this.relationshipDao.createCaseManagerRelationship(username, relationship);
     }
 
-    public List<StudentRelationship> getStudentListByCaseManagerId(Integer caseManagerId) {
+    public List<Relationship> getStudentListByCaseManagerId(Integer caseManagerId) {
         return this.relationshipDao.getStudentListByCaseManagerId(caseManagerId);
     }
 
     // SPONSOR
 
-    public StudentRelationship createSponsorRelationship(String username, StudentRelationship relationship) {
+    public Relationship createSponsorRelationship(String username, Relationship relationship) {
         return this.relationshipDao.createSponsorRelationship(username, relationship);
     }
 
-    public List<StudentRelationship> getStudentListBySponsorId(Integer sponsorId) {
+    public List<Relationship> getStudentListBySponsorId(Integer sponsorId) {
         return this.relationshipDao.getStudentListBySponsorId(sponsorId);
     }
 
