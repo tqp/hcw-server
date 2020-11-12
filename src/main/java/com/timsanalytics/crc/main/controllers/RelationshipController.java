@@ -179,6 +179,33 @@ public class RelationshipController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/sponsor", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Sponsor Relationship", description = "Update Sponsor Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Relationship> updateSponsorRelationship(@RequestBody Relationship relationship, @RequestHeader(name = "Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.updateSponsorRelationship(username, relationship));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/sponsor/{relationshipId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Sponsor Relationship", description = "Delete Sponsor Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValueLong> deleteSponsorRelationship(@Parameter(description = "Relationship ID", required = true) @PathVariable Integer relationshipId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.deleteSponsorRelationship(relationshipId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // PROGRAM STATUS
 
     @ResponseBody

@@ -65,6 +65,14 @@ public class RelationshipService {
         return this.relationshipDao.getStudentListBySponsorId(sponsorId);
     }
 
+    public Relationship updateSponsorRelationship(String username, Relationship relationship) {
+        return this.relationshipDao.updateSponsorRelationship(username, relationship);
+    }
+
+    public KeyValueLong deleteSponsorRelationship(Integer relationshipId) {
+        return this.relationshipDao.deleteSponsorRelationship(relationshipId);
+    }
+
     // PROGRAM STATUS
 
     public ProgramStatus createProgramStatusEntry(String username, ProgramStatus programStatus) {

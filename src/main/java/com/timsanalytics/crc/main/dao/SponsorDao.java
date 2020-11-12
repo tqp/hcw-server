@@ -323,6 +323,7 @@ public class SponsorDao {
         query.append("      Person_Sponsor.sponsor_id,\n");
         query.append("      Person_Sponsor.surname,\n");
         query.append("      Person_Sponsor.given_name,\n");
+        query.append("      Rel_Student_Sponsor.student_sponsor_id,\n");
         query.append("      Rel_Student_Sponsor.start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Sponsor\n");
@@ -340,6 +341,7 @@ public class SponsorDao {
                 row.setSponsorId(rs.getInt("sponsor_id"));
                 row.setSponsorSurname(rs.getString("surname"));
                 row.setSponsorGivenName(rs.getString("given_name"));
+                row.setRelationshipId(rs.getInt("student_sponsor_id"));
                 row.setRelationshipStartDate(rs.getString("start_date"));
                 return row;
             });

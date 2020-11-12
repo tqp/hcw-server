@@ -16,11 +16,11 @@ public class CaseManager {
     private String relationshipEndDate;
     private Integer studentCount;
     // Metadata
-    private String status;
     private String createdOn;
     private String createdBy;
     private String updatedOn;
     private String updatedBy;
+    private String deleted;
 
     public int getCaseManagerId() {
         return caseManagerId;
@@ -102,14 +102,6 @@ public class CaseManager {
         this.studentCount = studentCount;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getCreatedOn() {
         return createdOn;
     }
@@ -140,5 +132,13 @@ public class CaseManager {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
     }
 }

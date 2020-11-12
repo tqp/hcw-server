@@ -9,6 +9,7 @@ public class Sponsor {
     private String sponsorGivenName;
     private String sponsorAddress;
     // Joined Tables
+    private Integer relationshipId;
     private String relationshipStartDate;
     private String relationshipEndDate;
     private Integer studentCount;
@@ -49,6 +50,14 @@ public class Sponsor {
 
     public void setSponsorAddress(String sponsorAddress) {
         this.sponsorAddress = sponsorAddress;
+    }
+
+    public Integer getRelationshipId() {
+        return relationshipId;
+    }
+
+    public void setRelationshipId(Integer relationshipId) {
+        this.relationshipId = relationshipId;
     }
 
     public String getRelationshipStartDate() {
