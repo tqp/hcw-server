@@ -89,9 +89,8 @@ public class ProgramStatusDao {
         query.append("      level_one.name AS program_status_level_one_name,\n");
         query.append("      program_status_level_two_id,\n");
         query.append("      level_two.name AS program_status_level_two_name,\n");
-        query.append("      program_status_level_three_id,\n");
-        query.append("      level_three.name AS program_status_level_three_name,\n");
-        query.append("      start_date\n");
+        query.append("      Rel_Student_Program_Status.student_program_status_id,\n");
+        query.append("      Rel_Student_Program_Status.start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Program_Status\n");
         query.append("      LEFT JOIN CRC.Ref_Program_Status_Type level_one ON level_one.program_status_type_id = Rel_Student_Program_Status.program_status_level_one_id\n");
@@ -112,8 +111,7 @@ public class ProgramStatusDao {
                 row.setProgramStatusLevelOneName(rs.getString("program_status_level_one_name"));
                 row.setProgramStatusLevelTwoId(rs.getInt("program_status_level_two_id"));
                 row.setProgramStatusLevelTwoName(rs.getString("program_status_level_two_name"));
-                row.setProgramStatusLevelThreeId(rs.getInt("program_status_level_three_id"));
-                row.setProgramStatusLevelThreeName(rs.getString("program_status_level_three_name"));
+                row.setProgramStatusId(rs.getInt("student_program_status_id"));
                 row.setProgramStatusStartDate(rs.getString("start_date"));
                 return row;
             });

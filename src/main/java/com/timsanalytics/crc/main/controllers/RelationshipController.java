@@ -1,7 +1,6 @@
 package com.timsanalytics.crc.main.controllers;
 
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
-import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.KeyValueLong;
 import com.timsanalytics.crc.main.beans.ProgramStatus;
 import com.timsanalytics.crc.main.beans.Relationship;
@@ -216,6 +215,33 @@ public class RelationshipController {
         try {
             return ResponseEntity.ok()
                     .body(relationshipService.createProgramStatusEntry(username, programStatus));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/program-status", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Program Status", description = "Update Program Status", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<ProgramStatus> updateProgramStatusEntry(@RequestBody ProgramStatus programStatus, @RequestHeader(name = "Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.updateProgramStatusEntry(username, programStatus));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/program-status/{programStatusId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Program Status", description = "Delete Program Status", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValueLong> deleteProgramStatusEntry(@Parameter(description = "Program Status ID", required = true) @PathVariable Integer programStatusId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.deleteProgramStatusEntry(programStatusId));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

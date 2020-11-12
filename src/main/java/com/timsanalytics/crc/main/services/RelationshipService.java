@@ -1,6 +1,5 @@
 package com.timsanalytics.crc.main.services;
 
-import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.KeyValueLong;
 import com.timsanalytics.crc.main.beans.ProgramStatus;
 import com.timsanalytics.crc.main.beans.Relationship;
@@ -77,6 +76,15 @@ public class RelationshipService {
 
     public ProgramStatus createProgramStatusEntry(String username, ProgramStatus programStatus) {
         return this.relationshipDao.createProgramStatusEntry(username, programStatus);
+    }
+
+
+    public ProgramStatus updateProgramStatusEntry(String username, ProgramStatus programStatus) {
+        return this.relationshipDao.updateProgramStatusEntry(username, programStatus);
+    }
+
+    public KeyValueLong deleteProgramStatusEntry(Integer programStatusId) {
+        return this.relationshipDao.deleteProgramStatusEntry(programStatusId);
     }
 
 

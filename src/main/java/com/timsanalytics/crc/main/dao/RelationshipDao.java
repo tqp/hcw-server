@@ -18,11 +18,13 @@ import java.util.List;
 public class RelationshipDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
+    private final PrintObjectService printObjectService;
 
     @Autowired
     public RelationshipDao(JdbcTemplate mySqlAuthJdbcTemplate,
                            PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
+        this.printObjectService = printObjectService;
     }
 
     // CAREGIVER
@@ -488,13 +490,11 @@ public class RelationshipDao {
         query.append("          student_id,\n");
         query.append("          program_status_level_one_id,\n");
         query.append("          program_status_level_two_id,\n");
-        query.append("          program_status_level_three_id,\n");
         query.append("          start_date,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
-        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -509,12 +509,75 @@ public class RelationshipDao {
                         ps.setInt(1, programStatus.getStudentId());
                         ps.setInt(2, programStatus.getProgramStatusLevelOneId());
                         ps.setInt(3, programStatus.getProgramStatusLevelTwoId());
-                        ps.setInt(4, programStatus.getProgramStatusLevelThreeId());
-                        ps.setString(5, programStatus.getProgramStatusStartDate());
+                        ps.setString(4, programStatus.getProgramStatusStartDate());
                         return ps;
                     }
             );
             return programStatus;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public ProgramStatus updateProgramStatusEntry(String username, ProgramStatus programStatus) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Rel_Student_Program_Status\n");
+        query.append("  SET\n");
+        query.append("      student_id = ?,\n");
+        query.append("      program_status_level_one_id = ?,\n");
+        query.append("      program_status_level_two_id = ?,\n");
+        query.append("      start_date = ?,\n");
+        query.append("      updated_on = now(),\n");
+        query.append("      updated_by = ?\n");
+        query.append("  WHERE\n");
+        query.append("      student_program_status_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, programStatus.getStudentId());
+                        ps.setInt(2, programStatus.getProgramStatusLevelOneId());
+                        ps.setInt(3, programStatus.getProgramStatusLevelTwoId());
+                        ps.setString(4, programStatus.getProgramStatusStartDate());
+                        ps.setString(5, username);
+                        ps.setInt(6, programStatus.getProgramStatusId());
+                        return ps;
+                    }
+            );
+            return programStatus;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public KeyValueLong deleteProgramStatusEntry(Integer programStatusId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Rel_Student_Program_Status\n");
+        query.append("  SET\n");
+        query.append("      deleted = 1\n");
+        query.append("  WHERE\n");
+        query.append("      student_program_status_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, programStatusId);
+                        return ps;
+                    }
+            );
+            return new KeyValueLong("programStatusId", programStatusId.longValue());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
