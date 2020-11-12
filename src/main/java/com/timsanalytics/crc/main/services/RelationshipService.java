@@ -47,6 +47,14 @@ public class RelationshipService {
         return this.relationshipDao.getStudentListByCaseManagerId(caseManagerId);
     }
 
+    public Relationship updateCaseManagerRelationship(String username, Relationship relationship) {
+        return this.relationshipDao.updateCaseManagerRelationship(username, relationship);
+    }
+
+    public KeyValueLong deleteCaseManagerRelationship(Integer relationshipId) {
+        return this.relationshipDao.deleteCaseManagerRelationship(relationshipId);
+    }
+
     // SPONSOR
 
     public Relationship createSponsorRelationship(String username, Relationship relationship) {

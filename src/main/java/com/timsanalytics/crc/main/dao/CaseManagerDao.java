@@ -328,6 +328,7 @@ public class CaseManagerDao {
         query.append("      Person_Case_Manager.case_manager_id,\n");
         query.append("      Person_Case_Manager.surname,\n");
         query.append("      Person_Case_Manager.given_name,\n");
+        query.append("      Rel_Student_Case_Manager.student_case_manager_id,\n");
         query.append("      Rel_Student_Case_Manager.start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Case_Manager\n");
@@ -345,6 +346,7 @@ public class CaseManagerDao {
                 row.setCaseManagerId(rs.getInt("case_manager_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
+                row.setRelationshipId(rs.getInt("student_case_manager_id"));
                 row.setRelationshipStartDate(rs.getString("start_date"));
                 return row;
             });

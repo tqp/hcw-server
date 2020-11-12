@@ -81,8 +81,8 @@ public class RelationshipController {
 
     @ResponseBody
     @RequestMapping(value = "/caregiver/{relationshipId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete Caregiver Relationship", description = "Delete Caregiver Relationship", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<KeyValueLong> deleteCaregiver(@Parameter(description = "Relationship ID", required = true) @PathVariable Integer relationshipId) {
+    @Operation(summary = "Delete Caregiver Relationship", description = "Delete Caregiver Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValueLong> deleteCaregiverRelationship(@Parameter(description = "Relationship ID", required = true) @PathVariable Integer relationshipId) {
         try {
             return ResponseEntity.ok()
                     .body(relationshipService.deleteCaregiverRelationship(relationshipId));
@@ -119,6 +119,33 @@ public class RelationshipController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/case-manager", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Case Manager Relationship", description = "Update Case Manager Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Relationship> updateCaseManagerRelationship(@RequestBody Relationship relationship, @RequestHeader(name = "Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.updateCaseManagerRelationship(username, relationship));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/case-manager/{relationshipId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Case Manager Relationship", description = "Delete Case Manager Relationship", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValueLong> deleteCaseManagerRelationship(@Parameter(description = "Relationship ID", required = true) @PathVariable Integer relationshipId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(relationshipService.deleteCaseManagerRelationship(relationshipId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

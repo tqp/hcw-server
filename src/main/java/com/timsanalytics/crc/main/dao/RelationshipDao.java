@@ -1,6 +1,5 @@
 package com.timsanalytics.crc.main.dao;
 
-import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.KeyValueLong;
 import com.timsanalytics.crc.main.beans.ProgramStatus;
 import com.timsanalytics.crc.main.beans.Relationship;
@@ -19,13 +18,11 @@ import java.util.List;
 public class RelationshipDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
-    private final PrintObjectService printObjectService;
 
     @Autowired
     public RelationshipDao(JdbcTemplate mySqlAuthJdbcTemplate,
                            PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
-        this.printObjectService = printObjectService;
     }
 
     // CAREGIVER
@@ -195,6 +192,7 @@ public class RelationshipDao {
     // CASE MANAGER
 
     public Relationship createCaseManagerRelationship(String username, Relationship relationship) {
+        System.out.println("createCaseManagerRelationship");
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
         query.append("      CRC.Rel_Student_Case_Manager\n");
@@ -265,6 +263,68 @@ public class RelationshipDao {
                 row.setRelationshipStartDate(rs.getString("start_date"));
                 return row;
             });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Relationship updateCaseManagerRelationship(String username, Relationship relationship) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Rel_Student_Case_Manager\n");
+        query.append("  SET\n");
+        query.append("      student_id = ?,\n");
+        query.append("      case_manager_id = ?,\n");
+        query.append("      start_date = ?,\n");
+        query.append("      updated_on = now(),\n");
+        query.append("      updated_by = ?\n");
+        query.append("  WHERE\n");
+        query.append("      student_case_manager_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, relationship.getStudentId());
+                        ps.setInt(2, relationship.getRelationshipEntityId());
+                        ps.setString(3, relationship.getRelationshipStartDate());
+                        ps.setString(4, username);
+                        ps.setInt(5, relationship.getRelationshipId());
+                        return ps;
+                    }
+            );
+            return relationship;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public KeyValueLong deleteCaseManagerRelationship(Integer relationshipId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Rel_Student_Case_Manager\n");
+        query.append("  SET\n");
+        query.append("      deleted = 1\n");
+        query.append("  WHERE\n");
+        query.append("      student_case_manager_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, relationshipId);
+                        return ps;
+                    }
+            );
+            return new KeyValueLong("relationshipId", relationshipId.longValue());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

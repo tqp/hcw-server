@@ -11,6 +11,7 @@ public class CaseManager {
     private String caseManagerPhone;
     private String caseManagerEmail;
     // Joined Tables
+    private Integer relationshipId;
     private String relationshipStartDate;
     private String relationshipEndDate;
     private Integer studentCount;
@@ -67,6 +68,14 @@ public class CaseManager {
 
     public void setCaseManagerEmail(String caseManagerEmail) {
         this.caseManagerEmail = caseManagerEmail;
+    }
+
+    public Integer getRelationshipId() {
+        return relationshipId;
+    }
+
+    public void setRelationshipId(Integer relationshipId) {
+        this.relationshipId = relationshipId;
     }
 
     public String getRelationshipStartDate() {
