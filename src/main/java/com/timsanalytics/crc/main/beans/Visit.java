@@ -12,6 +12,8 @@ public class Visit {
     // Joined Tables
     private String studentSurname;
     private String studentGivenName;
+    private String caseManagerSurname;
+    private String caseManagerGivenName;
     private String visitTypeName;
     private String interactionTypeName;
 
@@ -93,6 +95,22 @@ public class Visit {
 
     public void setStudentGivenName(String studentGivenName) {
         this.studentGivenName = studentGivenName;
+    }
+
+    public String getCaseManagerSurname() {
+        return caseManagerSurname;
+    }
+
+    public void setCaseManagerSurname(String caseManagerSurname) {
+        this.caseManagerSurname = caseManagerSurname;
+    }
+
+    public String getCaseManagerGivenName() {
+        return caseManagerGivenName;
+    }
+
+    public void setCaseManagerGivenName(String caseManagerGivenName) {
+        this.caseManagerGivenName = caseManagerGivenName;
     }
 
     public String getVisitTypeName() {

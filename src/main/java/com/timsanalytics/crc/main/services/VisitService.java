@@ -47,8 +47,8 @@ public class VisitService {
         return this.visitDao.updateVisit(visit);
     }
 
-    public KeyValue deleteVisit(String visitGuid) {
-        return this.visitDao.deleteVisit(visitGuid);
+    public KeyValue deleteVisit(String visitId) {
+        return this.visitDao.deleteVisit(visitId);
     }
 
     // JOINED TABLES

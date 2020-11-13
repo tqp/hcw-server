@@ -106,12 +106,12 @@ public class VisitController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/{visitGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{visitId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Delete Visit", tags = {"Visit"}, description = "Delete Visit", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<KeyValue> deleteVisit(@Parameter(description = "Visit GUID", required = true) @PathVariable String visitGuid) {
+    public ResponseEntity<KeyValue> deleteVisit(@Parameter(description = "Visit GUID", required = true) @PathVariable String visitId) {
         try {
             return ResponseEntity.ok()
-                    .body(visitService.deleteVisit(visitGuid));
+                    .body(visitService.deleteVisit(visitId));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
