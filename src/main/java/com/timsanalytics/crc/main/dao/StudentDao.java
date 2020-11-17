@@ -36,12 +36,16 @@ public class StudentDao {
         query.append("          sex,\n");
         query.append("          dob,\n");
         query.append("          school,\n");
-        query.append("          grade,\n");
+        query.append("          school_level_type_id,\n");
+        query.append("          class_level_type_id,\n");
+        query.append("          class_repeat_year_type_id,\n");
         query.append("          impairment_type_id,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -61,8 +65,10 @@ public class StudentDao {
                         ps.setString(3, student.getStudentGender());
                         ps.setString(4, student.getStudentDateOfBirth());
                         ps.setString(5, student.getStudentSchool());
-                        ps.setString(6, student.getStudentGrade());
-                        ps.setInt(7, student.getImpairmentTypeId());
+                        ps.setInt(6, student.getSchoolLevelTypeId());
+                        ps.setInt(7, student.getClassLevelTypeId());
+                        ps.setInt(8, student.getClassRepeatYearTypeId());
+                        ps.setInt(9, student.getImpairmentTypeId());
                         return ps;
                     }
             );
