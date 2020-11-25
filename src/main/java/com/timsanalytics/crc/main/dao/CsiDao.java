@@ -1,0 +1,383 @@
+package com.timsanalytics.crc.main.dao;
+
+import com.timsanalytics.crc.common.beans.KeyValue;
+import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.Csi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import java.sql.PreparedStatement;
+import java.util.List;
+
+@Service
+public class CsiDao {
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
+    private final JdbcTemplate mySqlAuthJdbcTemplate;
+    private final UtilsDao utilsDao;
+
+    @Autowired
+    public CsiDao(JdbcTemplate mySqlAuthJdbcTemplate, UtilsDao utilsDao) {
+        this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
+        this.utilsDao = utilsDao;
+    }
+
+    // BASIC CRUD
+
+    public Csi createCsi(Csi csi) {
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("      (\n");
+        query.append("          student_id,\n");
+        query.append("          deleted\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          0\n");
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, csi.getStudentId());
+                        return ps;
+                    }
+            );
+            int lastInsertId = this.utilsDao.getLastInsertId();
+            this.logger.debug("New Csi ID: " + lastInsertId);
+            return this.getCsiDetail(lastInsertId);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Csi> getCsiList() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      csi_id,\n");
+        query.append("      student_id\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("  WHERE\n");
+        query.append("      deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      csi_date DESC\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                Csi row = new Csi();
+                row.setCsiId(rs.getInt("csi_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public int getCsiList_SSP_TotalRecords(ServerSidePaginationRequest<Csi> serverSidePaginationRequest) {
+        StringBuilder query = new StringBuilder();
+        query.append("          SELECT\n");
+        query.append("              COUNT(*)\n");
+        query.append("          FROM\n");
+        query.append("          -- ROOT QUERY\n");
+        query.append("          (\n");
+        query.append(getCsiList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append("          ) AS ROOT_QUERY\n");
+        query.append("          -- END ROOT QUERY\n");
+        try {
+            Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+            return count == null ? 0 : count;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return 0;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return 0;
+        }
+    }
+
+    public List<Csi> getCsiList_SSP(ServerSidePaginationRequest<Csi> serverSidePaginationRequest) {
+        int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
+        int pageSize = serverSidePaginationRequest.getPageSize();
+
+        String defaultSortField = "csi_date";
+        String defaultSortDirection = "DESC";
+        String sortColumn = serverSidePaginationRequest.getSortColumn() != null ? serverSidePaginationRequest.getSortColumn() : defaultSortField;
+        String sortDirection = serverSidePaginationRequest.getSortDirection() != null ? serverSidePaginationRequest.getSortDirection() : defaultSortDirection;
+
+        StringBuilder query = new StringBuilder();
+        query.append("  -- PAGINATION QUERY\n");
+        query.append("  SELECT\n");
+        query.append("      FILTER_SORT_QUERY.*\n");
+        query.append("  FROM\n");
+
+        query.append("      -- FILTER/SORT QUERY\n");
+        query.append("      (\n");
+        query.append("          SELECT\n");
+        query.append("              *\n");
+        query.append("          FROM\n");
+
+        query.append("          -- ROOT QUERY\n");
+        query.append("          (\n");
+        query.append(getCsiList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append("          ) AS ROOT_QUERY\n");
+        query.append("          -- END ROOT QUERY\n");
+
+        query.append("          ORDER BY\n");
+        query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
+        query.append("              csi_date DESC\n");
+        query.append("      ) AS FILTER_SORT_QUERY\n");
+        query.append("      -- END FILTER/SORT QUERY\n");
+
+        query.append("  LIMIT ?, ?\n");
+        query.append("  -- END PAGINATION QUERY\n");
+
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
+
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
+                    pageStart,
+                    pageSize
+            }, (rs, rowNum) -> {
+                Csi row = new Csi();
+                row.setCsiId(rs.getInt("csi_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("student_surname"));
+                row.setStudentGivenName(rs.getString("student_given_name"));
+                row.setCsiDate(rs.getString("csi_date"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
+                row.setCsiComments(rs.getString("csi_comments"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            this.logger.error("pageStart=" + pageSize + ", pageSize=" + pageSize);
+            return null;
+        }
+    }
+
+    private String getCsiList_SSP_RootQuery(ServerSidePaginationRequest<Csi> serverSidePaginationRequest) {
+        //noinspection StringBufferReplaceableByString
+        StringBuilder query = new StringBuilder();
+        query.append("              SELECT\n");
+        query.append("                  csi_id,\n");
+        query.append("                  csi_date,\n");
+        query.append("                  Student_Csi.student_id,\n");
+        query.append("                  Person_Student.surname AS student_surname,\n");
+        query.append("                  Person_Student.given_name AS student_given_name,\n");
+        query.append("                  Student_Csi.case_manager_id,\n");
+        query.append("                  Person_Case_Manager.surname AS case_manager_surname,\n");
+        query.append("                  Person_Case_Manager.given_name AS case_manager_given_name,\n");
+        query.append("                  csi_comments\n");
+        query.append("              FROM\n");
+        query.append("                  CRC.Student_Csi\n");
+        query.append("                  LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("              WHERE\n");
+        query.append("              (\n");
+        query.append("                  Student_Csi.deleted = 0\n");
+//        query.append("                  AND\n");
+//        query.append("                  ");
+//        query.append(getCsiList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
+        query.append("              )");
+        return query.toString();
+    }
+
+    private String getCsiList_SSP_AdditionalWhereClause(ServerSidePaginationRequest<Csi> serverSidePaginationRequest) {
+        StringBuilder whereClause = new StringBuilder();
+        String nameFilter = serverSidePaginationRequest.getNameFilter() != null ? serverSidePaginationRequest.getNameFilter() : "";
+
+        // NAME FILTER CLAUSE
+        if (!"".equalsIgnoreCase(nameFilter)) {
+            whereClause.append("                  (\n");
+            whereClause.append("                    UPPER(Student_Csi.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    OR");
+            whereClause.append("                    UPPER(Student_Csi.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                  )\n");
+        } else {
+            whereClause.append("                  (1=1)");
+        }
+
+        return whereClause.toString();
+    }
+
+    public Csi getCsiDetail(int csiId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      csi_id,\n");
+        query.append("      csi_date,\n");
+        query.append("      Student_Csi.student_id,\n");
+        query.append("      Person_Student.surname AS student_surname,\n");
+        query.append("      Person_Student.given_name AS student_given_name,\n");
+        query.append("      Student_Csi.case_manager_id,\n");
+        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
+        query.append("      Person_Case_Manager.given_name AS case_manager_given_name,\n");
+        query.append("      csi_comments,\n");
+        query.append("      csi_services_provided,\n");
+        query.append("      csi_score_food_security\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      csi_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{csiId}, (rs, rowNum) -> {
+                Csi row = new Csi();
+                row.setCsiId(rs.getInt("csi_id"));
+                row.setCsiDate(rs.getString("csi_date"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("student_surname"));
+                row.setStudentGivenName(rs.getString("student_given_name"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
+                row.setCsiComments(rs.getString("csi_comments"));
+                row.setCsiServicesProvided(rs.getString("csi_services_provided"));
+                row.setCsiScoreFoodSecurity(rs.getInt("csi_score_food_security"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Csi updateCsi(Csi csi) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("  SET\n");
+        query.append("      student_id = ?,\n");
+        query.append("      case_manager_id = ?,\n");
+        query.append("      csi_date = ?,\n");
+        query.append("      csi_services_provided = ?,\n");
+        query.append("      csi_comments = ?\n");
+        query.append("  WHERE\n");
+        query.append("      csi_id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, csi.getStudentId());
+                        ps.setInt(2, csi.getCaseManagerId());
+                        ps.setString(3, csi.getCsiDate());
+                        ps.setString(4, csi.getCsiServicesProvided());
+                        ps.setString(5, csi.getCsiComments());
+                        ps.setInt(6, csi.getCsiId());
+                        return ps;
+                    }
+            );
+            return this.getCsiDetail(csi.getCsiId());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public KeyValue deleteCsi(String csiRecordId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("  SET\n");
+        query.append("      deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      id = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("csiRecordId=" + csiRecordId);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, csiRecordId);
+                        return ps;
+                    }
+            );
+            return new KeyValue("csiRecordId", csiRecordId);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    // JOINED TABLES
+
+    public List<Csi> getCsiListByStudentId(Integer studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      csi_id,\n");
+        query.append("      csi_date,\n");
+        query.append("      Student_Csi.student_id,\n");
+        query.append("      Person_Student.surname AS student_surname,\n");
+        query.append("      Person_Student.given_name AS student_given_name,\n");
+        query.append("      Student_Csi.case_manager_id,\n");
+        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
+        query.append("      Person_Case_Manager.given_name AS case_manager_given_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Student_Csi.student_id = ?\n");
+        query.append("      AND Student_Csi.deleted = 0\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Csi row = new Csi();
+                row.setCsiId(rs.getInt("csi_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("student_surname"));
+                row.setStudentGivenName(rs.getString("student_given_name"));
+                row.setCsiDate(rs.getString("csi_date"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+}
