@@ -14,6 +14,7 @@ public class Csi {
     private Integer csiScoreAbuseAndExploitation;
     private Integer csiScoreLegalProtection;
     private Integer csiScoreWellness;
+    private Integer csiScoreHealthCareServices;
     private Integer csiScoreEmotionalHealth;
     private Integer csiScoreSocialBehavior;
     private Integer csiScorePerformance;
@@ -126,6 +127,14 @@ public class Csi {
 
     public void setCsiScoreWellness(Integer csiScoreWellness) {
         this.csiScoreWellness = csiScoreWellness;
+    }
+
+    public Integer getCsiScoreHealthCareServices() {
+        return csiScoreHealthCareServices;
+    }
+
+    public void setCsiScoreHealthCareServices(Integer csiScoreHealthCareServices) {
+        this.csiScoreHealthCareServices = csiScoreHealthCareServices;
     }
 
     public Integer getCsiScoreEmotionalHealth() {
