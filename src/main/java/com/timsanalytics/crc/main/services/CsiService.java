@@ -56,4 +56,8 @@ public class CsiService {
     public List<Csi> getCsiListByStudentId(Integer studentId) {
         return this.csiDao.getCsiListByStudentId(studentId);
     }
+
+    public List<Csi> getCsiListByCaseManagerId(Integer caseManagerId) {
+        return this.csiDao.getCsiListByCaseManagerId(caseManagerId);
+    }
 }

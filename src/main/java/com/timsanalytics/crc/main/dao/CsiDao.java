@@ -33,10 +33,36 @@ public class CsiDao {
         query.append("      CRC.Student_Csi\n");
         query.append("      (\n");
         query.append("          student_id,\n");
+        query.append("          case_manager_id,\n");
+        query.append("          csi_date,\n");
+        query.append("          csi_services_provided,\n");
+        query.append("          csi_comments,\n");
+        query.append("          csi_score_food_security,\n");
+        query.append("          csi_score_nutrition_and_growth,\n");
+        query.append("          csi_score_shelter,\n");
+        query.append("          csi_score_care,\n");
+        query.append("          csi_score_abuse_and_exploitation,\n");
+        query.append("          csi_score_legal_protection,\n");
+        query.append("          csi_score_wellness,\n");
+        query.append("          csi_score_health_care_services,\n");
+        query.append("          csi_score_emotional_health,\n");
+        query.append("          csi_score_social_behavior,\n");
+        query.append("          csi_score_performance,\n");
+        query.append("          csi_score_education_and_work,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -52,6 +78,22 @@ public class CsiDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setInt(1, csi.getStudentId());
+                        ps.setInt(2, csi.getCaseManagerId());
+                        ps.setString(3, csi.getCsiDate());
+                        ps.setString(4, csi.getCsiServicesProvided());
+                        ps.setString(5, csi.getCsiComments());
+                        ps.setInt(6, csi.getCsiScoreFoodSecurity());
+                        ps.setInt(7, csi.getCsiScoreNutritionAndGrowth());
+                        ps.setInt(8, csi.getCsiScoreShelter());
+                        ps.setInt(9, csi.getCsiScoreCare());
+                        ps.setInt(10, csi.getCsiScoreAbuseAndExploitation());
+                        ps.setInt(11, csi.getCsiScoreLegalProtection());
+                        ps.setInt(12, csi.getCsiScoreWellness());
+                        ps.setInt(13, csi.getCsiScoreHealthCareServices());
+                        ps.setInt(14, csi.getCsiScoreEmotionalHealth());
+                        ps.setInt(15, csi.getCsiScoreSocialBehavior());
+                        ps.setInt(16, csi.getCsiScorePerformance());
+                        ps.setInt(17, csi.getCsiScoreEducationAndWork());
                         return ps;
                     }
             );
@@ -203,9 +245,6 @@ public class CsiDao {
         query.append("              WHERE\n");
         query.append("              (\n");
         query.append("                  Student_Csi.deleted = 0\n");
-//        query.append("                  AND\n");
-//        query.append("                  ");
-//        query.append(getCsiList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
         query.append("              )");
         return query.toString();
     }
@@ -361,9 +400,9 @@ public class CsiDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Student_Csi\n");
         query.append("  SET\n");
-        query.append("      deleted = 0\n");
+        query.append("      deleted = 1\n");
         query.append("  WHERE\n");
-        query.append("      id = ?\n");
+        query.append("      csi_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("csiRecordId=" + csiRecordId);
         try {
@@ -407,6 +446,47 @@ public class CsiDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Csi row = new Csi();
+                row.setCsiId(rs.getInt("csi_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("student_surname"));
+                row.setStudentGivenName(rs.getString("student_given_name"));
+                row.setCsiDate(rs.getString("csi_date"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Csi> getCsiListByCaseManagerId(Integer caseManagerId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      csi_id,\n");
+        query.append("      csi_date,\n");
+        query.append("      Student_Csi.student_id,\n");
+        query.append("      Person_Student.surname AS student_surname,\n");
+        query.append("      Person_Student.given_name AS student_given_name,\n");
+        query.append("      Student_Csi.case_manager_id,\n");
+        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
+        query.append("      Person_Case_Manager.given_name AS case_manager_given_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Student_Csi.case_manager_id = ?\n");
+        query.append("      AND Student_Csi.deleted = 0\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{caseManagerId}, (rs, rowNum) -> {
                 Csi row = new Csi();
                 row.setCsiId(rs.getInt("csi_id"));
                 row.setStudentId(rs.getInt("student_id"));

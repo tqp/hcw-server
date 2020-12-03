@@ -133,4 +133,18 @@ public class CsiController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/case-manager/{caseManagerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Csi List by Case Manager ID", description = "Get Csi List by Case Manager ID", tags = {"Csi"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Csi>> getCsiListByCaseManagerId(@Parameter(description = "Case Manager ID", required = true) @PathVariable Integer caseManagerId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.csiService.getCsiListByCaseManagerId(caseManagerId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }
