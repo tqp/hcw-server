@@ -23,22 +23,26 @@ public class GoogleAuthDao {
     }
 
     public void updateUserRecordFromGoogleAuth(User appUser, GoogleUser googleUser) {
-        this.logger.trace("AppUserDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
+        this.logger.trace("AppUserDao -> updateUserRecord: userId=" + appUser.getUserId());
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      USER\n");
+        query.append("      CRC.Auth_User\n");
         query.append("  SET\n");
-        query.append("      USER.USER_PROFILE_PHOTO_URL = ?,\n");
-        query.append("      USER.USER_LAST_LOGIN = NOW(),\n");
-        query.append("      USER.USER_LOGIN_COUNT = USER.USER_LOGIN_COUNT + 1\n");
+        query.append("      user_profile_photo_url = ?,\n");
+        query.append("      last_login = NOW(),\n");
+        query.append("      login_count =\n");
+        query.append("          CASE\n");
+        query.append("              WHEN login_count IS NULL THEN 1\n");
+        query.append("              ELSE login_count + 1\n");
+        query.append("          END\n");
         query.append("  WHERE\n");
-        query.append("      USER.USER_GUID = ?\n");
+        query.append("      user_id = ?\n");
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, googleUser.getPicture());
-                        ps.setString(2, appUser.getUserGuid());
+                        ps.setInt(2, appUser.getUserId());
                         return ps;
                     }
             );

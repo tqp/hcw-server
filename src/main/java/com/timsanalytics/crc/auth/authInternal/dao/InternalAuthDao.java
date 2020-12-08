@@ -22,22 +22,26 @@ public class InternalAuthDao {
     }
 
     public void updateUserRecordFromInternalAuth(User appUser) {
-        this.logger.trace("InternalAuthDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
+        this.logger.trace("InternalAuthDao -> updateUserRecord: userId=" + appUser.getUserId());
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      AUTH.USER\n");
+        query.append("      CRC.Auth_User\n");
         query.append("  SET\n");
-        query.append("      USER.USER_LAST_LOGIN = NOW(),\n");
-        query.append("      USER.USER_LOGIN_COUNT = USER.USER_LOGIN_COUNT + 1\n");
+        query.append("      last_login = NOW(),\n");
+        query.append("      login_count =\n");
+        query.append("          CASE\n");
+        query.append("              WHEN login_count IS NULL THEN 1\n");
+        query.append("              ELSE login_count + 1\n");
+        query.append("          END\n");
         query.append("  WHERE\n");
-        query.append("      USER.USER_GUID = ?\n");                // 3. USER_GUID
+        query.append("      user_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("userGuid: " + appUser.getUserGuid());
+        this.logger.trace("userGuid: " + appUser.getUserId());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, appUser.getUserGuid());
+                        ps.setInt(1, appUser.getUserId());
                         return ps;
                     }
             );

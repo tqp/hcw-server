@@ -18,14 +18,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/my-profile")
-@Tag(name = "My Profile", description = "Profile")
-public class UserProfileController {
+@Tag(name = "My Profile", description = "My Profile")
+public class MyProfileController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final UserService userService;
     private final TokenService tokenService;
 
     @Autowired
-    public UserProfileController(UserService userService, TokenService tokenService) {
+    public MyProfileController(UserService userService, TokenService tokenService) {
         this.userService = userService;
         this.tokenService = tokenService;
     }
@@ -35,9 +35,9 @@ public class UserProfileController {
     @Operation(summary = "Get My Profile", description = "Get My Profile", tags = {"My Profile"}, security = @SecurityRequirement(name = "bearerAuth"))
     public User getMyProfile(HttpServletRequest request) {
         User loggedInUser = this.tokenService.getUserFromRequest(request);
-        this.logger.trace("MyProfileController -> getMyProfile: userGuid=" + loggedInUser.getUserGuid());
+        this.logger.trace("MyProfileController -> getMyProfile: userGuid=" + loggedInUser.getUserId());
         try {
-            return this.userService.getUser(loggedInUser.getUserGuid());
+            return this.userService.getUserDetail(loggedInUser.getUserId());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -49,10 +49,10 @@ public class UserProfileController {
     @Operation(summary = "Update My Profile", description = "Update My Profile", tags = {"My Profile"})
     public User updateMyProfile(HttpServletRequest request, @RequestBody User User) {
         this.logger.debug("############################################################################");
-        this.logger.debug("MyProfileController -> updateMyProfile: userGuid=" + User.getUserGuid());
+        this.logger.debug("MyProfileController -> updateMyProfile: userGuid=" + User.getUserId());
         try {
             User loggedInUser = this.tokenService.getUserFromRequest(request);
-            this.logger.debug("loggedInUser=" + loggedInUser.getUserGuid());
+            this.logger.debug("loggedInUser=" + loggedInUser.getUserId());
             return this.userService.updateMyProfile(User, loggedInUser);
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class UserProfileController {
     public List<Role> getMyUserRoles(HttpServletRequest request) {
         User loggedInUser = this.tokenService.getUserFromRequest(request);
         try {
-            return this.userService.getUserRoles(loggedInUser.getUserGuid());
+            return this.userService.getUserRoles(loggedInUser.getUserId());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -77,7 +77,7 @@ public class UserProfileController {
     @RequestMapping(value = "/password", method = RequestMethod.PUT)
     @Operation(summary = "Change My Password", description = "Change My Password", tags = {"My Profile"})
     public User changePassword(HttpServletRequest request, @RequestBody User User) {
-        this.logger.debug("MyProfileController -> changePassword: userGuid=" + User.getUserGuid());
+        this.logger.debug("MyProfileController -> changePassword: userGuid=" + User.getUserId());
         try {
             User loggedInUser = this.tokenService.getUserFromRequest(request);
             return this.userService.changePassword(User, loggedInUser);
@@ -91,7 +91,7 @@ public class UserProfileController {
     @Operation(summary = "Confirm whether the provided password matches my password", description = "Confirm whether the provided password matches my password", tags = {"My Profile"})
     public Boolean confirmUserPassword(HttpServletRequest request, @RequestBody User testPassword) {
         User loggedInUser = this.tokenService.getUserFromRequest(request);
-        User User = this.userService.getUser(loggedInUser.getUserGuid());
+        User User = this.userService.getUserDetail(loggedInUser.getUserId());
         try {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             return encoder.matches(testPassword.getPassword(), User.getPassword());
@@ -105,7 +105,7 @@ public class UserProfileController {
 
     @RequestMapping(value = "/username/{username}", method = RequestMethod.GET)
     @Operation(summary = "Get the User ID for a given Username", description = "Get the User ID for a given Username", tags = {"My Profile"})
-    public String getUserGuidByUsername(@PathVariable String username) {
+    public Integer getUserGuidByUsername(@PathVariable String username) {
         this.logger.debug(("UserController -> getUserIdByUsername: username=" + username));
         try {
             return this.userService.getUserGuidByUsername(username);
@@ -117,7 +117,7 @@ public class UserProfileController {
 
     @RequestMapping(value = "/{userGuid}/roles", method = RequestMethod.GET)
     @Operation(summary = "Get User Roles by User GUID", description = "Get User Roles by User GUID", tags = {"My Profile"})
-    public List<Role> getUserRoles(@PathVariable String userGuid) {
+    public List<Role> getUserRoles(@PathVariable Integer userGuid) {
         this.logger.debug(("UserController -> getUserRoles: userGuid=" + userGuid));
         try {
             return this.userService.getUserRoles(userGuid);

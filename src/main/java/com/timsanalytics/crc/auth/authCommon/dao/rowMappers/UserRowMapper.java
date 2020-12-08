@@ -10,21 +10,21 @@ public class UserRowMapper implements RowMapper<User> {
 
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User row = new User();
-        row.setUserGuid(rs.getString("USER_GUID"));
-        row.setUsername(rs.getString("USER_USERNAME"));
-        row.setPassword(rs.getString("USER_PASSWORD"));
-        row.setLoginCount(rs.getInt("USER_LOGIN_COUNT"));
-        row.setLastLogin(rs.getTimestamp("USER_LAST_LOGIN"));
+        row.setUserId(rs.getInt("user_id"));
+        row.setUsername(rs.getString("username"));
+        row.setPassword(rs.getString("password"));
+        row.setLoginCount(rs.getInt("login_count"));
+        row.setLastLogin(rs.getString("last_login"));
 
-        row.setSurname(rs.getString("USER_SURNAME"));
-        row.setGivenName(rs.getString("USER_GIVEN_NAME"));
-        row.setPicture(rs.getString("USER_PROFILE_PHOTO_URL"));
+        row.setSurname(rs.getString("surname"));
+        row.setGivenName(rs.getString("given_name"));
+        row.setPicture(rs.getString("user_profile_photo_url"));
 
-        row.setStatus(rs.getString("STATUS"));
-        row.setCreatedOn(rs.getTimestamp("CREATED_ON"));
-        row.setCreatedBy(rs.getString("CREATED_BY"));
-        row.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
-        row.setUpdatedBy(rs.getString("UPDATED_BY"));
+        row.setCreatedOn(rs.getTimestamp("created_on"));
+        row.setCreatedBy(rs.getString("created_by"));
+        row.setUpdatedOn(rs.getTimestamp("updated_on"));
+        row.setUpdatedBy(rs.getString("updated_by"));
+        row.setStatus(rs.getInt("deleted"));
         return row;
     }
 }

@@ -36,13 +36,13 @@ public class TokenService {
 
     // GENERATE TOKEN
     public String generateTokenFromUser(User user) {
-        this.logger.debug("TokenService -> generateTokenFromUser: userGuid=" + user.getUserGuid());
+        this.logger.debug("TokenService -> generateTokenFromUser: userGuid=" + user.getUserId());
         String authorities = null;
 
         if (user.getRoles() != null && user.getRoles().size() > 0) {
             authorities = user.getRoles()
                     .stream()
-                    .filter(r -> "Active".equalsIgnoreCase(r.getStatus()))
+                    .filter(r -> r.getDeleted() == 0)
                     .map(Role::getAuthority)
                     .collect(Collectors.joining(","));
             this.logger.debug("Authorities: " + authorities);
@@ -144,7 +144,7 @@ public class TokenService {
         if (request != null) {
             String token = request.getHeader(environment.getProperty("jwt.header")).substring(7);
             String username = getUsernameFromToken(token);
-            return userService.getUser(userService.getUserGuidByUsername(username));
+            return userService.getUserDetail(userService.getUserGuidByUsername(username));
         } else {
             return null;
         }

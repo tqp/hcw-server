@@ -3,21 +3,23 @@ package com.timsanalytics.crc.auth.authCommon.beans;
 import java.util.Date;
 
 public class Role {
-    private String roleGuid;
+    private Integer roleId;
     private String name;
     private String authority;
-    private String status;
+    private Integer deleted;
     private Date createdOn;
     private String createdBy;
     private Date updatedOn;
     private String updatedBy;
 
-    public String getRoleGuid() {
-        return roleGuid;
+    private Boolean status;
+
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setRoleGuid(String roleGuid) {
-        this.roleGuid = roleGuid;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     public String getName() {
@@ -36,12 +38,12 @@ public class Role {
         this.authority = authority;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getDeleted() {
+        return deleted;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
     }
 
     public Date getCreatedOn() {
@@ -74,5 +76,13 @@ public class Role {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

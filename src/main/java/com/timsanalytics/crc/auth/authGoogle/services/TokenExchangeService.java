@@ -87,10 +87,10 @@ public class TokenExchangeService {
     }
 
     public TokenExchange exchangeToken(TokenExchange shortLivedToken) {
-        this.logger.trace("TokenExchangeService -> exchangeToken: shortLivedToken=" + shortId(shortLivedToken.getKey()));
+        this.logger.debug("TokenExchangeService -> exchangeToken: shortLivedToken=" + shortId(shortLivedToken.getKey()));
         String token;
         token = map.get(shortLivedToken.getKey());
-        System.out.println("Token: " + shortId(token));
+        //this.logger.debug("Token: " + shortId(token));
         TokenExchange tokenExchange = new TokenExchange();
         tokenExchange.setKey(shortLivedToken.getKey());
         tokenExchange.setValue(token);

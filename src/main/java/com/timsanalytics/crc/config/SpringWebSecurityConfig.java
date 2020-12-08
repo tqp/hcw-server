@@ -88,6 +88,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/api/v1/basic-database-connection/**").permitAll()
                 .antMatchers("/api/v1/fuel-tracker/**").permitAll()
+                .antMatchers("/api/v1/user/**").permitAll()
 
 
                 // API Endpoints USER

@@ -40,7 +40,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password");
-        } else if ("Disabled".equalsIgnoreCase(user.getStatus())) {
+        } else if (user.getStatus() == 1) {
             throw new DisabledException("UserDisabled");
         }
 

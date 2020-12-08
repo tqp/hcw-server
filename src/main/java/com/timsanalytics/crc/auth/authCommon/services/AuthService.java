@@ -28,8 +28,8 @@ public class AuthService {
         this.logger.debug("AuthService -> getUserAndRolesForAuthentication: username=" + username);
         User user = this.authDao.getUserForAuthentication(username);
         if (user != null) {
-            this.logger.debug("AuthService -> getUserAndRolesForAuthentication: userGuid=" + user.getUserGuid());
-            user.setRoles(this.authDao.getRolesByUser(user.getUserGuid()));
+            this.logger.debug("AuthService -> getUserAndRolesForAuthentication: userGuid=" + user.getUserId());
+            user.setRoles(this.authDao.getRolesByUser(user.getUserId()));
             return user;
         }
         return null;

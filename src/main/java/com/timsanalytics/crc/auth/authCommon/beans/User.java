@@ -4,14 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 public class User {
-    private String userGuid;
+    private Integer userId;
     private String username;
     private String surname;
     private String givenName;
     private String password;
-    private Date lastLogin;
+    private String lastLogin;
     private Integer loginCount;
-    private String status;
+    private Integer status;
     private Date createdOn;
     private String createdBy;
     private Date updatedOn;
@@ -19,13 +19,14 @@ public class User {
     private String theme;
     private String picture;
     private List<Role> roles;
+    private String rolesString;
 
-    public String getUserGuid() {
-        return userGuid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserGuid(String userGuid) {
-        this.userGuid = userGuid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -60,11 +61,11 @@ public class User {
         this.password = password;
     }
 
-    public Date getLastLogin() {
+    public String getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(Date lastLogin) {
+    public void setLastLogin(String lastLogin) {
         this.lastLogin = lastLogin;
     }
 
@@ -76,11 +77,11 @@ public class User {
         this.loginCount = loginCount;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -138,5 +139,13 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getRolesString() {
+        return rolesString;
+    }
+
+    public void setRolesString(String rolesString) {
+        this.rolesString = rolesString;
     }
 }

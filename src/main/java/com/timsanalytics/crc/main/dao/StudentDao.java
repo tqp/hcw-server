@@ -115,28 +115,6 @@ public class StudentDao {
         }
     }
 
-    public int getStudentList_SSP_TotalRecords(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
-        StringBuilder query = new StringBuilder();
-        query.append("          SELECT\n");
-        query.append("              COUNT(*)\n");
-        query.append("          FROM\n");
-        query.append("          -- ROOT QUERY\n");
-        query.append("          (\n");
-        query.append(getStudentList_SSP_RootQuery(serverSidePaginationRequest));
-        query.append("          ) AS ROOT_QUERY\n");
-        query.append("          -- END ROOT QUERY\n");
-        try {
-            Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
-            return count == null ? 0 : count;
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return 0;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return 0;
-        }
-    }
-
     public List<Student> getStudentList_SSP(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
         int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
         int pageSize = serverSidePaginationRequest.getPageSize();
@@ -266,6 +244,28 @@ public class StudentDao {
         }
 
         return whereClause.toString();
+    }
+
+    public int getStudentList_SSP_TotalRecords(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
+        StringBuilder query = new StringBuilder();
+        query.append("          SELECT\n");
+        query.append("              COUNT(*)\n");
+        query.append("          FROM\n");
+        query.append("          -- ROOT QUERY\n");
+        query.append("          (\n");
+        query.append(getStudentList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append("          ) AS ROOT_QUERY\n");
+        query.append("          -- END ROOT QUERY\n");
+        try {
+            Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+            return count == null ? 0 : count;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return 0;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return 0;
+        }
     }
 
     public Student getStudentDetail(Integer studentId) {

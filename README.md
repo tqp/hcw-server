@@ -33,3 +33,12 @@ name = spring.profiles.active, value = prod
 ```
   
 Don't get fooled by all the websites that say to set SPRING_PROFILES_ACTIVE.
+
+#### Installing the external JAR
+```
+mvn install:install-file -Dfile=C:\Users\tqp\.m2\repository\com\timsanalytics\jar\tqp-auth-framework\1.0.0 -DgroupId=com.timsanalytics.jar -DartifactId=tqp-auth-framework -Dversion=1.0.0=true
+```
+Then, add the following line to Application.java
+```
+@ComponentScan(basePackages = {"com.timsanalytics.jar"})
+```

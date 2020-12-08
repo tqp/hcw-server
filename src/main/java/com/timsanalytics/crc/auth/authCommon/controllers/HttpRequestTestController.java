@@ -1,7 +1,7 @@
 package com.timsanalytics.crc.auth.authCommon.controllers;
 
 import com.timsanalytics.crc.auth.authCommon.beans.KeyValue;
-import com.timsanalytics.crc.auth.authCommon.services.TestService;
+import com.timsanalytics.crc.auth.authCommon.services.HttpRequestTestService;
 import com.timsanalytics.crc.common.beans.KeyValueString;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,15 +16,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/test")
-@Tag(name = "Test", description = "This is an endpoint to be used for testing purposes.")
-public class TestController {
+@RequestMapping("/api/v1/http-request-test")
+@Tag(name = "Http Request Test", description = "This is an endpoint to be used for testing purposes.")
+public class HttpRequestTestController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private final TestService testService;
+    private final HttpRequestTestService httpRequestTestService;
 
     @Autowired
-    public TestController(TestService testService) {
-        this.testService = testService;
+    public HttpRequestTestController(HttpRequestTestService httpRequestTestService) {
+        this.httpRequestTestService = httpRequestTestService;
     }
 
     @ResponseBody
@@ -34,7 +34,7 @@ public class TestController {
         this.logger.debug("TestController -> testMethod");
         try {
             return ResponseEntity.ok()
-                    .body(this.testService.testMethod());
+                    .body(this.httpRequestTestService.testMethod());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -45,7 +45,7 @@ public class TestController {
     @GetMapping(value = "/test-get-request", produces = "application/json")
     @Operation(summary = "exampleGetRequest", tags = {"Test"}, description = "GET Request")
     public KeyValueString exampleGetRequest() {
-        return this.testService.exampleGetRequest();
+        return this.httpRequestTestService.exampleGetRequest();
     }
 
     @ResponseBody
@@ -56,7 +56,7 @@ public class TestController {
             @ApiResponse(responseCode = "404", description = "Endpoint Not Found"),
     })
     public KeyValueString examplePostRequest() {
-        return this.testService.examplePostRequest();
+        return this.httpRequestTestService.examplePostRequest();
     }
 
     @ResponseBody
@@ -68,7 +68,7 @@ public class TestController {
     })
     public KeyValueString examplePostRequestWithPathVariable(@Parameter(description = "Path Variable", required = true, example = "pathVariable1") @PathVariable String pathVariable) {
         this.logger.debug("pathVariable: " + pathVariable);
-        return this.testService.examplePostRequestWithPathVariable();
+        return this.httpRequestTestService.examplePostRequestWithPathVariable();
     }
 
     @ResponseBody
@@ -81,7 +81,7 @@ public class TestController {
     public KeyValueString examplePostRequestWithRequestBody(@Parameter(description = "Path Variable", required = true, example = "pathVariable1") @RequestBody KeyValueString requestBody) {
         this.logger.debug("key: " + requestBody.getKey());
         this.logger.debug("value: " + requestBody.getValue());
-        return this.testService.examplePostRequestWithRequestBody();
+        return this.httpRequestTestService.examplePostRequestWithRequestBody();
     }
 
 }
