@@ -79,6 +79,11 @@ public class UserService {
         return this.userDao.getUserDetail(userId);
     }
 
+    public User getUserDetailByUsername(String username) {
+        this.logger.debug("UserService -> getUserDetailByUsername: username=" + username);
+        return this.userDao.getUserDetailByUsername(username);
+    }
+
     public User updateUser(User user, User loggedInUser) {
         this.logger.debug("UserService -> updateUser: username=" + user.getUsername());
         TransactionDefinition txDef = new DefaultTransactionDefinition();
@@ -158,8 +163,8 @@ public class UserService {
         return item; // Note: this User does not include the updates
     }
 
-    public Integer getUserGuidByUsername(String username) {
-        this.logger.debug("UserService -> getUserGuidByUsername: username=" + username);
+    public Integer getUserIdByUsername(String username) {
+        this.logger.debug("UserService -> getUserIdByUsername: username=" + username);
         return this.userDao.getUserIdByUsername(username);
     }
 

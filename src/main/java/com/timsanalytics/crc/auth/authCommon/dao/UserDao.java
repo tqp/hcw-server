@@ -91,7 +91,6 @@ public class UserDao {
     }
 
     public User getUserDetail(Integer userId) {
-        this.logger.debug("UserDao -> getUser: userId=" + userId);
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      user_id,\n");
@@ -489,6 +488,41 @@ public class UserDao {
                     }
             );
             return this.getUserDetail(user.getUserId());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public User getUserDetailByUsername(String username) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      user_id,\n");
+        query.append("      username,\n");
+        query.append("      password,\n");
+        query.append("      password_set,\n");
+        query.append("      last_login,\n");
+        query.append("      login_count,\n");
+        query.append("      surname,\n");
+        query.append("      given_name,\n");
+        query.append("      user_profile_photo_url,\n");
+        query.append("      created_on,\n");
+        query.append("      created_by,\n");
+        query.append("      updated_on,\n");
+        query.append("      updated_by,\n");
+        query.append("      deleted\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Auth_User\n");
+        query.append("  WHERE\n");
+        query.append("      username = ?\n");
+        query.append("      AND deleted = 0\n");
+        this.logger.debug("SQL:\n" + query.toString());
+        this.logger.debug("userId: " + username);
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

@@ -107,7 +107,7 @@ public class MyProfileController {
     public Integer getUserGuidByUsername(@PathVariable String username) {
         this.logger.debug(("UserController -> getUserIdByUsername: username=" + username));
         try {
-            return this.userService.getUserGuidByUsername(username);
+            return this.userService.getUserIdByUsername(username);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

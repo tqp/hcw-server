@@ -144,7 +144,7 @@ public class TokenService {
         if (request != null) {
             String token = request.getHeader(environment.getProperty("jwt.header")).substring(7);
             String username = getUsernameFromToken(token);
-            return userService.getUserDetail(userService.getUserGuidByUsername(username));
+            return userService.getUserDetail(userService.getUserIdByUsername(username));
         } else {
             return null;
         }

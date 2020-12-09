@@ -75,6 +75,19 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/username/{username}", method = RequestMethod.GET)
+    @Operation(summary = "Get User Detail by Username", description = "Get User Detail by Username", tags = {"User"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<User> getUserDetailByUsername(@Parameter(description = "Username", required = true) @PathVariable String username) {
+        try {
+            User user = userService.getUserDetailByUsername(username);
+            return ResponseEntity.ok()
+                    .body(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update User", description = "Update User", tags = {"User"}, security = @SecurityRequirement(name = "bearerAuth"))
