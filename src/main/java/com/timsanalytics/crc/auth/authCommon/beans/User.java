@@ -9,6 +9,7 @@ public class User {
     private String surname;
     private String givenName;
     private String password;
+    private String passwordSet;
     private String lastLogin;
     private Integer loginCount;
     private Integer status;
@@ -59,6 +60,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordSet() {
+        return passwordSet;
+    }
+
+    public void setPasswordSet(String passwordSet) {
+        this.passwordSet = passwordSet;
     }
 
     public String getLastLogin() {

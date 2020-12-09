@@ -67,7 +67,7 @@ public class InternalAuthService {
 
         // Generate Token
         String token = this.generateToken(appUser);
-        this.logger.debug("Token=" + token);
+        this.logger.trace("Token=" + token);
 
         return ResponseEntity.ok(new InternalAuthResponse(token));
     }

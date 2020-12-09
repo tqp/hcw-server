@@ -39,41 +39,30 @@ public class UserDao {
         this.logger.debug("UserDao -> createUser");
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
-        query.append("      USER\n");
+        query.append("      CRC.Auth_User\n");
         query.append("      (\n");
-        query.append("          USER_GUID,\n");
-        query.append("          USER_USERNAME,\n");
-        query.append("          USER_SURNAME,\n");
-        query.append("          USER_GIVEN_NAME,\n");
-        query.append("          LOGIN_COUNT,\n");
-        query.append("          STATUS,\n");
-        query.append("          CREATED_ON,\n");
-        query.append("          CREATED_BY,\n");
-        query.append("          UPDATED_ON,\n");
-        query.append("          UPDATED_BY\n");
+        query.append("          username,\n");
+        query.append("          surname,\n");
+        query.append("          given_name,\n");
+        query.append("          created_on,\n");
+        query.append("          created_by,\n");
+        query.append("          updated_on,\n");
+        query.append("          updated_by,\n");
+        query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          ?,\n");
-        query.append("          0,\n");
-        query.append("          'Active',\n");
         query.append("          NOW(),\n");
         query.append("          ?,\n");
         query.append("          NOW(),\n");
-        query.append("          ?\n");
+        query.append("          ?,\n");
+        query.append("          0\n");
         query.append("      )\n");
         this.logger.debug("SQL:\n" + query.toString());
-
         this.logger.debug("Username: " + user.getUsername());
-        this.logger.debug("Surname: " + user.getSurname());
-        this.logger.debug("Given Name: " + user.getGivenName());
-        this.logger.debug("Username: " + user.getUsername());
-        this.logger.debug("Password: " + user.getPassword());
-        this.logger.debug("Logged-In User: " + loggedInUser.getUsername());
-
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -81,10 +70,8 @@ public class UserDao {
                         ps.setString(1, user.getUsername());
                         ps.setString(2, user.getSurname());
                         ps.setString(3, user.getGivenName());
-                        ps.setString(4, this.bCryptEncoderService.encode(user.getPassword()));
-                        ps.setString(5, user.getTheme());
-                        ps.setString(6, loggedInUser.getUsername());
-                        ps.setString(7, loggedInUser.getUsername());
+                        ps.setInt(4, -1);
+                        ps.setInt(5, -1);
                         return ps;
                     });
             int lastInsertId = this.utilsDao.getLastInsertId();
@@ -106,6 +93,7 @@ public class UserDao {
         query.append("      user_id,\n");
         query.append("      username,\n");
         query.append("      password,\n");
+        query.append("      password_set,\n");
         query.append("      last_login,\n");
         query.append("      login_count,\n");
         query.append("      surname,\n");
@@ -120,45 +108,10 @@ public class UserDao {
         query.append("      CRC.Auth_User\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        query.append("      AND deleted = 0\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("userId: " + userId);
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userId}, new UserRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public User getUserByRowId(String row_id) {
-        this.logger.debug("UserDao -> getUserByRowId: row_id=" + row_id);
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      USER.USER_GUID,\n");
-        query.append("      USER.USER_USERNAME,\n");
-        query.append("      USER.USER_SURNAME,\n");
-        query.append("      USER.USER_GIVEN_NAME,\n");
-        query.append("      USER.USER_PASSWORD,\n");
-        query.append("      USER.USER_LAST_LOGIN,\n");
-        query.append("      USER.USER_LOGIN_COUNT,\n");
-        query.append("      USER.USER_PROFILE_PHOTO_URL,\n");
-        query.append("      USER.STATUS,\n");
-        query.append("      USER.CREATED_ON,\n");
-        query.append("      USER.CREATED_BY,\n");
-        query.append("      USER.UPDATED_ON,\n");
-        query.append("      USER.UPDATED_BY\n");
-        query.append("  FROM\n");
-        query.append("      USER\n");
-        query.append("  WHERE\n");
-        query.append("      USER.ROWID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userGuid: " + row_id);
-        try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{row_id}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -361,12 +314,41 @@ public class UserDao {
     }
 
     public User deleteUser(Integer userId) {
-        this.logger.debug("UserDao -> deleteUser");
+        this.logger.debug("UserDao -> deleteUser: " + userId);
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Auth_User\n");
+        query.append("  SET\n");
+        query.append("      deleted = 1\n");
+        query.append("  WHERE\n");
+        query.append("      user_id = ?\n");
+        this.logger.debug("SQL:\n" + query.toString());
+        this.logger.debug("userId: " + userId);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setInt(1, userId);
+                        return ps;
+                    }
+            );
+            return this.getUserDetail(userId);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public User purgeUser(Integer userId) {
+        this.logger.debug("UserDao -> purgeUser: " + userId);
         StringBuilder query = new StringBuilder();
         query.append("  DELETE FROM\n");
-        query.append("      USER\n");
+        query.append("      CRC.App_User\n");
         query.append("  WHERE\n");
-        query.append("      USER.USER_GUID = ?\n");
+        query.append("      user_id = ?\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("userId: " + userId);
         try {
@@ -479,17 +461,17 @@ public class UserDao {
 
     // NON-CRUD DAOs
 
-    public User changePassword(User user, User loggedInUser) {
-        this.logger.debug("UserDao -> changePassword: newPassword=" + user.getPassword());
+    public User updatePassword(User user, User loggedInUser) {
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
-        query.append("      USER\n");
+        query.append("      CRC.Auth_User\n");
         query.append("  SET\n");
-        query.append("      USER.USER_PASSWORD = ?,\n");
-        query.append("      USER.UPDATED_ON = NOW(),\n");
-        query.append("      USER.UPDATED_BY = ?\n");
+        query.append("      password = ?,\n");
+        query.append("      password_set = NOW(),\n");
+        query.append("      updated_on = NOW(),\n");
+        query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
-        query.append("      USER.USER_GUID = ?\n");
+        query.append("      user_id = ?\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("userGuid: " + user.getUserId());
         try {
@@ -497,79 +479,12 @@ public class UserDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, this.bCryptEncoderService.encode(user.getPassword()));
-                        ps.setString(2, loggedInUser.getUsername());
+                        ps.setInt(2, -1);
                         ps.setInt(3, user.getUserId());
                         return ps;
                     }
             );
             return this.getUserDetail(user.getUserId());
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public User updateLastLogin(Integer userId) {
-        this.logger.debug("UserDao -> updateLastLogin: userId=" + userId);
-        StringBuilder query = new StringBuilder();
-        query.append("  UPDATE\n");
-        query.append("      USER\n");
-        query.append("  SET\n");
-        query.append("      USER.USER_LAST_LOGIN = NOW()\n");
-        query.append("  WHERE\n");
-        query.append("      USER.USER_GUID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userGuid: " + userId);
-        try {
-            this.mySqlAuthJdbcTemplate.update(
-                    connection -> {
-                        PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, userId);
-                        return ps;
-                    }
-            );
-            return this.getUserDetail(userId);
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public User incrementLoginCount(Integer userId) {
-        this.logger.debug("UserDao -> incrementLoginCount: userId=" + userId);
-        StringBuilder query = new StringBuilder();
-        query.append("  UPDATE\n");
-        query.append("      USER\n");
-        query.append("  SET\n");
-        query.append("      USER.USER_LOGIN_COUNT = \n");
-        query.append("      (\n");
-        query.append("          SELECT\n");
-        query.append("              USER.USER_LOGIN_COUNT\n");
-        query.append("          FROM\n");
-        query.append("              USER\n");
-        query.append("          WHERE\n");
-        query.append("              USER.USER_GUID = ?\n");
-        query.append("      ) + 1\n");
-        query.append("  WHERE\n");
-        query.append("      USER.USER_GUID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userId: " + userId);
-        try {
-            this.mySqlAuthJdbcTemplate.update(
-                    connection -> {
-                        PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, userId);
-                        ps.setInt(2, userId);
-                        return ps;
-                    }
-            );
-            return this.getUserDetail(userId);
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

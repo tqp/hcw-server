@@ -5,6 +5,7 @@ import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.beans.UserRole;
 import com.timsanalytics.crc.auth.authCommon.dao.UserRoleDao;
 import com.timsanalytics.crc.utils.GenerateUuidService;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,10 @@ import java.util.stream.Collectors;
 public class UserRoleService {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final UserRoleDao userRoleDao;
-    private final GenerateUuidService generateUuidService;
 
     @Autowired
-    public UserRoleService(UserRoleDao userRoleDao, GenerateUuidService generateUuidService) {
+    public UserRoleService(UserRoleDao userRoleDao) {
         this.userRoleDao = userRoleDao;
-        this.generateUuidService = generateUuidService;
     }
 
     public Integer createUserRole(Integer userGuid, Integer roleGuid, Integer deleted, User loggedInUser) {
@@ -39,24 +38,34 @@ public class UserRoleService {
         return item;
     }
 
-    public List<UserRole> updateUserRoleBatch(Integer userId, List<Role> rolesToUpdate) {
+    public void updateUserRoleBatch(Integer userId, List<Role> rolesToUpdate) {
         // Because MySQL doesn't have a MERGE query like Oracle, we are forced to use MySQL's
         // ON DUPLICATE KEY UPDATE query. To make this work for us, we first have to get the key from the
         // association table, if one exists. If the key already exists in the table, the query will update
         // it with a status. If it doesn't exist, the query will create it.
         List<UserRole> userRoleList = this.createUserRoleListToAddRoleToUser(userId, rolesToUpdate);
 
-        List<UserRole> newItems = userRoleList.stream()
-                .filter(item -> item.getUserRoleId() == null)
-                .collect(Collectors.toList());
-        int[] newRecordsUpdated = this.userRoleDao.insertUserRoleBatch(newItems);
+        try {
+            List<UserRole> newItems = userRoleList.stream()
+                    .filter(item -> item.getUserRoleId() == null)
+                    .collect(Collectors.toList());
+            if (newItems.size() > 0) {
+                int[] newRecordsUpdated = this.userRoleDao.insertUserRoleBatch(newItems);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
 
-        List<UserRole> existingItems = userRoleList.stream()
-                .filter(item -> item.getUserRoleId() != null)
-                .collect(Collectors.toList());
-        int[] existingRecordsUpdated = this.userRoleDao.updateUserRoleBatch(existingItems);
-
-        return userRoleList;
+        try {
+            List<UserRole> existingItems = userRoleList.stream()
+                    .filter(item -> item.getUserRoleId() != null)
+                    .collect(Collectors.toList());
+            if (existingItems.size() > 0) {
+                int[] existingRecordsUpdated = this.userRoleDao.updateUserRoleBatch(existingItems);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     private List<UserRole> createUserRoleListToAddRoleToUser(Integer userId, List<Role> rolesToUpdate) {

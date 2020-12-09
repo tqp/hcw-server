@@ -19,7 +19,6 @@ import java.util.List;
 @Service
 public class UserRoleDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private final PrintObjectService printObjectService;
 
     @Qualifier("mySqlAuthJdbcTemplate")
     private final JdbcTemplate mySqlAuthJdbcTemplate;
@@ -27,7 +26,6 @@ public class UserRoleDao {
     @Autowired
     public UserRoleDao(JdbcTemplate mySqlAuthJdbcTemplate, PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
-        this.printObjectService = printObjectService;
     }
 
     public Integer createUserRole(Integer userId, Integer roleId, Integer deleted, User loggedInUser) {
@@ -121,11 +119,19 @@ public class UserRoleDao {
         query.append("      (\n");
         query.append("          user_id,\n");
         query.append("          role_id,\n");
+        query.append("          created_on,\n");
+        query.append("          created_by,\n");
+        query.append("          updated_on,\n");
+        query.append("          updated_by,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
         query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          NOW(),\n");
+        query.append("          ?,\n");
+        query.append("          NOW(),\n");
         query.append("          ?,\n");
         query.append("          ?\n");
         query.append("      )\n");
@@ -136,7 +142,9 @@ public class UserRoleDao {
                         public void setValues(PreparedStatement ps, int i) throws SQLException {
                             ps.setInt(1, userRoleList.get(i).getUserId());
                             ps.setInt(2, userRoleList.get(i).getRoleId());
-                            ps.setInt(3, userRoleList.get(i).getStatus() ? 0 : 1);
+                            ps.setInt(3, -1);
+                            ps.setInt(4, -1);
+                            ps.setInt(5, userRoleList.get(i).getStatus() ? 0 : 1);
                         }
 
                         @Override
@@ -144,12 +152,9 @@ public class UserRoleDao {
                             return userRoleList.size();
                         }
                     });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
         } catch (Exception e) {
             this.logger.error("Exception: " + e);
-            return null;
+            throw e;
         }
     }
 

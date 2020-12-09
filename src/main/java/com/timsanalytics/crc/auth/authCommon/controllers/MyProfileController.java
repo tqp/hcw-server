@@ -74,13 +74,12 @@ public class MyProfileController {
         }
     }
 
-    @RequestMapping(value = "/password", method = RequestMethod.PUT)
-    @Operation(summary = "Change My Password", description = "Change My Password", tags = {"My Profile"})
-    public User changePassword(HttpServletRequest request, @RequestBody User User) {
-        this.logger.debug("MyProfileController -> changePassword: userGuid=" + User.getUserId());
+    @RequestMapping(value = "/update-password", method = RequestMethod.PUT)
+    @Operation(summary = "Update My Password", description = "Update My Password", tags = {"My Profile"})
+    public User updatePassword(HttpServletRequest request, @RequestBody User User) {
         try {
             User loggedInUser = this.tokenService.getUserFromRequest(request);
-            return this.userService.changePassword(User, loggedInUser);
+            return this.userService.updatePassword(User, loggedInUser);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -126,4 +125,5 @@ public class MyProfileController {
             return null;
         }
     }
+
 }

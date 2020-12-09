@@ -3,7 +3,6 @@ package com.timsanalytics.crc.auth.authCommon.controllers;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.auth.authCommon.services.UserService;
-import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -92,11 +91,11 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Delete User", description = "Delete User", tags = {"User"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<User> deleteStudent(@RequestBody User user,
-                                                  HttpServletRequest request) {
+    public ResponseEntity<User> deleteUser(@Parameter(description = "User ID", required = true) @PathVariable Integer userId,
+                                           HttpServletRequest request) {
         try {
             return ResponseEntity.ok()
-                    .body(userService.deleteUser(user, this.tokenService.getUserFromRequest(request)));
+                    .body(userService.deleteUser(userId, this.tokenService.getUserFromRequest(request)));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

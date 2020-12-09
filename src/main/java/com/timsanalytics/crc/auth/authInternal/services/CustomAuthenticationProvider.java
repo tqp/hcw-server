@@ -32,7 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        this.logger.debug("CustomAuthenticationProvider -> authenticate");
+        this.logger.trace("CustomAuthenticationProvider -> authenticate");
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
@@ -45,7 +45,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         Boolean matches = this.bCryptEncoderService.verify(authentication.getCredentials().toString(), user.getPassword());
-        this.logger.debug("Credentials Authenticated: " + matches);
+        this.logger.trace("Credentials Authenticated: " + matches);
 
         if (matches) {
             return new UsernamePasswordAuthenticationToken(username, password, Collections.emptyList());

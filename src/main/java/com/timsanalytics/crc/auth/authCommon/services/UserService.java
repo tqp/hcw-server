@@ -20,49 +20,40 @@ import java.util.List;
 @Service
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private final com.timsanalytics.crc.auth.authCommon.dao.UserDao userDao;
+    private final UserDao userDao;
     private final PlatformTransactionManager mySqlAuthTransactionManager;
-    private final PrintObjectService printObjectService;
     private final UserRoleService userRoleService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
     public UserService(UserDao userDao,
                        PlatformTransactionManager mySqlAuthTransactionManager,
-                       PrintObjectService printObjectService,
-                       UserRoleService userRoleService) {
+                       UserRoleService userRoleService,
+                       PrintObjectService printObjectService) {
         this.userDao = userDao;
         this.mySqlAuthTransactionManager = mySqlAuthTransactionManager;
         this.userRoleService = userRoleService;
         this.printObjectService = printObjectService;
     }
 
-    public User createUser(User User, User loggedInUser) {
-        this.logger.debug("UserService -> createUser: username=" + User.getUsername());
+    public User createUser(User user, User loggedInUser) {
+        this.logger.debug("UserService -> createUser: username=" + user.getUsername());
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
-        User user;
+        User createdUser = null;
         try {
             // Create the new User.
-            user = this.userDao.createUser(User, loggedInUser);
-            this.printObjectService.PrintObject("UserService -> createUser: User", user);
+            createdUser = this.userDao.createUser(user, loggedInUser);
 
-            // Add the Roles to the new User.
-            for (int i = 0; i < User.getRoles().size(); i++) {
-                this.userRoleService.createUserRole(
-                        user.getUserId(),
-                        User.getRoles().get(i).getRoleId(),
-                        User.getRoles().get(i).getDeleted(),
-                        loggedInUser
-                );
-            }
+            // Update the User's Roles
+            this.userRoleService.updateUserRoleBatch(createdUser.getUserId(), user.getRoles());
 
             // If everything was successful, commit to the database.
             mySqlAuthTransactionManager.commit(txStatus);
-            this.logger.debug("UserService -> createUser -> response: " + user);
+            this.logger.debug("UserService -> createUser -> response: " + createdUser);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
-            logger.error("Error during creation: " + User.getUsername(), e);
-            throw e;
+            logger.error("Error during creation: " + user.getUsername());
         }
         return user;
     }
@@ -92,25 +83,13 @@ public class UserService {
         this.logger.debug("UserService -> updateUser: username=" + user.getUsername());
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
-        User updatedUser;
+        User updatedUser = null;
         try {
             // Update the User.
             updatedUser = this.userDao.updateUser(user, loggedInUser);
 
             // Update the User's Roles
-//            this.printObjectService.PrintObject("roles", user.getRoles());
             this.userRoleService.updateUserRoleBatch(user.getUserId(), user.getRoles());
-
-//            if(user.getRoles() != null && user.getRoles().size() > 0) {
-//                for (int i = 0; i < user.getRoles().size(); i++) {
-//                    this.userRoleService.updateUserRole(
-//                            updatedUser.getUserId(),
-//                            user.getRoles().get(i).getRoleId(),
-//                            user.getRoles().get(i).getStatus(),
-//                            loggedInUser
-//                    );
-//                }
-//            }
 
             // If everything was successful, commit to the database.
             mySqlAuthTransactionManager.commit(txStatus);
@@ -118,15 +97,14 @@ public class UserService {
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
             logger.error("Error during update: " + user.getUsername(), e);
-            throw e;
         }
         return updatedUser;
     }
 
     // DELETE
-    public User deleteUser(User user, User loggedInUser) {
-        this.logger.debug("UserService -> deleteUser: userId=" + user.getUserId());
-        User deletedUser = this.userDao.deleteUser(user.getUserId());
+    public User deleteUser(Integer userId, User loggedInUser) {
+        this.logger.debug("UserService -> deleteUser: userId=" + userId);
+        User deletedUser = this.userDao.deleteUser(userId);
         this.logger.debug("UserService -> deleteUser: deletedUser=" + deletedUser.getUserId());
         return deletedUser;
     }
@@ -151,8 +129,6 @@ public class UserService {
         try {
             // Update the User.
             item = this.userDao.updateMyProfile(User, loggedInUser);
-            this.printObjectService.PrintObject("UserService -> updateMyProfile: User", item);
-
             // If everything was successful, commit to the database.
             mySqlAuthTransactionManager.commit(txStatus);
             this.logger.debug("UserService -> updateMyProfile -> response: " + item);
@@ -166,19 +142,14 @@ public class UserService {
 
     // NON-CRUD SERVICES
 
-    public User changePassword(User User, User loggedInUser) {
-        this.logger.debug("UserService -> changePassword");
+    public User updatePassword(User User, User loggedInUser) {
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
         User item;
         try {
-            // Update the User.
-            item = this.userDao.changePassword(User, loggedInUser);
-            this.printObjectService.PrintObject("UserService -> changePassword: User", item);
-
+            item = this.userDao.updatePassword(User, loggedInUser);
             // If everything was successful, commit to the database.
             mySqlAuthTransactionManager.commit(txStatus);
-            this.logger.debug("UserService -> changePassword -> response: " + item);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
             logger.error("Error during update: " + User.getUsername(), e);
