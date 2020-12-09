@@ -44,6 +44,7 @@ public class UserDao {
         query.append("          username,\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
+        query.append("          password,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -55,6 +56,7 @@ public class UserDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          NOW(),\n");
         query.append("          ?,\n");
         query.append("          NOW(),\n");
@@ -63,6 +65,7 @@ public class UserDao {
         query.append("      )\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("Username: " + user.getUsername());
+        System.out.println("user.getPassword(): " + user.getPassword());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -70,8 +73,9 @@ public class UserDao {
                         ps.setString(1, user.getUsername());
                         ps.setString(2, user.getSurname());
                         ps.setString(3, user.getGivenName());
-                        ps.setInt(4, -1);
+                        ps.setString(4, user.getPassword() != null ? this.bCryptEncoderService.encode(user.getPassword()) : null);
                         ps.setInt(5, -1);
+                        ps.setInt(6, -1);
                         return ps;
                     });
             int lastInsertId = this.utilsDao.getLastInsertId();
