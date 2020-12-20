@@ -68,7 +68,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // LOCK THE ENDPOINTS DOWN HERE
                 .and()
                 .authorizeRequests()
-                //.antMatchers("**").permitAll() // WIDE OPEN!!!
+//                .antMatchers("**").permitAll() // WIDE OPEN!!!
 
                 // Front-End Resources
                 .antMatchers("/*", "/*/*").permitAll()
@@ -88,7 +88,10 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/api/v1/basic-database-connection/**").permitAll()
                 .antMatchers("/api/v1/fuel-tracker/**").permitAll()
+
+                // RE-FILE LATER
                 .antMatchers("/api/v1/user/**").permitAll()
+//                .antMatchers("/api/v1/post-grad-event/**").permitAll()
 
 
                 // API Endpoints USER

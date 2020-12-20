@@ -181,6 +181,8 @@ public class StudentDao {
     }
 
     private String getStudentList_SSP_RootQuery(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {
+        // REF: 'greatest-n-per-group'
+        // REF: https://intellipaat.com/community/5064/sql-join-selecting-the-last-records-in-a-one-to-many-relationship
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
         query.append("              SELECT\n");
