@@ -30,6 +30,20 @@ public class AppController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/health-check", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Health Check Response", description = "Get Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> getHealthCheck() {
+        try {
+            return ResponseEntity.ok()
+                    .body(new KeyValue("health-check", "success"));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/build-timestamp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Build Timestamp", tags = {"App"}, description = "Gets the date-time when the server was last built.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> getBuildTimestamp() {

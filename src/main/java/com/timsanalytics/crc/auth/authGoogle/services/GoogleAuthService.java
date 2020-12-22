@@ -59,8 +59,8 @@ public class GoogleAuthService {
         GoogleAuthConfig googleAuthConfig = new GoogleAuthConfig();
         googleAuthConfig.setClientId(this.environment.getProperty("google.client-id"));
         googleAuthConfig.setRedirectUri(this.environment.getProperty("google.redirect-uri"));
-        System.out.println("google.client-id: " + this.environment.getProperty("google.client-id"));
-        System.out.println("google.redirect-uri: " + this.environment.getProperty("google.redirect-uri"));
+//        System.out.println("google.client-id: " + this.environment.getProperty("google.client-id"));
+//        System.out.println("google.redirect-uri: " + this.environment.getProperty("google.redirect-uri"));
         return googleAuthConfig;
     }
 
