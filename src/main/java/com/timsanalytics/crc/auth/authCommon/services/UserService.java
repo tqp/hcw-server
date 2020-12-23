@@ -163,6 +163,22 @@ public class UserService {
         return item; // Note: this User does not include the updates
     }
 
+    public User resetPassword(User User, User loggedInUser) {
+        TransactionDefinition txDef = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
+        User item;
+        try {
+            item = this.userDao.resetPassword(User, loggedInUser);
+            // If everything was successful, commit to the database.
+            mySqlAuthTransactionManager.commit(txStatus);
+        } catch (Exception e) {
+            mySqlAuthTransactionManager.rollback(txStatus);
+            logger.error("Error during update: " + User.getUsername(), e);
+            throw e;
+        }
+        return item; // Note: this User does not include the updates
+    }
+
     public Integer getUserIdByUsername(String username) {
         this.logger.debug("UserService -> getUserIdByUsername: username=" + username);
         return this.userDao.getUserIdByUsername(username);

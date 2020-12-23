@@ -35,6 +35,7 @@ public class RoleDao {
         query.append("      CRC.Auth_Role\n");
         query.append("  WHERE\n");
         query.append("      deleted = 0\n");
+        query.append("      AND restricted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      sort_order,\n");
         query.append("      name\n");

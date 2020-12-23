@@ -22,6 +22,12 @@ public class User {
     private List<Role> roles;
     private String rolesString;
 
+    // ROLES
+    private int RoleUser;
+    private int RoleCaseManager;
+    private int RoleMonitoring;
+    private int RoleDirector;
+
     public Integer getUserId() {
         return userId;
     }
@@ -156,5 +162,37 @@ public class User {
 
     public void setRolesString(String rolesString) {
         this.rolesString = rolesString;
+    }
+
+    public int getRoleUser() {
+        return RoleUser;
+    }
+
+    public void setRoleUser(int roleUser) {
+        RoleUser = roleUser;
+    }
+
+    public int getRoleCaseManager() {
+        return RoleCaseManager;
+    }
+
+    public void setRoleCaseManager(int roleCaseManager) {
+        RoleCaseManager = roleCaseManager;
+    }
+
+    public int getRoleMonitoring() {
+        return RoleMonitoring;
+    }
+
+    public void setRoleMonitoring(int roleMonitoring) {
+        RoleMonitoring = roleMonitoring;
+    }
+
+    public int getRoleDirector() {
+        return RoleDirector;
+    }
+
+    public void setRoleDirector(int roleDirector) {
+        RoleDirector = roleDirector;
     }
 }

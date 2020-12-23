@@ -114,4 +114,32 @@ public class UserController {
             return null;
         }
     }
+
+    // OTHER CRUD
+
+    @RequestMapping(value = "/update-password", method = RequestMethod.PUT)
+    @Operation(summary = "Reset User's Password", description = "Reset User's Password", tags = {"User"})
+    public User updatePassword(HttpServletRequest request, @RequestBody User User) {
+        try {
+            User loggedInUser = this.tokenService.getUserFromRequest(request);
+            return this.userService.updatePassword(User, loggedInUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/reset-password", method = RequestMethod.PUT)
+    @Operation(summary = "Reset User's Password", description = "Reset User's Password", tags = {"User"})
+    public User resetPassword(HttpServletRequest request, @RequestBody User User) {
+        try {
+            User loggedInUser = this.tokenService.getUserFromRequest(request);
+            return this.userService.resetPassword(User, loggedInUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }
