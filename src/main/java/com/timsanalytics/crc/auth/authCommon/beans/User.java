@@ -10,6 +10,7 @@ public class User {
     private String givenName;
     private String password;
     private String passwordSet;
+    private Integer passwordReset;
     private String lastLogin;
     private Integer loginCount;
     private Integer status;
@@ -74,6 +75,14 @@ public class User {
 
     public void setPasswordSet(String passwordSet) {
         this.passwordSet = passwordSet;
+    }
+
+    public Integer getPasswordReset() {
+        return passwordReset;
+    }
+
+    public void setPasswordReset(Integer passwordReset) {
+        this.passwordReset = passwordReset;
     }
 
     public String getLastLogin() {

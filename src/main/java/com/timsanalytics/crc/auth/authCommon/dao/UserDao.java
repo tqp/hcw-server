@@ -97,6 +97,7 @@ public class UserDao {
         query.append("      username,\n");
         query.append("      password,\n");
         query.append("      password_set,\n");
+        query.append("      password_reset,\n");
         query.append("      last_login,\n");
         query.append("      login_count,\n");
         query.append("      surname,\n");
@@ -134,6 +135,7 @@ public class UserDao {
         query.append("      given_name\n");
         query.append("      password,\n");
         query.append("      password_set,\n");
+        query.append("      password_reset,\n");
         query.append("      last_login,\n");
         query.append("      login_count,\n");
         query.append("      user_profile_photo_url,\n");
@@ -491,6 +493,7 @@ public class UserDao {
         query.append("  SET\n");
         query.append("      password = ?,\n");
         query.append("      password_set = NOW(),\n");
+        query.append("      password_reset = 0,\n");
         query.append("      updated_on = NOW(),\n");
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
@@ -524,6 +527,7 @@ public class UserDao {
         query.append("  SET\n");
         query.append("      password = ?,\n");
         query.append("      password_set = NULL,\n");
+        query.append("      password_reset = 1,\n");
         query.append("      updated_on = NOW(),\n");
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
@@ -557,6 +561,7 @@ public class UserDao {
         query.append("      username,\n");
         query.append("      password,\n");
         query.append("      password_set,\n");
+        query.append("      password_reset,\n");
         query.append("      last_login,\n");
         query.append("      login_count,\n");
         query.append("      surname,\n");
