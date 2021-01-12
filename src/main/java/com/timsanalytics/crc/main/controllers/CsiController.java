@@ -135,6 +135,20 @@ public class CsiController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/recent-scores/student/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Most Recent Csi Scores by Student ID", description = "Get Most Recent Csi Scores by Student ID", tags = {"Csi"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Csi> getMostRecentCsiScoresByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.csiService.getMostRecentCsiScoresByStudentId(studentId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/case-manager/{caseManagerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Csi List by Case Manager ID", description = "Get Csi List by Case Manager ID", tags = {"Csi"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<Csi>> getCsiListByCaseManagerId(@Parameter(description = "Case Manager ID", required = true) @PathVariable Integer caseManagerId) {

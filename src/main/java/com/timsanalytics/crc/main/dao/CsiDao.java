@@ -466,6 +466,64 @@ public class CsiDao {
         }
     }
 
+    public Csi getMostRecentCsiScoresByStudentId(Integer studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      csi_id,\n");
+        query.append("      student_id,\n");
+        query.append("      case_manager_id,\n");
+        query.append("      csi_date,\n");
+        query.append("      csi_score_food_security,\n");
+        query.append("      csi_score_nutrition_and_growth,\n");
+        query.append("      csi_score_shelter,\n");
+        query.append("      csi_score_care,\n");
+        query.append("      csi_score_abuse_and_exploitation,\n");
+        query.append("      csi_score_legal_protection,\n");
+        query.append("      csi_score_wellness,\n");
+        query.append("      csi_score_health_care_services,\n");
+        query.append("      csi_score_emotional_health,\n");
+        query.append("      csi_score_social_behavior,\n");
+        query.append("      csi_score_performance,\n");
+        query.append("      csi_score_education_and_work\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Csi\n");
+        query.append("  WHERE\n");
+        query.append("      student_id = ?\n");
+        query.append("      AND deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      csi_date DESC\n");
+        query.append("  LIMIT 1\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Csi row = new Csi();
+                row.setCsiId(rs.getInt("csi_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCsiDate(rs.getString("csi_date"));
+                row.setCsiScoreFoodSecurity(rs.getInt("csi_score_food_security"));
+                row.setCsiScoreNutritionAndGrowth(rs.getInt("csi_score_nutrition_and_growth"));
+                row.setCsiScoreShelter(rs.getInt("csi_score_shelter"));
+                row.setCsiScoreCare(rs.getInt("csi_score_care"));
+                row.setCsiScoreAbuseAndExploitation(rs.getInt("csi_score_abuse_and_exploitation"));
+                row.setCsiScoreLegalProtection(rs.getInt("csi_score_legal_protection"));
+                row.setCsiScoreWellness(rs.getInt("csi_score_wellness"));
+                row.setCsiScoreHealthCareServices(rs.getInt("csi_score_health_care_services"));
+                row.setCsiScoreEmotionalHealth(rs.getInt("csi_score_emotional_health"));
+                row.setCsiScoreSocialBehavior(rs.getInt("csi_score_social_behavior"));
+                row.setCsiScorePerformance(rs.getInt("csi_score_performance"));
+                row.setCsiScoreEducationAndWork(rs.getInt("csi_score_education_and_work"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
     public List<Csi> getCsiListByCaseManagerId(Integer caseManagerId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");

@@ -57,6 +57,10 @@ public class CsiService {
         return this.csiDao.getCsiListByStudentId(studentId);
     }
 
+    public Csi getMostRecentCsiScoresByStudentId(Integer studentId) {
+        return this.csiDao.getMostRecentCsiScoresByStudentId(studentId);
+    }
+
     public List<Csi> getCsiListByCaseManagerId(Integer caseManagerId) {
         return this.csiDao.getCsiListByCaseManagerId(caseManagerId);
     }
