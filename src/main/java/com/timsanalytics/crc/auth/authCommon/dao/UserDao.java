@@ -4,6 +4,7 @@ import com.timsanalytics.crc.auth.authCommon.beans.Role;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.dao.rowMappers.RoleRowMapper;
 import com.timsanalytics.crc.auth.authCommon.dao.rowMappers.UserRowMapper;
+import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.dao.UtilsDao;
 import com.timsanalytics.crc.utils.BCryptEncoderService;
@@ -587,6 +588,28 @@ public class UserDao {
         } catch (Exception e) {
             this.logger.error("Exception: " + e);
             return null;
+        }
+    }
+
+    public void updateScreenResolution(String resolution, User loggedInUser) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Auth_User\n");
+        query.append("  SET\n");
+        query.append("      screen_resolution = ?\n");
+        query.append("  WHERE\n");
+        query.append("      user_id = ?\n");
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, resolution);
+                        ps.setInt(2, loggedInUser.getUserId());
+                        return ps;
+                    }
+            );
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
         }
     }
 

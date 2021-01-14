@@ -3,6 +3,7 @@ package com.timsanalytics.crc.auth.authCommon.services;
 import com.timsanalytics.crc.auth.authCommon.beans.Role;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.dao.UserDao;
+import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.utils.PrintObjectService;
@@ -177,6 +178,10 @@ public class UserService {
             throw e;
         }
         return item; // Note: this User does not include the updates
+    }
+
+    public void updateScreenResolution(String resolution, User loggedInUser) {
+        this.userDao.updateScreenResolution(resolution, loggedInUser);
     }
 
     public Integer getUserIdByUsername(String username) {
