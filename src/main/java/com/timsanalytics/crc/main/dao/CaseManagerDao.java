@@ -73,17 +73,28 @@ public class CaseManagerDao {
 
     public List<CaseManager> getCaseManagerList() {
         StringBuilder query = new StringBuilder();
+//        query.append("  SELECT\n");
+//        query.append("      case_manager_id,\n");
+//        query.append("      surname,\n");
+//        query.append("      given_name\n");
+//        query.append("  FROM\n");
+//        query.append("      CRC.Person_Case_Manager\n");
+//        query.append("  WHERE\n");
+//        query.append("      deleted = 0\n");
+//        query.append("  ORDER BY\n");
+//        query.append("      surname,\n");
+//        query.append("      given_name\n");
         query.append("  SELECT\n");
-        query.append("      case_manager_id,\n");
-        query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.surname,\n");
+        query.append("      Auth_User.given_name,\n");
+        query.append("      Auth_User_Role.role_id\n");
         query.append("  FROM\n");
-        query.append("      CRC.Person_Case_Manager\n");
-        query.append("  WHERE\n");
-        query.append("      deleted = 0\n");
+        query.append("      CRC.Auth_User\n");
+        query.append("      LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND role_id = 5\n");
         query.append("  ORDER BY\n");
-        query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("      Auth_User.surname,\n");
+        query.append("      Auth_User.given_name\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
@@ -324,21 +335,36 @@ public class CaseManagerDao {
 
     public CaseManager getCaseManagerDetailByStudentId(int studentId) {
         StringBuilder query = new StringBuilder();
+//        query.append("  SELECT\n");
+//        query.append("      Person_Case_Manager.case_manager_id,\n");
+//        query.append("      Person_Case_Manager.surname,\n");
+//        query.append("      Person_Case_Manager.given_name,\n");
+//        query.append("      Rel_Student_Case_Manager.student_case_manager_id,\n");
+//        query.append("      Rel_Student_Case_Manager.start_date\n");
+//        query.append("  FROM\n");
+//        query.append("      CRC.Rel_Student_Case_Manager\n");
+//        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Rel_Student_Case_Manager.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+//        query.append("  WHERE\n");
+//        query.append("      student_id = ?\n");
+//        query.append("      AND Rel_Student_Case_Manager.deleted = 0\n");
+//        query.append("  ORDER BY\n");
+//        query.append("      start_date DESC\n");
+//        query.append("  LIMIT 0, 1\n");
         query.append("  SELECT\n");
-        query.append("      Person_Case_Manager.case_manager_id,\n");
-        query.append("      Person_Case_Manager.surname,\n");
-        query.append("      Person_Case_Manager.given_name,\n");
+        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.surname,\n");
+        query.append("      Auth_User.given_name,\n");
         query.append("      Rel_Student_Case_Manager.student_case_manager_id,\n");
         query.append("      Rel_Student_Case_Manager.start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Case_Manager\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Rel_Student_Case_Manager.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Rel_Student_Case_Manager.case_manager_id AND Auth_User.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
-        query.append("      AND Rel_Student_Case_Manager.deleted = 0\n");
+        query.append("      AND Auth_User.deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      start_date DESC\n");
-        query.append("  LIMIT 0, 1\n");
+        query.append("      LIMIT 0, 1\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {

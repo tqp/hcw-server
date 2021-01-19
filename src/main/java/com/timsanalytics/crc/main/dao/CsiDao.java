@@ -228,6 +228,24 @@ public class CsiDao {
     private String getCsiList_SSP_RootQuery(ServerSidePaginationRequest<Csi> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
+//        query.append("              SELECT\n");
+//        query.append("                  csi_id,\n");
+//        query.append("                  csi_date,\n");
+//        query.append("                  Student_Csi.student_id,\n");
+//        query.append("                  Person_Student.surname AS student_surname,\n");
+//        query.append("                  Person_Student.given_name AS student_given_name,\n");
+//        query.append("                  Student_Csi.case_manager_id,\n");
+//        query.append("                  Person_Case_Manager.surname AS case_manager_surname,\n");
+//        query.append("                  Person_Case_Manager.given_name AS case_manager_given_name,\n");
+//        query.append("                  csi_comments\n");
+//        query.append("              FROM\n");
+//        query.append("                  CRC.Student_Csi\n");
+//        query.append("                  LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
+//        query.append("                  LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+//        query.append("              WHERE\n");
+//        query.append("              (\n");
+//        query.append("                  Student_Csi.deleted = 0\n");
+//        query.append("              )");
         query.append("              SELECT\n");
         query.append("                  csi_id,\n");
         query.append("                  csi_date,\n");
@@ -235,13 +253,13 @@ public class CsiDao {
         query.append("                  Person_Student.surname AS student_surname,\n");
         query.append("                  Person_Student.given_name AS student_given_name,\n");
         query.append("                  Student_Csi.case_manager_id,\n");
-        query.append("                  Person_Case_Manager.surname AS case_manager_surname,\n");
-        query.append("                  Person_Case_Manager.given_name AS case_manager_given_name,\n");
+        query.append("                  Auth_User.surname AS case_manager_surname,\n");
+        query.append("                  Auth_User.given_name AS case_manager_given_name,\n");
         query.append("                  csi_comments\n");
         query.append("              FROM\n");
         query.append("                  CRC.Student_Csi\n");
         query.append("                  LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("                  LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.case_manager_id AND Auth_User.deleted = 0\n");
         query.append("              WHERE\n");
         query.append("              (\n");
         query.append("                  Student_Csi.deleted = 0\n");
@@ -269,6 +287,35 @@ public class CsiDao {
 
     public Csi getCsiDetail(int csiId) {
         StringBuilder query = new StringBuilder();
+//        query.append("  SELECT\n");
+//        query.append("      csi_id,\n");
+//        query.append("      csi_date,\n");
+//        query.append("      Student_Csi.student_id,\n");
+//        query.append("      Person_Student.surname AS student_surname,\n");
+//        query.append("      Person_Student.given_name AS student_given_name,\n");
+//        query.append("      Student_Csi.case_manager_id,\n");
+//        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
+//        query.append("      Person_Case_Manager.given_name AS case_manager_given_name,\n");
+//        query.append("      csi_comments,\n");
+//        query.append("      csi_services_provided,\n");
+//        query.append("      csi_score_food_security,\n");
+//        query.append("      csi_score_nutrition_and_growth,\n");
+//        query.append("      csi_score_shelter,\n");
+//        query.append("      csi_score_care,\n");
+//        query.append("      csi_score_abuse_and_exploitation,\n");
+//        query.append("      csi_score_legal_protection,\n");
+//        query.append("      csi_score_wellness,\n");
+//        query.append("      csi_score_health_care_services,\n");
+//        query.append("      csi_score_emotional_health,\n");
+//        query.append("      csi_score_social_behavior,\n");
+//        query.append("      csi_score_performance,\n");
+//        query.append("      csi_score_education_and_work\n");
+//        query.append("  FROM\n");
+//        query.append("      CRC.Student_Csi\n");
+//        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
+//        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+//        query.append("  WHERE\n");
+//        query.append("      csi_id = ?\n");
         query.append("  SELECT\n");
         query.append("      csi_id,\n");
         query.append("      csi_date,\n");
@@ -276,8 +323,8 @@ public class CsiDao {
         query.append("      Person_Student.surname AS student_surname,\n");
         query.append("      Person_Student.given_name AS student_given_name,\n");
         query.append("      Student_Csi.case_manager_id,\n");
-        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
-        query.append("      Person_Case_Manager.given_name AS case_manager_given_name,\n");
+        query.append("      Auth_User.surname AS case_manager_surname,\n");
+        query.append("      Auth_User.given_name AS case_manager_given_name,\n");
         query.append("      csi_comments,\n");
         query.append("      csi_services_provided,\n");
         query.append("      csi_score_food_security,\n");
@@ -295,7 +342,7 @@ public class CsiDao {
         query.append("  FROM\n");
         query.append("      CRC.Student_Csi\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.case_manager_id AND Auth_User.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      csi_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());

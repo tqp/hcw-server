@@ -124,7 +124,7 @@ public class CaseManagerController {
 
     @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
     @Operation(summary = "Get Case Manager Detail by Student ID", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<CaseManager> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+    public ResponseEntity<CaseManager> getCaseManagerDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
         try {
             CaseManager caseManager = caseManagerService.getCaseManagerDetailByStudentId(studentId);
             return ResponseEntity.ok()

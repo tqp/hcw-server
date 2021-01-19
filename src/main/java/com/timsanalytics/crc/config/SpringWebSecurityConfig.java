@@ -83,10 +83,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/intuit-token/**").permitAll()
                 .antMatchers("/api/v1/google-auth/**").permitAll()
                 .antMatchers("/api/v1/test/**").permitAll()
-                .antMatchers("/api/v1/s3/**").permitAll()
-                .antMatchers("/api/v1/sample-data/**").permitAll()
                 .antMatchers("/api/v1/basic-database-connection/**").permitAll()
-                .antMatchers("/api/v1/fuel-tracker/**").permitAll()
 
                 // RE-FILE LATER
                 .antMatchers("/api/v1/user/**").permitAll()
@@ -94,35 +91,18 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
                 // API Endpoints USER
-                .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER")
+                .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER", "CASE_MANAGER")
                 .antMatchers("/api/v1/settings/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/holiday/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/word-counter/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/person/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/auto-complete/**").hasAnyRole("USER")
-
-                .antMatchers("/reality-tracker/api/v1/series/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/season/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/contestant/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/competition/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/player/**").hasAnyRole("USER")
 
                 // API Endpoints MANAGER
                 .antMatchers("/api/v1/app-user/**").hasAnyRole("MANAGER")
                 .antMatchers("/api/v1/app-role/**").hasAnyRole("MANAGER")
                 .antMatchers("/api/v1/app-user-role/**").hasAnyRole("MANAGER")
                 .antMatchers("/api/v1/infra/v1/audit/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/employee/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/time-activity/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/intuit-sync/**").hasAnyRole("MANAGER")
 
                 // API Endpoints ADMIN
 
                 // API Endpoints DEVELOPER
-                .antMatchers("/api/v1/auto-tracker/**").hasAnyRole("DEVELOPER")
-                .antMatchers("/api/v1/charter-sauce/**").hasAnyRole("DEVELOPER")
-                .antMatchers("/api/v1/reality-tracker/**").hasAnyRole("DEVELOPER")
-                .antMatchers("/api/v1/sample-app/**").hasAnyRole("DEVELOPER")
 
                 // Testing Endpoints
                 .antMatchers("/api/v1/diagnostics/endpoint/open/**").permitAll()
