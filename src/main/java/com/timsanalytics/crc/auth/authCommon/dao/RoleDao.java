@@ -29,7 +29,7 @@ public class RoleDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      role_id,\n");
-        query.append("      name,\n");
+        query.append("      role_name,\n");
         query.append("      authority\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_Role\n");
@@ -38,7 +38,7 @@ public class RoleDao {
         query.append("      AND restricted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      sort_order,\n");
-        query.append("      name\n");
+        query.append("      role_name\n");
         this.logger.debug("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new RoleRowMapper());
@@ -55,7 +55,7 @@ public class RoleDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Auth_User_Role.role_id,\n");
-        query.append("      name,\n");
+        query.append("      role_name,\n");
         query.append("      authority\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User_Role\n");
@@ -65,7 +65,7 @@ public class RoleDao {
         query.append("      AND Auth_User_Role.deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      sort_order,\n");
-        query.append("      name\n");
+        query.append("      role_name\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("userId: " + userId);
         try {

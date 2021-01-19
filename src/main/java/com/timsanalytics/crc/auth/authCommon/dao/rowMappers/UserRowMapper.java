@@ -20,6 +20,7 @@ public class UserRowMapper implements RowMapper<User> {
 
         row.setSurname(rs.getString("surname"));
         row.setGivenName(rs.getString("given_name"));
+        row.setPosition(rs.getInt("position"));
         row.setPicture(rs.getString("user_profile_photo_url"));
 
         row.setCreatedOn(rs.getTimestamp("created_on"));

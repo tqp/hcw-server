@@ -8,6 +8,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.dao.UtilsDao;
 import com.timsanalytics.crc.utils.BCryptEncoderService;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,6 +46,7 @@ public class UserDao {
         query.append("          username,\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
+        query.append("          position,\n");
         query.append("          password,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
@@ -58,6 +60,7 @@ public class UserDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          NOW(),\n");
         query.append("          ?,\n");
         query.append("          NOW(),\n");
@@ -66,7 +69,6 @@ public class UserDao {
         query.append("      )\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("Username: " + user.getUsername());
-        System.out.println("user.getPassword(): " + user.getPassword());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -74,9 +76,10 @@ public class UserDao {
                         ps.setString(1, user.getUsername());
                         ps.setString(2, user.getSurname());
                         ps.setString(3, user.getGivenName());
-                        ps.setString(4, user.getPassword() != null ? this.bCryptEncoderService.encode(user.getPassword()) : null);
-                        ps.setInt(5, -1);
+                        ps.setInt(4, user.getPosition());
+                        ps.setString(5, user.getPassword() != null ? this.bCryptEncoderService.encode(user.getPassword()) : null);
                         ps.setInt(6, -1);
+                        ps.setInt(7, -1);
                         return ps;
                     });
             int lastInsertId = this.utilsDao.getLastInsertId();
@@ -103,6 +106,7 @@ public class UserDao {
         query.append("      login_count,\n");
         query.append("      surname,\n");
         query.append("      given_name,\n");
+        query.append("      position,\n");
         query.append("      user_profile_photo_url,\n");
         query.append("      created_on,\n");
         query.append("      created_by,\n");
@@ -216,10 +220,13 @@ public class UserDao {
                 row.setLastLogin(rs.getString("last_login"));
                 row.setLoginCount(rs.getInt("login_count"));
                 // Roles
-                row.setRoleUser(rs.getInt("role_user"));
+                row.setRoleView(rs.getInt("role_view"));
+                row.setRoleManager(rs.getInt("role_manager"));
                 row.setRoleCaseManager(rs.getInt("role_case_manager"));
-                row.setRoleMonitoring(rs.getInt("role_monitoring"));
-                row.setRoleDirector(rs.getInt("role_director"));
+                row.setRoleCreate(rs.getInt("role_create"));
+                row.setRoleEdit(rs.getInt("role_edit"));
+                row.setRoleReports(rs.getInt("role_reports"));
+                row.setRoleFinance(rs.getInt("role_finance"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -242,10 +249,13 @@ public class UserDao {
         query.append("                  given_name,\n");
         query.append("                  last_login,\n");
         query.append("                  login_count,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 1 THEN 1 ELSE NULL END) AS role_user,\n");
+        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 1 THEN 1 ELSE NULL END) AS role_view,\n");
+        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 4 THEN 1 ELSE NULL END) AS role_manager,\n");
         query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 5 THEN 1 ELSE NULL END) AS role_case_manager,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 8 THEN 1 ELSE NULL END) AS role_monitoring,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 6 THEN 1 ELSE NULL END) AS role_director\n");
+        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 9 THEN 1 ELSE NULL END) AS role_create,\n");
+        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 10 THEN 1 ELSE NULL END) AS role_edit,\n");
+        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 11 THEN 1 ELSE NULL END) AS role_reports,\n");
+        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 12 THEN 1 ELSE NULL END) AS role_finance\n");
         query.append("              FROM\n");
         query.append("                  CRC.Auth_User\n");
         query.append("                  LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
@@ -311,6 +321,7 @@ public class UserDao {
         query.append("      username = ?,\n");
         query.append("      surname = ?,\n");
         query.append("      given_name = ?,\n");
+        query.append("      position = ?,\n");
         query.append("      updated_on = NOW(),\n");
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
@@ -324,8 +335,9 @@ public class UserDao {
                         ps.setString(1, User.getUsername());
                         ps.setString(2, User.getSurname());
                         ps.setString(3, User.getGivenName());
-                        ps.setInt(4, -1);
-                        ps.setInt(5, User.getUserId());
+                        ps.setInt(4, User.getPosition());
+                        ps.setInt(5, -1);
+                        ps.setInt(6, User.getUserId());
                         return ps;
                     }
             );
@@ -567,6 +579,7 @@ public class UserDao {
         query.append("      login_count,\n");
         query.append("      surname,\n");
         query.append("      given_name,\n");
+        query.append("      position,\n");
         query.append("      user_profile_photo_url,\n");
         query.append("      created_on,\n");
         query.append("      created_by,\n");
@@ -583,7 +596,7 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
+            //this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
             this.logger.error("Exception: " + e);
@@ -641,7 +654,7 @@ public class UserDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Auth_User_Role.role_id,\n");
-        query.append("      name,\n");
+        query.append("      role_name,\n");
         query.append("      authority\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User_Role\n");

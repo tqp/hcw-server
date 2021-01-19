@@ -36,6 +36,7 @@ public class AuthDao {
         query.append("      CRC.Auth_User\n");
         query.append("  WHERE\n");
         query.append("      username = ?\n");
+        query.append("      AND deleted = 0\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("username: " + username);
         try {
@@ -63,7 +64,7 @@ public class AuthDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Auth_User_Role.role_id,\n");
-        query.append("      name,\n");
+        query.append("      role_name,\n");
         query.append("      authority,\n");
         query.append("      Auth_User_Role.created_on,\n");
         query.append("      Auth_User_Role.created_by,\n");
@@ -82,7 +83,7 @@ public class AuthDao {
                     (rs, rowNum) -> {
                         Role row = new Role();
                         row.setRoleId(rs.getInt("role_id"));
-                        row.setName(rs.getString("name"));
+                        row.setRoleName(rs.getString("role_name"));
                         row.setAuthority(rs.getString("authority"));
                         row.setCreatedOn(rs.getTimestamp("created_on"));
                         row.setCreatedBy(rs.getString("created_by"));

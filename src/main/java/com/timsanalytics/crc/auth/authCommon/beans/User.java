@@ -20,14 +20,18 @@ public class User {
     private String updatedBy;
     private String theme;
     private String picture;
+    private Integer position;
     private List<Role> roles;
     private String rolesString;
 
     // ROLES
-    private int RoleUser;
-    private int RoleCaseManager;
-    private int RoleMonitoring;
-    private int RoleDirector;
+    private int roleView;
+    private int roleManager;
+    private int roleCaseManager;
+    private int roleCreate;
+    private int roleEdit;
+    private int roleReports;
+    private int roleFinance;
 
     public Integer getUserId() {
         return userId;
@@ -157,6 +161,14 @@ public class User {
         this.picture = picture;
     }
 
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -173,35 +185,59 @@ public class User {
         this.rolesString = rolesString;
     }
 
-    public int getRoleUser() {
-        return RoleUser;
+    public int getRoleView() {
+        return roleView;
     }
 
-    public void setRoleUser(int roleUser) {
-        RoleUser = roleUser;
+    public void setRoleView(int roleView) {
+        this.roleView = roleView;
+    }
+
+    public int getRoleManager() {
+        return roleManager;
+    }
+
+    public void setRoleManager(int roleManager) {
+        this.roleManager = roleManager;
     }
 
     public int getRoleCaseManager() {
-        return RoleCaseManager;
+        return roleCaseManager;
     }
 
     public void setRoleCaseManager(int roleCaseManager) {
-        RoleCaseManager = roleCaseManager;
+        this.roleCaseManager = roleCaseManager;
     }
 
-    public int getRoleMonitoring() {
-        return RoleMonitoring;
+    public int getRoleCreate() {
+        return roleCreate;
     }
 
-    public void setRoleMonitoring(int roleMonitoring) {
-        RoleMonitoring = roleMonitoring;
+    public void setRoleCreate(int roleCreate) {
+        this.roleCreate = roleCreate;
     }
 
-    public int getRoleDirector() {
-        return RoleDirector;
+    public int getRoleEdit() {
+        return roleEdit;
     }
 
-    public void setRoleDirector(int roleDirector) {
-        RoleDirector = roleDirector;
+    public void setRoleEdit(int roleEdit) {
+        this.roleEdit = roleEdit;
+    }
+
+    public int getRoleReports() {
+        return roleReports;
+    }
+
+    public void setRoleReports(int roleReports) {
+        this.roleReports = roleReports;
+    }
+
+    public int getRoleFinance() {
+        return roleFinance;
+    }
+
+    public void setRoleFinance(int roleFinance) {
+        this.roleFinance = roleFinance;
     }
 }
