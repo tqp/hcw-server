@@ -92,6 +92,8 @@ public class CaseManagerDao {
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
         query.append("      LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND role_id = 5\n");
+        query.append("  WHERE\n");
+        query.append("      Auth_User.deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name\n");

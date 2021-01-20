@@ -92,7 +92,8 @@ public class HistoryDao {
         query.append("          AND Rel_Student_Sponsor.deleted = 0\n");
         query.append("  )\n");
         query.append("  ORDER BY\n");
-        query.append("      start_date DESC\n");
+        query.append("      start_date DESC,\n");
+        query.append("      history_type_name ASC\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId, studentId, studentId, studentId}, (rs, rowNum) -> {
