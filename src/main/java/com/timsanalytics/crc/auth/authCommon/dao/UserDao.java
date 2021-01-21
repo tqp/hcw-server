@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -48,6 +50,7 @@ public class UserDao {
         query.append("          given_name,\n");
         query.append("          position,\n");
         query.append("          password,\n");
+        query.append("          password_set,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
         query.append("          updated_on,\n");
@@ -61,6 +64,7 @@ public class UserDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          NOW(),\n");
         query.append("          ?,\n");
         query.append("          NOW(),\n");
@@ -69,6 +73,10 @@ public class UserDao {
         query.append("      )\n");
         this.logger.debug("SQL:\n" + query.toString());
         this.logger.debug("Username: " + user.getUsername());
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -78,8 +86,9 @@ public class UserDao {
                         ps.setString(3, user.getGivenName());
                         ps.setInt(4, user.getPosition());
                         ps.setString(5, user.getPassword() != null ? this.bCryptEncoderService.encode(user.getPassword()) : null);
-                        ps.setInt(6, -1);
+                        ps.setString(6, user.getPassword() != null ? now.toString() : null);
                         ps.setInt(7, -1);
+                        ps.setInt(8, -1);
                         return ps;
                     });
             int lastInsertId = this.utilsDao.getLastInsertId();

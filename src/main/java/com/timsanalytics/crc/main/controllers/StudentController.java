@@ -118,4 +118,19 @@ public class StudentController {
             return null;
         }
     }
+
+    // OTHER QUERIES
+
+    @ResponseBody
+    @RequestMapping(value = "/check-duplicate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Check Duplicate Student Record", description = "Check Duplicate Student Record", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Student>> checkDuplicateStudentRecord(@RequestBody Student student) {
+        try {
+            return ResponseEntity.ok()
+                    .body(studentService.checkDuplicateStudentRecord(student));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

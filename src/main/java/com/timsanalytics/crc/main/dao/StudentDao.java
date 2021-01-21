@@ -394,4 +394,42 @@ public class StudentDao {
             return null;
         }
     }
+
+    public List<Student> checkDuplicateStudentRecord(Student student) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      student_id,\n");
+        query.append("      surname,\n");
+        query.append("      given_name,\n");
+        query.append("      sex,\n");
+        query.append("      dob\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Person_Student\n");
+        query.append("  WHERE\n");
+        query.append("      LOWER(given_name) = LOWER(?)\n");
+        query.append("      AND LOWER(surname) = LOWER(?)\n");
+        query.append("      AND deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      surname,\n");
+        query.append("      given_name\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
+                    student.getStudentGivenName(),
+                    student.getStudentSurname()
+            }, (rs, rowNum) -> {
+                Student row = new Student();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
 }

@@ -49,4 +49,8 @@ public class StudentService {
     public KeyValue deleteStudent(String studentId) {
         return this.studentDao.deleteStudent(studentId);
     }
+
+    public List<Student> checkDuplicateStudentRecord(Student student) {
+        return this.studentDao.checkDuplicateStudentRecord(student);
+    }
 }
