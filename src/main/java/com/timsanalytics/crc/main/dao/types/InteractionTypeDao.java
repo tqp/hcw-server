@@ -24,13 +24,14 @@ public class InteractionTypeDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      interaction_type_id,\n");
-        query.append("      name\n");
+        query.append("      interaction_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Ref_Interaction_Type\n");
         query.append("  WHERE\n");
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      name\n");
+        query.append("      sort_order,\n");
+        query.append("      interaction_type_name\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {

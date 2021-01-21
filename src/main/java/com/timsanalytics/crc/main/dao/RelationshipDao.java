@@ -88,6 +88,20 @@ public class RelationshipDao {
 
     public List<Relationship> getStudentListByCaregiverId(Integer caregiverId) {
         StringBuilder query = new StringBuilder();
+//        query.append("  SELECT\n");
+//        query.append("      Person_Student.student_id,\n");
+//        query.append("      Person_Student.surname,\n");
+//        query.append("      Person_Student.given_name,\n");
+//        query.append("      Rel_Student_Caregiver.start_date,\n");
+//        query.append("      Ref_Tier_Type.tier_type_id AS tier_type_id,\n");
+//        query.append("      Ref_Tier_Type.name AS tier_type_name\n");
+//        query.append("  FROM\n");
+//        query.append("      CRC.Rel_Student_Caregiver\n");
+//        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Caregiver.student_id AND Person_Student.deleted = 0\n");
+//        query.append("      LEFT JOIN CRC.Ref_Tier_Type ON Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
+//        query.append("  WHERE\n");
+//        query.append("      Rel_Student_Caregiver.caregiver_id = ?\n");
+//        query.append("      AND Rel_Student_Caregiver.deleted = 0\n");
         query.append("  SELECT\n");
         query.append("      Person_Student.student_id,\n");
         query.append("      Person_Student.surname,\n");
@@ -102,6 +116,15 @@ public class RelationshipDao {
         query.append("  WHERE\n");
         query.append("      Rel_Student_Caregiver.caregiver_id = ?\n");
         query.append("      AND Rel_Student_Caregiver.deleted = 0\n");
+        query.append("      AND Rel_Student_Caregiver.start_date =\n");
+        query.append("      (\n");
+        query.append("          SELECT\n");
+        query.append("              MAX(start_date)\n");
+        query.append("          FROM\n");
+        query.append("              CRC.Rel_Student_Caregiver\n");
+        query.append("          WHERE\n");
+        query.append("              Rel_Student_Caregiver.student_id = Person_Student.student_id\n");
+        query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{caregiverId}, (rs, rowNum) -> {

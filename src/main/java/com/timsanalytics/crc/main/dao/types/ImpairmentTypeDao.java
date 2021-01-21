@@ -30,6 +30,7 @@ public class ImpairmentTypeDao {
         query.append("  WHERE\n");
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
+        query.append("      sort_order,\n");
         query.append("      impairment_type_name\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {

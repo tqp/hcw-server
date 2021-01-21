@@ -563,7 +563,6 @@ public class CsiDao {
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
             this.logger.error("Exception: " + e);

@@ -63,7 +63,7 @@ public class CaregiverDao {
                     }
             );
             int lastInsertId = this.utilsDao.getLastInsertId();
-            this.logger.debug("New Caregiver ID: " + lastInsertId);
+            this.logger.trace("New Caregiver ID: " + lastInsertId);
             return this.getCaregiverDetail(lastInsertId);
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

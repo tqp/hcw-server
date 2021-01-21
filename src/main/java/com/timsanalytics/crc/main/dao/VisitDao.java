@@ -205,7 +205,7 @@ public class VisitDao {
         query.append("                  student_visit_id,\n");
         query.append("                  visit_date,\n");
         query.append("                  Ref_Visit_Type.name AS visit_type_name,\n");
-        query.append("                  Ref_Interaction_Type.name AS interaction_type_name,\n");
+        query.append("                  Ref_Interaction_Type.interaction_type_name,\n");
         query.append("                  Person_Student.student_id,\n");
         query.append("                  Person_Student.surname,\n");
         query.append("                  Person_Student.given_name,\n");
@@ -253,7 +253,7 @@ public class VisitDao {
         query.append("      Ref_Visit_Type.visit_type_id AS visit_type_id,\n");
         query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
         query.append("      Ref_Interaction_Type.interaction_type_id AS interaction_type_id,\n");
-        query.append("      Ref_Interaction_Type.name AS interaction_type_name,\n");
+        query.append("      Ref_Interaction_Type.interaction_type_name,\n");
         query.append("      Person_Student.student_id,\n");
         query.append("      Person_Student.surname,\n");
         query.append("      Person_Student.given_name,\n");
@@ -378,7 +378,7 @@ public class VisitDao {
         query.append("      Student_Visit.visit_type_id,\n");
         query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
         query.append("      Student_Visit.interaction_type_id,\n");
-        query.append("      Ref_Interaction_Type.name AS interaction_type_name,\n");
+        query.append("      Ref_Interaction_Type.interaction_type_name,\n");
         query.append("      caregiver_comments,\n");
         query.append("      case_manager_comments\n");
         query.append("  FROM\n");
