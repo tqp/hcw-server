@@ -263,7 +263,7 @@ public class CsiDao {
         query.append("              WHERE\n");
         query.append("              (\n");
         query.append("                  Student_Csi.deleted = 0\n");
-        query.append("              )");
+        query.append("              )\n");
         return query.toString();
     }
 
@@ -275,11 +275,11 @@ public class CsiDao {
         if (!"".equalsIgnoreCase(nameFilter)) {
             whereClause.append("                  (\n");
             whereClause.append("                    UPPER(Student_Csi.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
-            whereClause.append("                    OR");
+            whereClause.append("                    OR\n");
             whereClause.append("                    UPPER(Student_Csi.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                  )\n");
         } else {
-            whereClause.append("                  (1=1)");
+            whereClause.append("                  (1=1)\n");
         }
 
         return whereClause.toString();
@@ -480,13 +480,13 @@ public class CsiDao {
         query.append("      Student_Csi.student_id,\n");
         query.append("      Person_Student.surname AS student_surname,\n");
         query.append("      Person_Student.given_name AS student_given_name,\n");
-        query.append("      Student_Csi.case_manager_id,\n");
-        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
-        query.append("      Person_Case_Manager.given_name AS case_manager_given_name\n");
+        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.surname AS case_manager_surname,\n");
+        query.append("      Auth_User.given_name AS case_manager_given_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Student_Csi\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.case_manager_id AND Auth_User.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      Student_Csi.student_id = ?\n");
         query.append("      AND Student_Csi.deleted = 0\n");

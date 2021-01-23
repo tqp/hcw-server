@@ -208,9 +208,8 @@ public class SponsorDao {
         query.append("              (\n");
         query.append("                  deleted = 0\n");
         query.append("                  AND\n");
-        query.append("                  ");
         query.append(getSponsorList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-        query.append("              )");
+        query.append("              )\n");
         return query.toString();
     }
 
@@ -222,11 +221,11 @@ public class SponsorDao {
         if (!"".equalsIgnoreCase(nameFilter)) {
             whereClause.append("                  (\n");
             whereClause.append("                    UPPER(Person_Sponsor.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
-            whereClause.append("                    OR");
+            whereClause.append("                    OR\n");
             whereClause.append("                    UPPER(Person_Sponsor.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                  )\n");
         } else {
-            whereClause.append("                  (1=1)");
+            whereClause.append("                  (1=1)\n");
         }
 
         return whereClause.toString();

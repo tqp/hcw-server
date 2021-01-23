@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CaseManager {
-    private int caseManagerId;
+    private Integer caseManagerId;
+    private Integer userId;
     private String caseManagerSurname;
     private String caseManagerGivenName;
     private String caseManagerGender;
@@ -22,12 +23,20 @@ public class CaseManager {
     private String updatedBy;
     private String deleted;
 
-    public int getCaseManagerId() {
+    public Integer getCaseManagerId() {
         return caseManagerId;
     }
 
-    public void setCaseManagerId(int caseManagerId) {
+    public void setCaseManagerId(Integer caseManagerId) {
         this.caseManagerId = caseManagerId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getCaseManagerSurname() {

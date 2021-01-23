@@ -33,6 +33,7 @@ public class CaseManagerDao {
         query.append("  INSERT INTO\n");
         query.append("      CRC.Person_Case_Manager\n");
         query.append("      (\n");
+        query.append("          user_id,\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
         query.append("          phone,\n");
@@ -45,6 +46,7 @@ public class CaseManagerDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -52,16 +54,17 @@ public class CaseManagerDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, caseManager.getCaseManagerSurname());
-                        ps.setString(2, caseManager.getCaseManagerGivenName());
-                        ps.setString(3, caseManager.getCaseManagerPhone());
-                        ps.setString(4, caseManager.getCaseManagerEmail());
+                        ps.setInt(1, caseManager.getUserId());
+                        ps.setString(2, caseManager.getCaseManagerSurname());
+                        ps.setString(3, caseManager.getCaseManagerGivenName());
+                        ps.setString(4, caseManager.getCaseManagerPhone());
+                        ps.setString(5, caseManager.getCaseManagerEmail());
                         return ps;
                     }
             );
             int lastInsertId = this.utilsDao.getLastInsertId();
             this.logger.debug("New Case Manager ID: " + lastInsertId);
-            return this.getCaseManagerDetail(lastInsertId);
+            return this.getCaseManagerDetail(caseManager.getUserId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -73,17 +76,6 @@ public class CaseManagerDao {
 
     public List<CaseManager> getCaseManagerList() {
         StringBuilder query = new StringBuilder();
-//        query.append("  SELECT\n");
-//        query.append("      case_manager_id,\n");
-//        query.append("      surname,\n");
-//        query.append("      given_name\n");
-//        query.append("  FROM\n");
-//        query.append("      CRC.Person_Case_Manager\n");
-//        query.append("  WHERE\n");
-//        query.append("      deleted = 0\n");
-//        query.append("  ORDER BY\n");
-//        query.append("      surname,\n");
-//        query.append("      given_name\n");
         query.append("  SELECT\n");
         query.append("      Auth_User.user_id AS case_manager_id,\n");
         query.append("      Auth_User.surname,\n");
@@ -186,7 +178,7 @@ public class CaseManagerDao {
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setCaseManagerPhone(rs.getString("phone"));
                 row.setCaseManagerEmail(rs.getString("email"));
-                row.setStudentCount(rs.getInt("student_count"));
+//                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -203,20 +195,23 @@ public class CaseManagerDao {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
         query.append("              SELECT\n");
-        query.append("                  Auth_User.user_id,\n");
+        query.append("                  Auth_User.user_id as case_manager_id,\n");
         query.append("                  Auth_User.username,\n");
         query.append("                  Auth_User.surname,\n");
-        query.append("                  Auth_User.given_name\n");
+        query.append("                  Auth_User.given_name,\n");
+        query.append("                  Person_Case_Manager.phone,\n");
+        query.append("                  Person_Case_Manager.email\n");
         query.append("              FROM\n");
         query.append("                  CRC.Auth_User\n");
         query.append("                  LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("              WHERE\n");
+        query.append("              (\n");
         query.append("                  Auth_User.deleted = 0\n");
         query.append("                  AND Auth_User_Role.role_id = 5\n");
         query.append("                  AND\n");
-        query.append("                  ");
         query.append(getCaseManagerList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-        query.append("              )");
+        query.append("              )\n");
         return query.toString();
     }
 
@@ -227,32 +222,35 @@ public class CaseManagerDao {
         // NAME FILTER CLAUSE
         if (!"".equalsIgnoreCase(nameFilter)) {
             whereClause.append("                  (\n");
-            whereClause.append("                    UPPER(Person_Case_Manager.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
-            whereClause.append("                    OR");
-            whereClause.append("                    UPPER(Person_Case_Manager.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    UPPER(Auth_User.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    OR\n");
+            whereClause.append("                    UPPER(Auth_User.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                  )\n");
         } else {
-            whereClause.append("                  (1=1)");
+            whereClause.append("                  (1=1)\n");
         }
 
         return whereClause.toString();
     }
 
-    public CaseManager getCaseManagerDetail(int caseManagerGuid) {
+    public CaseManager getCaseManagerDetail(int userId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      case_manager_id,\n");
-        query.append("      surname,\n");
-        query.append("      given_name,\n");
-        query.append("      phone,\n");
-        query.append("      email\n");
+        query.append("      Auth_User.user_id,\n");
+        query.append("      Auth_User.surname,\n");
+        query.append("      Auth_User.given_name,\n");
+        query.append("      Person_Case_Manager.case_manager_id,\n");
+        query.append("      Person_Case_Manager.address,\n");
+        query.append("      Person_Case_Manager.phone,\n");
+        query.append("      Person_Case_Manager.email\n");
         query.append("  FROM\n");
-        query.append("      CRC.Person_Case_Manager\n");
+        query.append("      CRC.Auth_User\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      case_manager_id = ?\n");
+        query.append("      Auth_User.user_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{caseManagerGuid}, new CaseManagerRowMapper());
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userId}, new CaseManagerRowMapper());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -286,7 +284,7 @@ public class CaseManagerDao {
                         return ps;
                     }
             );
-            return this.getCaseManagerDetail(caseManager.getCaseManagerId());
+            return this.getCaseManagerDetail(caseManager.getUserId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

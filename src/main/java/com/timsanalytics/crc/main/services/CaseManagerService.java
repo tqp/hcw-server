@@ -40,16 +40,16 @@ public class CaseManagerService {
         return serverSidePaginationResponse;
     }
 
-    public CaseManager getCaseManagerDetail(int caseManagerId) {
-        return this.caseManagerDao.getCaseManagerDetail(caseManagerId);
+    public CaseManager getCaseManagerDetail(int userId) {
+        return this.caseManagerDao.getCaseManagerDetail(userId);
     }
 
     public CaseManager updateCaseManager(CaseManager caseManager) {
         return this.caseManagerDao.updateCaseManager(caseManager);
     }
 
-    public KeyValue deleteCaseManager(String caseManagerGuid) {
-        return this.caseManagerDao.deleteCaseManager(caseManagerGuid);
+    public KeyValue deleteCaseManager(String caseManagerId) {
+        return this.caseManagerDao.deleteCaseManager(caseManagerId);
     }
 
     // JOINED QUERIES

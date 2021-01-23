@@ -216,9 +216,8 @@ public class CaregiverDao {
         query.append("              (\n");
         query.append("                  deleted = 0\n");
         query.append("                  AND\n");
-        query.append("                  ");
         query.append(getCaregiverList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-        query.append("              )");
+        query.append("              )\n");
         return query.toString();
     }
 
@@ -230,11 +229,11 @@ public class CaregiverDao {
         if (!"".equalsIgnoreCase(nameFilter)) {
             whereClause.append("                  (\n");
             whereClause.append("                    UPPER(Person_Caregiver.surname) LIKE UPPER('%").append(nameFilter).append("%')\n");
-            whereClause.append("                    OR");
+            whereClause.append("                    OR\n");
             whereClause.append("                    UPPER(Person_Caregiver.given_name) LIKE UPPER('%").append(nameFilter).append("%')\n");
             whereClause.append("                  )\n");
         } else {
-            whereClause.append("                  (1=1)");
+            whereClause.append("                  (1=1)\n");
         }
 
         return whereClause.toString();
