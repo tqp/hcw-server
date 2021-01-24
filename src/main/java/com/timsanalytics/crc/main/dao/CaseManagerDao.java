@@ -37,7 +37,7 @@ public class CaseManagerDao {
         query.append("          surname,\n");
         query.append("          given_name,\n");
         query.append("          phone,\n");
-        query.append("          address,\n");
+        query.append("          email,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");

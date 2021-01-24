@@ -194,6 +194,33 @@ public class CaregiverDao {
     private String getCaregiverList_SSP_RootQuery(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
+//        query.append("              SELECT\n");
+//        query.append("                  caregiver_id,\n");
+//        query.append("                  surname,\n");
+//        query.append("                  given_name,\n");
+//        query.append("                  phone,\n");
+//        query.append("                  email,\n");
+//        query.append("                  address,\n");
+//        query.append("                  (\n");
+//        query.append("                      SELECT\n");
+//        query.append("                          COUNT(*)\n");
+//        query.append("                      FROM\n");
+//        query.append("                          CRC.Rel_Student_Caregiver\n");
+//        query.append("                      WHERE\n");
+//        query.append("                          Rel_Student_Caregiver.caregiver_id = Person_Caregiver.caregiver_id\n");
+//        query.append("                          AND deleted = 0\n");
+//        query.append("                  ) as student_count\n");
+//        query.append("              FROM\n");
+//        query.append("                  CRC.Person_Caregiver\n");
+//        query.append("              WHERE\n");
+//        query.append("              (\n");
+//        query.append("                  deleted = 0\n");
+//        query.append("                  AND\n");
+//        query.append(getCaregiverList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
+//        query.append("              )\n");
+
+        // This is a REALLY, REALLY, inefficient query. I'm embarassed by it. :(
+        // But it works!
         query.append("              SELECT\n");
         query.append("                  caregiver_id,\n");
         query.append("                  surname,\n");
@@ -203,13 +230,24 @@ public class CaregiverDao {
         query.append("                  address,\n");
         query.append("                  (\n");
         query.append("                      SELECT\n");
-        query.append("                          COUNT(*)\n");
+        query.append("                          COUNT(Person_Student.student_id)\n");
         query.append("                      FROM\n");
         query.append("                          CRC.Rel_Student_Caregiver\n");
+        query.append("                          LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Caregiver.student_id AND Person_Student.deleted = 0\n");
+        query.append("                          LEFT JOIN CRC.Ref_Tier_Type ON Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
         query.append("                      WHERE\n");
         query.append("                          Rel_Student_Caregiver.caregiver_id = Person_Caregiver.caregiver_id\n");
-        query.append("                          AND deleted = 0\n");
-        query.append("                  ) as student_count\n");
+        query.append("                          AND Rel_Student_Caregiver.deleted = 0\n");
+        query.append("                          AND Rel_Student_Caregiver.start_date =\n");
+        query.append("                          (\n");
+        query.append("                              SELECT\n");
+        query.append("                                  MAX(start_date)\n");
+        query.append("                              FROM\n");
+        query.append("                                  CRC.Rel_Student_Caregiver\n");
+        query.append("                              WHERE\n");
+        query.append("                                  Rel_Student_Caregiver.student_id = Person_Student.student_id\n");
+        query.append("              	        )\n");
+        query.append("                  ) AS student_count\n");
         query.append("              FROM\n");
         query.append("                  CRC.Person_Caregiver\n");
         query.append("              WHERE\n");
