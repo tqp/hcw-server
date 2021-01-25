@@ -194,33 +194,8 @@ public class CaregiverDao {
     private String getCaregiverList_SSP_RootQuery(ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
-//        query.append("              SELECT\n");
-//        query.append("                  caregiver_id,\n");
-//        query.append("                  surname,\n");
-//        query.append("                  given_name,\n");
-//        query.append("                  phone,\n");
-//        query.append("                  email,\n");
-//        query.append("                  address,\n");
-//        query.append("                  (\n");
-//        query.append("                      SELECT\n");
-//        query.append("                          COUNT(*)\n");
-//        query.append("                      FROM\n");
-//        query.append("                          CRC.Rel_Student_Caregiver\n");
-//        query.append("                      WHERE\n");
-//        query.append("                          Rel_Student_Caregiver.caregiver_id = Person_Caregiver.caregiver_id\n");
-//        query.append("                          AND deleted = 0\n");
-//        query.append("                  ) as student_count\n");
-//        query.append("              FROM\n");
-//        query.append("                  CRC.Person_Caregiver\n");
-//        query.append("              WHERE\n");
-//        query.append("              (\n");
-//        query.append("                  deleted = 0\n");
-//        query.append("                  AND\n");
-//        query.append(getCaregiverList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
-//        query.append("              )\n");
-
-        // This is a REALLY, REALLY, inefficient query. I'm embarassed by it. :(
-        // But it works!
+        // This is a REALLY, REALLY, inefficient query. I'm embarrassed by it. :(
+        // Should probably use a View instead. But it works!
         query.append("              SELECT\n");
         query.append("                  caregiver_id,\n");
         query.append("                  surname,\n");

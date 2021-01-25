@@ -5,6 +5,7 @@ import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.services.CaregiverService;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,10 +25,13 @@ import java.util.List;
 @Tag(name = "Caregiver", description = "Caregiver")
 public class CaregiverController {
     private final CaregiverService caregiverService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public CaregiverController(CaregiverService caregiverService) {
+    public CaregiverController(CaregiverService caregiverService,
+                               PrintObjectService printObjectService) {
         this.caregiverService = caregiverService;
+        this.printObjectService = printObjectService;
     }
 
     // BASIC CRUD
@@ -63,6 +67,7 @@ public class CaregiverController {
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Caregiver List (SSP)", tags = {"Caregiver"}, description = "Get Caregiver List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse<Caregiver>> getCaregiverList_SSP(@RequestBody ServerSidePaginationRequest<Caregiver> serverSidePaginationRequest) {
+//        this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
         long startTime = new Date().getTime();
         try {
             ServerSidePaginationResponse<Caregiver> container = this.caregiverService.getCaregiverList_SSP(serverSidePaginationRequest);

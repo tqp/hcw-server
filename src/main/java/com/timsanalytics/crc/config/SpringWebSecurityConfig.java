@@ -84,6 +84,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/google-auth/**").permitAll()
                 .antMatchers("/api/v1/test/**").permitAll()
                 .antMatchers("/api/v1/basic-database-connection/**").permitAll()
+                .antMatchers("/api/v1/health-check/**").permitAll()
 
                 // RE-FILE LATER
                 .antMatchers("/api/v1/user/**").permitAll()

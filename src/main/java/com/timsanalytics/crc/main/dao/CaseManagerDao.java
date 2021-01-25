@@ -77,7 +77,7 @@ public class CaseManagerDao {
     public List<CaseManager> getCaseManagerList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.user_id,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
         query.append("      Auth_User_Role.role_id\n");
@@ -93,7 +93,7 @@ public class CaseManagerDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setUserId(rs.getInt("user_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 return row;
@@ -178,7 +178,7 @@ public class CaseManagerDao {
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setCaseManagerPhone(rs.getString("phone"));
                 row.setCaseManagerEmail(rs.getString("email"));
-//                row.setStudentCount(rs.getInt("student_count"));
+                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -194,13 +194,34 @@ public class CaseManagerDao {
     private String getCaseManagerList_SSP_RootQuery(ServerSidePaginationRequest<CaseManager> serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
         StringBuilder query = new StringBuilder();
+        // This is a REALLY, REALLY, inefficient query. I'm embarrassed by it. :(
+        // Should probably use a View instead. But it works!
         query.append("              SELECT\n");
         query.append("                  Auth_User.user_id as case_manager_id,\n");
         query.append("                  Auth_User.username,\n");
         query.append("                  Auth_User.surname,\n");
         query.append("                  Auth_User.given_name,\n");
         query.append("                  Person_Case_Manager.phone,\n");
-        query.append("                  Person_Case_Manager.email\n");
+        query.append("                  Person_Case_Manager.email,\n");
+        query.append("                  (\n");
+        query.append("                      SELECT\n");
+        query.append("                          COUNT(Person_Student.student_id)\n");
+        query.append("                      FROM\n");
+        query.append("                          CRC.Rel_Student_Case_Manager\n");
+        query.append("                          LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Case_Manager.student_id AND Person_Student.deleted = 0\n");
+        query.append("                      WHERE\n");
+        query.append("                          Rel_Student_Case_Manager.case_manager_id = Auth_User.user_id\n");
+        query.append("                          AND Rel_Student_Case_Manager.deleted = 0\n");
+        query.append("                          AND Rel_Student_Case_Manager.start_date =\n");
+        query.append("                          (\n");
+        query.append("                              SELECT\n");
+        query.append("                                  MAX(start_date)\n");
+        query.append("                              FROM\n");
+        query.append("                                  CRC.Rel_Student_Case_Manager\n");
+        query.append("                              WHERE\n");
+        query.append("                                  Rel_Student_Case_Manager.student_id = Person_Student.student_id\n");
+        query.append("                          )\n");
+        query.append("                  ) AS student_count\n");
         query.append("              FROM\n");
         query.append("                  CRC.Auth_User\n");
         query.append("                  LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
