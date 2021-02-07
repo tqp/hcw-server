@@ -7,7 +7,7 @@ public class Sponsor {
     private int sponsorId;
     private String sponsorSurname;
     private String sponsorGivenName;
-    private String sponsorAddress;
+    private String sponsorAffiliatedChurch;
     // Joined Tables
     private Integer relationshipId;
     private String relationshipStartDate;
@@ -44,12 +44,12 @@ public class Sponsor {
         this.sponsorGivenName = sponsorGivenName;
     }
 
-    public String getSponsorAddress() {
-        return sponsorAddress;
+    public String getSponsorAffiliatedChurch() {
+        return sponsorAffiliatedChurch;
     }
 
-    public void setSponsorAddress(String sponsorAddress) {
-        this.sponsorAddress = sponsorAddress;
+    public void setSponsorAffiliatedChurch(String sponsorAffiliatedChurch) {
+        this.sponsorAffiliatedChurch = sponsorAffiliatedChurch;
     }
 
     public Integer getRelationshipId() {

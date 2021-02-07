@@ -13,7 +13,7 @@ public class SponsorRowMapper implements RowMapper<Sponsor> {
         row.setSponsorId(rs.getInt("sponsor_id"));
         row.setSponsorSurname(rs.getString("surname"));
         row.setSponsorGivenName(rs.getString("given_name"));
-        row.setSponsorAddress(rs.getString("address"));
+        row.setSponsorAffiliatedChurch(rs.getString("affiliated_church"));
         return row;
     }
 }

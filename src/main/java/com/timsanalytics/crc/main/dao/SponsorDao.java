@@ -2,10 +2,8 @@ package com.timsanalytics.crc.main.dao;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.dao.RowMappers.SponsorRowMapper;
-import com.timsanalytics.crc.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +35,7 @@ public class SponsorDao {
         query.append("      (\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
-        query.append("          address,\n");
+        query.append("          affiliated_church,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
@@ -54,7 +52,7 @@ public class SponsorDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, sponsor.getSponsorSurname());
                         ps.setString(2, sponsor.getSponsorGivenName());
-                        ps.setString(3, sponsor.getSponsorAddress());
+                        ps.setString(3, sponsor.getSponsorAffiliatedChurch());
                         return ps;
                     }
             );
@@ -171,7 +169,7 @@ public class SponsorDao {
                 row.setSponsorId(rs.getInt("sponsor_id"));
                 row.setSponsorSurname(rs.getString("surname"));
                 row.setSponsorGivenName(rs.getString("given_name"));
-                row.setSponsorAddress(rs.getString("address"));
+                row.setSponsorAffiliatedChurch(rs.getString("affiliated_church"));
                 row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
@@ -192,7 +190,7 @@ public class SponsorDao {
         query.append("                  sponsor_id,\n");
         query.append("                  surname,\n");
         query.append("                  given_name,\n");
-        query.append("                  address,\n");
+        query.append("                  affiliated_church,\n");
         query.append("                  (\n");
         query.append("                      SELECT\n");
         query.append("                          COUNT(*)\n");
@@ -237,7 +235,7 @@ public class SponsorDao {
         query.append("      sponsor_id,\n");
         query.append("      surname,\n");
         query.append("      given_name,\n");
-        query.append("      address\n");
+        query.append("      affiliated_church\n");
         query.append("  FROM\n");
         query.append("      CRC.Person_Sponsor\n");
         query.append("  WHERE\n");
@@ -261,7 +259,7 @@ public class SponsorDao {
         query.append("  SET\n");
         query.append("      surname = ?,\n");
         query.append("      given_name = ?,\n");
-        query.append("      address = ?\n");
+        query.append("      affiliated_church = ?\n");
         query.append("  WHERE\n");
         query.append("      sponsor_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -271,7 +269,7 @@ public class SponsorDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, sponsor.getSponsorSurname());
                         ps.setString(2, sponsor.getSponsorGivenName());
-                        ps.setString(3, sponsor.getSponsorAddress());
+                        ps.setString(3, sponsor.getSponsorAffiliatedChurch());
                         ps.setInt(4, sponsor.getSponsorId());
                         return ps;
                     }
