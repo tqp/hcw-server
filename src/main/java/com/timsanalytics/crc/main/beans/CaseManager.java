@@ -9,6 +9,7 @@ public class CaseManager {
     private String caseManagerSurname;
     private String caseManagerGivenName;
     private String caseManagerGender;
+    private String caseManagerAddress;
     private String caseManagerPhone;
     private String caseManagerEmail;
     // Joined Tables
@@ -61,6 +62,14 @@ public class CaseManager {
 
     public void setCaseManagerGender(String caseManagerGender) {
         this.caseManagerGender = caseManagerGender;
+    }
+
+    public String getCaseManagerAddress() {
+        return caseManagerAddress;
+    }
+
+    public void setCaseManagerAddress(String caseManagerAddress) {
+        this.caseManagerAddress = caseManagerAddress;
     }
 
     public String getCaseManagerPhone() {

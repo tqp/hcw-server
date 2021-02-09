@@ -36,12 +36,14 @@ public class CaseManagerDao {
         query.append("          user_id,\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
+        query.append("          address,\n");
         query.append("          phone,\n");
         query.append("          email,\n");
         query.append("          deleted\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -57,8 +59,9 @@ public class CaseManagerDao {
                         ps.setInt(1, caseManager.getUserId());
                         ps.setString(2, caseManager.getCaseManagerSurname());
                         ps.setString(3, caseManager.getCaseManagerGivenName());
-                        ps.setString(4, caseManager.getCaseManagerPhone());
-                        ps.setString(5, caseManager.getCaseManagerEmail());
+                        ps.setString(4, caseManager.getCaseManagerAddress());
+                        ps.setString(5, caseManager.getCaseManagerPhone());
+                        ps.setString(6, caseManager.getCaseManagerEmail());
                         return ps;
                     }
             );
@@ -288,6 +291,7 @@ public class CaseManagerDao {
         query.append("  SET\n");
         query.append("      surname = ?,\n");
         query.append("      given_name = ?,\n");
+        query.append("      address = ?,\n");
         query.append("      phone = ?,\n");
         query.append("      email = ?\n");
         query.append("  WHERE\n");
@@ -299,9 +303,10 @@ public class CaseManagerDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, caseManager.getCaseManagerSurname());
                         ps.setString(2, caseManager.getCaseManagerGivenName());
-                        ps.setString(3, caseManager.getCaseManagerPhone());
-                        ps.setString(4, caseManager.getCaseManagerEmail());
-                        ps.setInt(5, caseManager.getCaseManagerId());
+                        ps.setString(3, caseManager.getCaseManagerAddress());
+                        ps.setString(4, caseManager.getCaseManagerPhone());
+                        ps.setString(5, caseManager.getCaseManagerEmail());
+                        ps.setInt(6, caseManager.getCaseManagerId());
                         return ps;
                     }
             );

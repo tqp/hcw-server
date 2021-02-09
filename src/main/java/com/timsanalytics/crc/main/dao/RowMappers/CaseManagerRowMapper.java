@@ -14,6 +14,7 @@ public class CaseManagerRowMapper implements RowMapper<CaseManager> {
         row.setCaseManagerId(rs.getInt("case_manager_id"));
         row.setCaseManagerSurname(rs.getString("surname"));
         row.setCaseManagerGivenName(rs.getString("given_name"));
+        row.setCaseManagerAddress(rs.getString("address"));
         row.setCaseManagerPhone(rs.getString("phone"));
         row.setCaseManagerEmail(rs.getString("email"));
         return row;
