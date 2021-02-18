@@ -1,9 +1,5 @@
 package com.timsanalytics.crc.main.dao;
 
-import com.timsanalytics.crc.auth.authCommon.beans.User;
-import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.crc.main.beans.Caregiver;
-import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.beans.SummaryReportResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
