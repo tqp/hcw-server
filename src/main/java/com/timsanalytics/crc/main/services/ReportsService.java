@@ -1,9 +1,11 @@
 package com.timsanalytics.crc.main.services;
 
+import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.ReportsDao;
-import com.timsanalytics.crc.main.dao.SummaryReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ReportsService {
@@ -14,9 +16,12 @@ public class ReportsService {
         this.reportsDao = reportsDao;
     }
 
-    public Integer getCaseManagerCoverageReport() {
-//        return this.reportsDao.getCaseManagerCoverageReport();
-        return null;
+    public List<Student> getCaseManagerCoverageReport() {
+        return this.reportsDao.getCaseManagerCoverageReport();
+    }
+
+    public List<Student> getCaregiverCoverageReport() {
+        return this.reportsDao.getCaregiverCoverageReport();
     }
 
 
