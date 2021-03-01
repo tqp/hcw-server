@@ -2,13 +2,12 @@ package com.timsanalytics.crc.main.beans;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Date;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Workshop {
     private Integer caregiverWorkshopId;
+    private Integer caregiverId;
     private String workshopName;
-    private Date workshopDate;
+    private String workshopDate;
 
     public Integer getCaregiverWorkshopId() {
         return caregiverWorkshopId;
@@ -16,6 +15,14 @@ public class Workshop {
 
     public void setCaregiverWorkshopId(Integer caregiverWorkshopId) {
         this.caregiverWorkshopId = caregiverWorkshopId;
+    }
+
+    public Integer getCaregiverId() {
+        return caregiverId;
+    }
+
+    public void setCaregiverId(Integer caregiverId) {
+        this.caregiverId = caregiverId;
     }
 
     public String getWorkshopName() {
@@ -26,11 +33,11 @@ public class Workshop {
         this.workshopName = workshopName;
     }
 
-    public Date getWorkshopDate() {
+    public String getWorkshopDate() {
         return workshopDate;
     }
 
-    public void setWorkshopDate(Date workshopDate) {
+    public void setWorkshopDate(String workshopDate) {
         this.workshopDate = workshopDate;
     }
 }

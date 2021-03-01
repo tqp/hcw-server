@@ -16,6 +16,10 @@ public class WorkshopService {
         this.workshopDao = workshopDao;
     }
 
+    public Workshop createWorkshopEntry(String username, Workshop workshop) {
+        return this.workshopDao.createWorkshopEntry(username, workshop);
+    }
+
     public List<Workshop> getWorkshopListByCaregiverId(int caregiverId) {
         return this.workshopDao.getWorkshopListByCaregiverId(caregiverId);
     }

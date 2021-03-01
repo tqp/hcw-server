@@ -1,5 +1,6 @@
 package com.timsanalytics.crc.main.controllers;
 
+import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.main.beans.Workshop;
 import com.timsanalytics.crc.main.services.WorkshopService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,10 +21,26 @@ import java.util.List;
 @Tag(name = "Workshop", description = "Workshop")
 public class WorkshopController {
     private final WorkshopService workshopService;
+    private final TokenService tokenService;
 
     @Autowired
-    public WorkshopController(WorkshopService workshopService) {
+    public WorkshopController(WorkshopService workshopService, TokenService tokenService) {
         this.workshopService = workshopService;
+        this.tokenService = tokenService;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Workshop Entry", description = "Create Workshop Entry", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Workshop> createWorkshopEntry(@RequestBody Workshop workshop, @RequestHeader(name = "Authorization") String token) {
+        String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
+        try {
+            return ResponseEntity.ok()
+                    .body(workshopService.createWorkshopEntry(username, workshop));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // JOINED TABLES
