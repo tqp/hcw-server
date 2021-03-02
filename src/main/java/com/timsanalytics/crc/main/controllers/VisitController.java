@@ -37,7 +37,7 @@ public class VisitController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Visit", tags = {"Visit"}, description = "Create Visit", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Visit", description = "Create Visit", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Visit> createVisit(@RequestBody Visit visit) {
         try {
             return ResponseEntity.ok()
@@ -50,7 +50,7 @@ public class VisitController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Visit List", tags = {"Visit"}, description = "Get Visit List", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Visit List", description = "Get Visit List", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<Visit>> getVisitList() {
         try {
             return ResponseEntity.ok()
@@ -64,7 +64,7 @@ public class VisitController {
 
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Visit List (SSP)", tags = {"Visit"}, description = "Get Visit List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Visit List (SSP)", description = "Get Visit List (SSP)", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse<Visit>> getVisitList_SSP(@RequestBody ServerSidePaginationRequest<Visit> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
@@ -80,7 +80,7 @@ public class VisitController {
     }
 
     @RequestMapping(value = "/{visitId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Visit Detail", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Visit Detail", description = "Get Visit Detail", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Visit> getVisitDetail(@Parameter(description = "Visit ID", required = true) @PathVariable int visitId) {
         try {
             Visit visit = visitService.getVisitDetail(visitId);
@@ -94,7 +94,7 @@ public class VisitController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update Visit", tags = {"Visit"}, description = "Update Visit", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update Visit", description = "Update Visit", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Visit> updateVisit(@RequestBody Visit visit) {
         try {
             return ResponseEntity.ok()
@@ -107,7 +107,7 @@ public class VisitController {
 
     @ResponseBody
     @RequestMapping(value = "/{visitId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete Visit", tags = {"Visit"}, description = "Delete Visit", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete Visit", description = "Delete Visit", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> deleteVisit(@Parameter(description = "Visit GUID", required = true) @PathVariable String visitId) {
         try {
             return ResponseEntity.ok()

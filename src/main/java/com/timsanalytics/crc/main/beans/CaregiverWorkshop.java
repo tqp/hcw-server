@@ -3,7 +3,7 @@ package com.timsanalytics.crc.main.beans;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Workshop {
+public class CaregiverWorkshop {
     private Integer caregiverWorkshopId;
     private Integer caregiverId;
     private String workshopName;
