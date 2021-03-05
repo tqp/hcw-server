@@ -261,9 +261,9 @@ public class CaseManagerDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Auth_User.user_id,\n");
+        query.append("      Auth_User.user_id AS case_manager_id,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
-        query.append("      Person_Case_Manager.case_manager_id,\n");
         query.append("      Person_Case_Manager.address,\n");
         query.append("      Person_Case_Manager.phone,\n");
         query.append("      Person_Case_Manager.email\n");

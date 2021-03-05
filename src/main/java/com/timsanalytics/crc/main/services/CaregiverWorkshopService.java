@@ -36,6 +36,4 @@ public class CaregiverWorkshopService {
     public List<CaregiverWorkshop> getWorkshopListByCaregiverId(int caregiverId) {
         return this.caregiverWorkshopDao.getWorkshopListByCaregiverId(caregiverId);
     }
-
-
 }

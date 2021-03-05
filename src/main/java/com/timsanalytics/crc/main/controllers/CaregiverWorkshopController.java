@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/caregiver-workshop")
-@Tag(name = "Caregiver-Workshop", description = "Caregiver-Workshop")
+@Tag(name = "Caregiver Workshop", description = "Caregiver Workshop")
 public class CaregiverWorkshopController {
     private final CaregiverWorkshopService caregiverWorkshopService;
     private final TokenService tokenService;
@@ -32,7 +32,7 @@ public class CaregiverWorkshopController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Caregiver-Workshop Item", description = "Create Caregiver-Workshop Item", tags = {"Caregiver-Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Caregiver Workshop Item", description = "Create Caregiver Workshop Item", tags = {"Caregiver Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<CaregiverWorkshop> createCaregiverWorkshop(@RequestBody CaregiverWorkshop caregiverWorkshop, @RequestHeader(name = "Authorization") String token) {
         String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
@@ -45,8 +45,8 @@ public class CaregiverWorkshopController {
     }
 
     @RequestMapping(value = "/{caregiverWorkshopId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Caregiver-Workshop Detail", description = "Get Caregiver-Workshop Detail", tags = {"Caregiver-Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<CaregiverWorkshop> getCaregiverWorkshopDetail(@Parameter(description = "Caregiver-Workshop ID", required = true) @PathVariable int caregiverWorkshopId) {
+    @Operation(summary = "Get Caregiver Workshop Detail", description = "Get Caregiver Workshop Detail", tags = {"Caregiver Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CaregiverWorkshop> getCaregiverWorkshopDetail(@Parameter(description = "Caregiver Workshop ID", required = true) @PathVariable int caregiverWorkshopId) {
         try {
             CaregiverWorkshop caregiverWorkshop = caregiverWorkshopService.getCaregiverWorkshopDetail(caregiverWorkshopId);
             return ResponseEntity.ok()
@@ -59,7 +59,7 @@ public class CaregiverWorkshopController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update Caregiver-Workshop", description = "Update Caregiver-Workshop", tags = {"Caregiver-Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update Caregiver Workshop", description = "Update Caregiver Workshop", tags = {"Caregiver Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<CaregiverWorkshop> updateCaregiverWorkshop(@RequestBody CaregiverWorkshop caregiverWorkshop) {
         try {
             return ResponseEntity.ok()
@@ -72,8 +72,8 @@ public class CaregiverWorkshopController {
 
     @ResponseBody
     @RequestMapping(value = "/{caregiverWorkshopId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete Caregiver-Workshop", description = "Delete Caregiver-Workshop", tags = {"Caregiver-Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<KeyValueInteger> deleteCaregiverWorkshop(@Parameter(description = "Caregiver-Workshop ID", required = true) @PathVariable int caregiverWorkshopId) {
+    @Operation(summary = "Delete Caregiver Workshop", description = "Delete Caregiver Workshop", tags = {"Caregiver Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValueInteger> deleteCaregiverWorkshop(@Parameter(description = "Caregiver Workshop ID", required = true) @PathVariable int caregiverWorkshopId) {
         try {
             return ResponseEntity.ok()
                     .body(caregiverWorkshopService.deleteCaregiverWorkshop(caregiverWorkshopId));
@@ -87,7 +87,7 @@ public class CaregiverWorkshopController {
 
     @ResponseBody
     @RequestMapping(value = "/caregiver/{caregiverId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Caregiver-Workshop List by Caregiver ID", description = "Get Caregiver-Workshop List by Caregiver ID", tags = {"Caregiver-Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Caregiver Workshop List by Caregiver ID", description = "Get Caregiver Workshop List by Caregiver ID", tags = {"Caregiver Workshop"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<CaregiverWorkshop>> getWorkshopListByCaregiverId(@Parameter(description = "Caregiver ID", required = true) @PathVariable int caregiverId) {
         try {
             return ResponseEntity.ok()
