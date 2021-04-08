@@ -4,6 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Sponsor;
+import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.SponsorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,10 +52,16 @@ public class SponsorService {
         return this.sponsorDao.deleteSponsor(sponsorGuid);
     }
 
+    // FILTERED
+
+    public List<Sponsor> getSponsorListByStudentId(Integer studentId) {
+        return this.sponsorDao.getSponsorListByStudentId(studentId);
+    }
+
     // JOINED QUERIES
 
-    public Sponsor getSponsorDetailByStudentId(int studentId) {
-        return this.sponsorDao.getSponsorDetailByStudentId(studentId);
-    }
+//    public Sponsor getSponsorDetailByStudentId(int studentId) {
+//        return this.sponsorDao.getSponsorDetailByStudentId(studentId);
+//    }
 
 }

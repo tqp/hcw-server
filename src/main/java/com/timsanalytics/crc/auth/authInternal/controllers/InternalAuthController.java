@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth/internal")
 @Tag(name = "Authentication - Internal", description = "Internal Authentication")
 public class InternalAuthController {
-    private InternalAuthService internalAuthService;
+    private final InternalAuthService internalAuthService;
 
     @Autowired
     public InternalAuthController(InternalAuthService internalAuthService) {

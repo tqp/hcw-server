@@ -1,6 +1,13 @@
 # Tim's Analytics App Server
 
+## Running the server.
+- Create an environment called "Build App" with the following settings:
+    - Command Line: clean install -f pom.xml
+- To Debug:
+    - 
+
 ## Notes
+netstat -ano | findstr <port>
 
 #### Tomcat Environment Config
 Create/update /tomcat/bin/setenv.bat.  

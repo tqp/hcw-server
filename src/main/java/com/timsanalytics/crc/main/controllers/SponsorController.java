@@ -4,6 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Sponsor;
+import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.services.SponsorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -118,19 +119,35 @@ public class SponsorController {
         }
     }
 
-    // JOINED QUERIES
+    // FILTERED LISTS
 
-    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Sponsor Detail by Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Sponsor> getSponsorDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+    @ResponseBody
+    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Sponsor List By Student ID", description = "Get Sponsor List By Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Sponsor>> getStudentListBySponsorId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
         try {
-            Sponsor sponsor = sponsorService.getSponsorDetailByStudentId(studentId);
             return ResponseEntity.ok()
-                    .body(sponsor);
+                    .body(this.sponsorService.getSponsorListByStudentId(studentId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-    
+
+    // JOINED QUERIES
+
+//    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
+//    @Operation(summary = "Get Sponsor Detail by Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
+//    public ResponseEntity<Sponsor> getSponsorDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+//        try {
+//            Sponsor sponsor = sponsorService.getSponsorDetailByStudentId(studentId);
+//            return ResponseEntity.ok()
+//                    .body(sponsor);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
 }

@@ -30,12 +30,26 @@ public class AppController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/health-check", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Health Check Response", description = "Get Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<KeyValue> getHealthCheck() {
+    @RequestMapping(value = "/server-health-check", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Server Health Check Response", description = "Get Server Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> getServerHealthCheck() {
         try {
             return ResponseEntity.ok()
-                    .body(new KeyValue("health-check", "success"));
+                    .body(new KeyValue("server-health-check", "success"));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/database-health-check", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Database Health Check Response", description = "Get Database Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Integer> getDatabaseHealthCheck() {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.appService.getDatabaseHealthCheck());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

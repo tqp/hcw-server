@@ -3,6 +3,7 @@ package com.timsanalytics.crc.main.services;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.StudentDao;
@@ -49,6 +50,14 @@ public class StudentService {
     public KeyValue deleteStudent(String studentId) {
         return this.studentDao.deleteStudent(studentId);
     }
+
+    // FILTERED
+
+    public List<Student> getStudentListBySponsorId(Integer sponsorId) {
+        return this.studentDao.getStudentListBySponsorId(sponsorId);
+    }
+
+    // OTHER QUERIES
 
     public List<Student> checkDuplicateStudentRecord(Student student) {
         return this.studentDao.checkDuplicateStudentRecord(student);

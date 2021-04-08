@@ -2,6 +2,7 @@ package com.timsanalytics.crc.main.dao;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.beans.Student;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -393,6 +394,40 @@ public class StudentDao {
             return null;
         }
     }
+
+    // FILTERED LISTS
+
+    public List<Student> getStudentListBySponsorId(Integer sponsorId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Rel_Student_Sponsor\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Sponsor.student_id AND Person_Student.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Rel_Student_Sponsor.sponsor_id = ?\n");
+        query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{sponsorId}, (rs, rowNum) -> {
+                Student row = new Student();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    // OTHER QUERIES
 
     public List<Student> checkDuplicateStudentRecord(Student student) {
         StringBuilder query = new StringBuilder();

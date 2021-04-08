@@ -3,6 +3,7 @@ package com.timsanalytics.crc.main.controllers;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.services.StudentService;
@@ -61,7 +62,7 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-    
+
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Student List (SSP)", description = "Get Student List (SSP)", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
@@ -119,6 +120,22 @@ public class StudentController {
         }
     }
 
+    // FILTERED
+
+    @ResponseBody
+    @RequestMapping(value = "/sponsor/{sponsorId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Student List By Sponsor ID", description = "Get Student List By Sponsor ID", tags = {"Relationship"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Student>> getStudentListBySponsorId(@Parameter(description = "Sponsor ID", required = true) @PathVariable Integer sponsorId) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.studentService.getStudentListBySponsorId(sponsorId));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+    
     // OTHER QUERIES
 
     @ResponseBody
