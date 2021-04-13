@@ -109,7 +109,7 @@ public class CaseManagerDao {
             return null;
         }
     }
-    
+
     public int getCaseManagerList_SSP_TotalRecords(ServerSidePaginationRequest<CaseManager> serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
@@ -350,23 +350,8 @@ public class CaseManagerDao {
 
     // JOINED QUERIES
 
-    public CaseManager getCaseManagerDetailByStudentId(int studentId) {
+    public CaseManager getCurrentCaseManagerDetailByStudentId(int studentId) {
         StringBuilder query = new StringBuilder();
-//        query.append("  SELECT\n");
-//        query.append("      Person_Case_Manager.case_manager_id,\n");
-//        query.append("      Person_Case_Manager.surname,\n");
-//        query.append("      Person_Case_Manager.given_name,\n");
-//        query.append("      Rel_Student_Case_Manager.student_case_manager_id,\n");
-//        query.append("      Rel_Student_Case_Manager.start_date\n");
-//        query.append("  FROM\n");
-//        query.append("      CRC.Rel_Student_Case_Manager\n");
-//        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Rel_Student_Case_Manager.case_manager_id AND Person_Case_Manager.deleted = 0\n");
-//        query.append("  WHERE\n");
-//        query.append("      student_id = ?\n");
-//        query.append("      AND Rel_Student_Case_Manager.deleted = 0\n");
-//        query.append("  ORDER BY\n");
-//        query.append("      start_date DESC\n");
-//        query.append("  LIMIT 0, 1\n");
         query.append("  SELECT\n");
         query.append("      Auth_User.user_id AS case_manager_id,\n");
         query.append("      Auth_User.surname,\n");

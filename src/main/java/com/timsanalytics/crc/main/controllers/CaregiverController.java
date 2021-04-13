@@ -122,11 +122,11 @@ public class CaregiverController {
 
     // JOINED QUERIES
 
-    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Caregiver Detail by Student ID", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Caregiver> getCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+    @RequestMapping(value = "/student/{studentId}/current", method = RequestMethod.GET)
+    @Operation(summary = "Get Current Caregiver Detail by Student ID", tags = {"Caregiver"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Caregiver> getCurrentCaregiverDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
         try {
-            Caregiver caregiver = caregiverService.getCaregiverDetailByStudentId(studentId);
+            Caregiver caregiver = caregiverService.getCurrentCaregiverDetailByStudentId(studentId);
             return ResponseEntity.ok()
                     .body(caregiver);
         } catch (Exception e) {

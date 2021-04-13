@@ -4,7 +4,6 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Sponsor;
-import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.services.SponsorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -137,17 +136,17 @@ public class SponsorController {
 
     // JOINED QUERIES
 
-//    @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET)
-//    @Operation(summary = "Get Sponsor Detail by Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
-//    public ResponseEntity<Sponsor> getSponsorDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
-//        try {
-//            Sponsor sponsor = sponsorService.getSponsorDetailByStudentId(studentId);
-//            return ResponseEntity.ok()
-//                    .body(sponsor);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    @RequestMapping(value = "/student/{studentId}/current", method = RequestMethod.GET)
+    @Operation(summary = "Get Sponsor Detail by Student ID", tags = {"Sponsor"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Sponsor> getCurrentSponsorDetailByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable int studentId) {
+        try {
+            Sponsor sponsor = sponsorService.getCurrentSponsorDetailByStudentId(studentId);
+            return ResponseEntity.ok()
+                    .body(sponsor);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

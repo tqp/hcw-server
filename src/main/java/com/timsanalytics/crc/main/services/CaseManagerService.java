@@ -3,7 +3,6 @@ package com.timsanalytics.crc.main.services;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.dao.CaseManagerDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class CaseManagerService {
 
     // JOINED QUERIES
 
-    public CaseManager getCaseManagerDetailByStudentId(int studentId) {
-        return this.caseManagerDao.getCaseManagerDetailByStudentId(studentId);
+    public CaseManager getCurrentCaseManagerDetailByStudentId(int studentId) {
+        return this.caseManagerDao.getCurrentCaseManagerDetailByStudentId(studentId);
     }
 }

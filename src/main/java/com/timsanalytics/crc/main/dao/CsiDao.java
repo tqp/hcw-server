@@ -33,7 +33,7 @@ public class CsiDao {
         query.append("      CRC.Student_Csi\n");
         query.append("      (\n");
         query.append("          student_id,\n");
-        query.append("          case_manager_id,\n");
+        query.append("          user_id,\n");
         query.append("          csi_date,\n");
         query.append("          csi_services_provided,\n");
         query.append("          csi_comments,\n");
@@ -78,7 +78,7 @@ public class CsiDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setInt(1, csi.getStudentId());
-                        ps.setInt(2, csi.getCaseManagerId());
+                        ps.setInt(2, csi.getUserId());
                         ps.setString(3, csi.getCsiDate());
                         ps.setString(4, csi.getCsiServicesProvided());
                         ps.setString(5, csi.getCsiComments());
@@ -209,7 +209,7 @@ public class CsiDao {
                 row.setStudentSurname(rs.getString("student_surname"));
                 row.setStudentGivenName(rs.getString("student_given_name"));
                 row.setCsiDate(rs.getString("csi_date"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setUserId(rs.getInt("user_id"));
                 row.setCaseManagerSurname(rs.getString("case_manager_surname"));
                 row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 row.setCsiComments(rs.getString("csi_comments"));
@@ -252,14 +252,14 @@ public class CsiDao {
         query.append("                  Student_Csi.student_id,\n");
         query.append("                  Person_Student.surname AS student_surname,\n");
         query.append("                  Person_Student.given_name AS student_given_name,\n");
-        query.append("                  Student_Csi.case_manager_id,\n");
+        query.append("                  Student_Csi.user_id,\n");
         query.append("                  Auth_User.surname AS case_manager_surname,\n");
         query.append("                  Auth_User.given_name AS case_manager_given_name,\n");
         query.append("                  csi_comments\n");
         query.append("              FROM\n");
         query.append("                  CRC.Student_Csi\n");
         query.append("                  LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("                  LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.case_manager_id AND Auth_User.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.user_id AND Auth_User.deleted = 0\n");
         query.append("              WHERE\n");
         query.append("              (\n");
         query.append("                  Student_Csi.deleted = 0\n");
@@ -322,7 +322,7 @@ public class CsiDao {
         query.append("      Student_Csi.student_id,\n");
         query.append("      Person_Student.surname AS student_surname,\n");
         query.append("      Person_Student.given_name AS student_given_name,\n");
-        query.append("      Student_Csi.case_manager_id,\n");
+        query.append("      Student_Csi.user_id,\n");
         query.append("      Auth_User.surname AS case_manager_surname,\n");
         query.append("      Auth_User.given_name AS case_manager_given_name,\n");
         query.append("      csi_comments,\n");
@@ -342,7 +342,7 @@ public class CsiDao {
         query.append("  FROM\n");
         query.append("      CRC.Student_Csi\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.case_manager_id AND Auth_User.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.user_id AND Auth_User.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      csi_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -354,7 +354,7 @@ public class CsiDao {
                 row.setStudentId(rs.getInt("student_id"));
                 row.setStudentSurname(rs.getString("student_surname"));
                 row.setStudentGivenName(rs.getString("student_given_name"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setUserId(rs.getInt("user_id"));
                 row.setCaseManagerSurname(rs.getString("case_manager_surname"));
                 row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 row.setCsiComments(rs.getString("csi_comments"));
@@ -388,7 +388,7 @@ public class CsiDao {
         query.append("      CRC.Student_Csi\n");
         query.append("  SET\n");
         query.append("      student_id = ?,\n");
-        query.append("      case_manager_id = ?,\n");
+        query.append("      user_id = ?,\n");
         query.append("      csi_date = ?,\n");
         query.append("      csi_services_provided = ?,\n");
         query.append("      csi_comments = ?,\n");
@@ -412,7 +412,7 @@ public class CsiDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setInt(1, csi.getStudentId());
-                        ps.setInt(2, csi.getCaseManagerId());
+                        ps.setInt(2, csi.getUserId());
                         ps.setString(3, csi.getCsiDate());
                         ps.setString(4, csi.getCsiServicesProvided());
                         ps.setString(5, csi.getCsiComments());
@@ -480,13 +480,13 @@ public class CsiDao {
         query.append("      Student_Csi.student_id,\n");
         query.append("      Person_Student.surname AS student_surname,\n");
         query.append("      Person_Student.given_name AS student_given_name,\n");
-        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.user_id AS user_id,\n");
         query.append("      Auth_User.surname AS case_manager_surname,\n");
         query.append("      Auth_User.given_name AS case_manager_given_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Student_Csi\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.case_manager_id AND Auth_User.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Csi.user_id AND Auth_User.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      Student_Csi.student_id = ?\n");
         query.append("      AND Student_Csi.deleted = 0\n");
@@ -499,7 +499,7 @@ public class CsiDao {
                 row.setStudentSurname(rs.getString("student_surname"));
                 row.setStudentGivenName(rs.getString("student_given_name"));
                 row.setCsiDate(rs.getString("csi_date"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setUserId(rs.getInt("user_id"));
                 row.setCaseManagerSurname(rs.getString("case_manager_surname"));
                 row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 return row;
@@ -518,7 +518,7 @@ public class CsiDao {
         query.append("  SELECT\n");
         query.append("      csi_id,\n");
         query.append("      student_id,\n");
-        query.append("      case_manager_id,\n");
+        query.append("      user_id,\n");
         query.append("      csi_date,\n");
         query.append("      csi_score_food_security,\n");
         query.append("      csi_score_nutrition_and_growth,\n");
@@ -546,7 +546,7 @@ public class CsiDao {
                 Csi row = new Csi();
                 row.setCsiId(rs.getInt("csi_id"));
                 row.setStudentId(rs.getInt("student_id"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setUserId(rs.getInt("user_id"));
                 row.setCsiDate(rs.getString("csi_date"));
                 row.setCsiScoreFoodSecurity(rs.getInt("csi_score_food_security"));
                 row.setCsiScoreNutritionAndGrowth(rs.getInt("csi_score_nutrition_and_growth"));
@@ -578,15 +578,15 @@ public class CsiDao {
         query.append("      Student_Csi.student_id,\n");
         query.append("      Person_Student.surname AS student_surname,\n");
         query.append("      Person_Student.given_name AS student_given_name,\n");
-        query.append("      Student_Csi.case_manager_id,\n");
+        query.append("      Student_Csi.user_id,\n");
         query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
         query.append("      Person_Case_Manager.given_name AS case_manager_given_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Student_Csi\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Csi.student_id AND Person_Student.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Student_Csi.user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      Student_Csi.case_manager_id = ?\n");
+        query.append("      Student_Csi.user_id = ?\n");
         query.append("      AND Student_Csi.deleted = 0\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
@@ -597,7 +597,7 @@ public class CsiDao {
                 row.setStudentSurname(rs.getString("student_surname"));
                 row.setStudentGivenName(rs.getString("student_given_name"));
                 row.setCsiDate(rs.getString("csi_date"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setUserId(rs.getInt("user_id"));
                 row.setCaseManagerSurname(rs.getString("case_manager_surname"));
                 row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 return row;

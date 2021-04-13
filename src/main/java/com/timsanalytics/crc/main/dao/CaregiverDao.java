@@ -343,7 +343,7 @@ public class CaregiverDao {
 
     // JOINED QUERIES
 
-    public Caregiver getCaregiverDetailByStudentId(int studentId) {
+    public Caregiver getCurrentCaregiverDetailByStudentId(int studentId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Person_Caregiver.caregiver_id,\n");

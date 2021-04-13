@@ -53,8 +53,8 @@ public class CaregiverService {
 
     // JOINED QUERIES
 
-    public Caregiver getCaregiverDetailByStudentId(int studentId) {
-        return this.caregiverDao.getCaregiverDetailByStudentId(studentId);
+    public Caregiver getCurrentCaregiverDetailByStudentId(int studentId) {
+        return this.caregiverDao.getCurrentCaregiverDetailByStudentId(studentId);
     }
 
     public List<Caregiver> getCaregiverWithLoanList() {

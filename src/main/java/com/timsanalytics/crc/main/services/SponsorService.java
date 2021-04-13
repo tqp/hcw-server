@@ -60,8 +60,8 @@ public class SponsorService {
 
     // JOINED QUERIES
 
-//    public Sponsor getSponsorDetailByStudentId(int studentId) {
-//        return this.sponsorDao.getSponsorDetailByStudentId(studentId);
-//    }
+    public Sponsor getCurrentSponsorDetailByStudentId(int studentId) {
+        return this.sponsorDao.getCurrentSponsorDetailByStudentId(studentId);
+    }
 
 }

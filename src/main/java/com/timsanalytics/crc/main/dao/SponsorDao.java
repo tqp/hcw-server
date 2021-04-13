@@ -347,40 +347,40 @@ public class SponsorDao {
 
     // JOINED QUERIES
 
-//    public Sponsor getSponsorDetailByStudentId(int studentId) {
-//        StringBuilder query = new StringBuilder();
-//        query.append("  SELECT\n");
-//        query.append("      Person_Sponsor.sponsor_id,\n");
-//        query.append("      Person_Sponsor.surname,\n");
-//        query.append("      Person_Sponsor.given_name,\n");
-//        query.append("      Rel_Student_Sponsor.student_sponsor_id,\n");
-//        query.append("      Rel_Student_Sponsor.start_date\n");
-//        query.append("  FROM\n");
-//        query.append("      CRC.Rel_Student_Sponsor\n");
-//        query.append("      LEFT JOIN CRC.Person_Sponsor ON Person_Sponsor.sponsor_id = Rel_Student_Sponsor.sponsor_id AND Person_Sponsor.deleted = 0\n");
-//        query.append("  WHERE\n");
-//        query.append("      student_id = ?\n");
-//        query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
-//        query.append("  ORDER BY\n");
-//        query.append("      start_date DESC\n");
-//        query.append("  LIMIT 0, 1\n");
-//        this.logger.trace("SQL:\n" + query.toString());
-//        try {
-//            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
-//                Sponsor row = new Sponsor();
-//                row.setSponsorId(rs.getInt("sponsor_id"));
-//                row.setSponsorSurname(rs.getString("surname"));
-//                row.setSponsorGivenName(rs.getString("given_name"));
-//                row.setRelationshipId(rs.getInt("student_sponsor_id"));
-//                row.setRelationshipStartDate(rs.getString("start_date"));
-//                return row;
-//            });
-//        } catch (EmptyResultDataAccessException e) {
-//            return new Sponsor();
-//        } catch (Exception e) {
-//            this.logger.error("Exception: " + e);
-//            return null;
-//        }
-//    }
+    public Sponsor getCurrentSponsorDetailByStudentId(int studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Sponsor.sponsor_id,\n");
+        query.append("      Person_Sponsor.surname,\n");
+        query.append("      Person_Sponsor.given_name,\n");
+        query.append("      Rel_Student_Sponsor.student_sponsor_id,\n");
+        query.append("      Rel_Student_Sponsor.start_date\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Rel_Student_Sponsor\n");
+        query.append("      LEFT JOIN CRC.Person_Sponsor ON Person_Sponsor.sponsor_id = Rel_Student_Sponsor.sponsor_id AND Person_Sponsor.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      student_id = ?\n");
+        query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      start_date DESC\n");
+        query.append("  LIMIT 0, 1\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Sponsor row = new Sponsor();
+                row.setSponsorId(rs.getInt("sponsor_id"));
+                row.setSponsorSurname(rs.getString("surname"));
+                row.setSponsorGivenName(rs.getString("given_name"));
+                row.setRelationshipId(rs.getInt("student_sponsor_id"));
+                row.setRelationshipStartDate(rs.getString("start_date"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return new Sponsor();
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
 
 }

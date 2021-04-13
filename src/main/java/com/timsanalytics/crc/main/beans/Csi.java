@@ -3,7 +3,7 @@ package com.timsanalytics.crc.main.beans;
 public class Csi {
     private Integer csiId;
     private Integer studentId;
-    private Integer caseManagerId;
+    private Integer userId;
     private String csiDate;
     private String csiServicesProvided;
     private String csiComments;
@@ -41,12 +41,12 @@ public class Csi {
         this.studentId = studentId;
     }
 
-    public Integer getCaseManagerId() {
-        return caseManagerId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setCaseManagerId(Integer caseManagerId) {
-        this.caseManagerId = caseManagerId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getCsiDate() {
