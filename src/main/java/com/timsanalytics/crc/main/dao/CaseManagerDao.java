@@ -80,25 +80,31 @@ public class CaseManagerDao {
     public List<CaseManager> getCaseManagerList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Auth_User.user_id,\n");
+        query.append("      Auth_User.user_id as case_manager_id,\n");
+        query.append("      Auth_User.username,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
-        query.append("      Auth_User_Role.role_id\n");
+        query.append("      Person_Case_Manager.phone,\n");
+        query.append("      Person_Case_Manager.email,\n");
+        query.append("      Case_Manager_Student_Count.student_count\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
-        query.append("      LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND role_id = 5\n");
+        query.append("      LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Case_Manager_Student_Count ON Case_Manager_Student_Count.case_manager_id = Auth_User.user_id\n");
         query.append("  WHERE\n");
         query.append("      Auth_User.deleted = 0\n");
-        query.append("  ORDER BY\n");
-        query.append("      Auth_User.surname,\n");
-        query.append("      Auth_User.given_name\n");
+        query.append("      AND Auth_User_Role.role_id = 5\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setUserId(rs.getInt("user_id"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
+                row.setCaseManagerPhone(rs.getString("phone"));
+                row.setCaseManagerEmail(rs.getString("email"));
+                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/app/v1")
-@Tag(name = "App", description = "This is used to query application-related data.")
+@RequestMapping("/api/v1/health-check")
+@Tag(name = "App", description = "This is used to query application health-related data.")
 public class AppController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final AppService appService;
+    private final Environment environment;
 
     @Autowired
-    public AppController(AppService appService) {
+    public AppController(AppService appService,
+                         Environment environment) {
         this.appService = appService;
+        this.environment = environment;
     }
 
     @ResponseBody
-    @RequestMapping(value = "/server-health-check", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Server Health Check Response", description = "Get Server Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Health Check Response", description = "Get Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> getServerHealthCheck() {
         try {
             return ResponseEntity.ok()
-                    .body(new KeyValue("server-health-check", "success"));
+                    .body(new KeyValue("health-check", "success"));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -65,6 +69,20 @@ public class AppController {
         try {
             return ResponseEntity.ok()
                     .body(new KeyValue("buildTimestamp", this.appService.getBuildTimestamp()));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Environment Profile", description = "Get Environment Profile", tags = {"Environment"})
+    public ResponseEntity<KeyValue> getEnvironmentProfile() {
+        try {
+            return ResponseEntity.ok()
+                    .body(new KeyValue("application.environment", this.environment.getProperty("application.environment")));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

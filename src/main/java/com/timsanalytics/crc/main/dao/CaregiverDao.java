@@ -79,14 +79,36 @@ public class CaregiverDao {
         query.append("  SELECT\n");
         query.append("      caregiver_id,\n");
         query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("      given_name,\n");
+        query.append("      phone,\n");
+        query.append("      email,\n");
+        query.append("      address,\n");
+        query.append("      (\n");
+        query.append("          SELECT\n");
+        query.append("              COUNT(Person_Student.student_id)\n");
+        query.append("          FROM\n");
+        query.append("              CRC.Rel_Student_Caregiver\n");
+        query.append("              LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Caregiver.student_id AND Person_Student.deleted = 0\n");
+        query.append("              LEFT JOIN CRC.Ref_Tier_Type ON Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
+        query.append("          WHERE\n");
+        query.append("              Rel_Student_Caregiver.caregiver_id = Person_Caregiver.caregiver_id\n");
+        query.append("              AND Rel_Student_Caregiver.deleted = 0\n");
+        query.append("              AND Rel_Student_Caregiver.start_date =\n");
+        query.append("              (\n");
+        query.append("                  SELECT\n");
+        query.append("                      MAX(start_date)\n");
+        query.append("                  FROM\n");
+        query.append("                      CRC.Rel_Student_Caregiver\n");
+        query.append("                  WHERE\n");
+        query.append("                      Rel_Student_Caregiver.student_id = Person_Student.student_id\n");
+        query.append("              )\n");
+        query.append("      ) AS student_count\n");
         query.append("  FROM\n");
         query.append("      CRC.Person_Caregiver\n");
         query.append("  WHERE\n");
+        query.append("  (\n");
         query.append("      deleted = 0\n");
-        query.append("  ORDER BY\n");
-        query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("  )\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
@@ -94,6 +116,10 @@ public class CaregiverDao {
                 row.setCaregiverId(rs.getInt("caregiver_id"));
                 row.setCaregiverSurname(rs.getString("surname"));
                 row.setCaregiverGivenName(rs.getString("given_name"));
+                row.setCaregiverPhone(rs.getString("phone"));
+                row.setCaregiverEmail(rs.getString("email"));
+                row.setCaregiverAddress(rs.getString("address"));
+                row.setStudentCount(rs.getInt("student_count"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

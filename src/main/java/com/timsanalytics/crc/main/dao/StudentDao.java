@@ -87,16 +87,44 @@ public class StudentDao {
     public List<Student> getStudentList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      student_id,\n");
-        query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Person_Student.sex,\n");
+        query.append("      Person_Student.dob,\n");
+        query.append("      Person_Student.school,\n");
+        query.append("      Person_Student.grade,\n");
+        query.append("      Person_Caregiver.caregiver_id,\n");
+        query.append("      Person_Caregiver.surname AS caregiver_surname,\n");
+        query.append("      Person_Caregiver.given_name AS caregiver_given_name,\n");
+        query.append("      Person_Caregiver.address AS caregiver_address,\n");
+        query.append("      Person_Caregiver.phone AS caregiver_phone,\n");
+        query.append("      Rel_Student_Caregiver.start_date,\n");
+        query.append("      Ref_Tier_Type.tier_type_id,\n");
+        query.append("      Ref_Tier_Type.name AS tier_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Person_Student\n");
+        query.append("      LEFT JOIN CRC.Rel_Student_Caregiver ON Rel_Student_Caregiver.student_id = Person_Student.student_id AND Rel_Student_Caregiver.deleted = 0\n");
+        query.append("      LEFT OUTER JOIN CRC.Rel_Student_Caregiver effectiveDateComparison ON\n");
+        query.append("      (\n");
+        query.append("          effectiveDateComparison.student_id = Person_Student.student_id\n");
+        query.append("          AND\n");
+        query.append("          (\n");
+        query.append("              Rel_Student_Caregiver.start_date < effectiveDateComparison.start_date\n");
+        query.append("              OR\n");
+        query.append("              (\n");
+        query.append("                  Rel_Student_Caregiver.start_date = effectiveDateComparison.start_date\n");
+        query.append("                  AND\n");
+        query.append("                  Rel_Student_Caregiver.student_id > effectiveDateComparison.student_id\n");
+        query.append("              )\n");
+        query.append("          )\n");
+        query.append("      )\n");
+        query.append("  LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Rel_Student_Caregiver.caregiver_id AND Person_Caregiver.deleted = 0\n");
+        query.append("  LEFT JOIN CRC.Ref_Tier_Type on Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      deleted = 0\n");
-        query.append("  ORDER BY\n");
-        query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("  (\n");
+        query.append("      Person_Student.deleted = 0\n");
+        query.append("  )\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
@@ -104,6 +132,11 @@ public class StudentDao {
                 row.setStudentId(rs.getInt("student_id"));
                 row.setStudentSurname(rs.getString("surname"));
                 row.setStudentGivenName(rs.getString("given_name"));
+                row.setCaregiverSurname(rs.getString("caregiver_surname"));
+                row.setCaregiverGivenName(rs.getString("caregiver_given_name"));
+                row.setCaregiverAddress(rs.getString("caregiver_address"));
+                row.setCaregiverPhone(rs.getString("caregiver_phone"));
+                row.setRelationshipTierTypeName(rs.getString("tier_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.controllers;
+package com.timsanalytics.crc.main.controllers.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
@@ -135,7 +135,7 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-    
+
     // OTHER QUERIES
 
     @ResponseBody
