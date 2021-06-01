@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.controllers;
+package com.timsanalytics.crc.main.controllers.events;
 
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.common.beans.KeyValueInteger;

@@ -88,8 +88,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // RE-FILE LATER
                 .antMatchers("/api/v1/user/**").permitAll()
-//                .antMatchers("/api/v1/post-grad-event/**").permitAll()
-
+                .antMatchers("/api/v1/interaction-type/**").permitAll()
 
                 // API Endpoints USER
                 .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER", "CASE_MANAGER")

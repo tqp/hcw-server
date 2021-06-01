@@ -1,9 +1,11 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.beans.Student;
+import com.timsanalytics.crc.main.dao.UtilsDao;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -314,9 +316,9 @@ public class StudentDao {
         query.append("      school,\n");
         query.append("      grade,\n");
         query.append("      school_level_type_id,\n");
-        query.append("      school_level.name AS school_level_type_name,\n");
+        query.append("      school_level.school_class_type_name AS school_level_type_name,\n");
         query.append("      class_level_type_id,\n");
-        query.append("      class_level.name AS class_level_type_name,\n");
+        query.append("      class_level.school_class_type_name AS class_level_type_name,\n");
         query.append("      class_repeat_year_type_id,\n");
         query.append("      Person_Student.impairment_type_id,\n");
         query.append("      Ref_Impairment_Type.impairment_type_name\n");
@@ -372,7 +374,6 @@ public class StudentDao {
         query.append("      impairment_type_id = ?\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -382,11 +383,11 @@ public class StudentDao {
                         ps.setString(3, student.getStudentGender());
                         ps.setString(4, student.getStudentDateOfBirth());
                         ps.setString(5, student.getStudentSchool());
-                        ps.setInt(6, student.getSchoolLevelTypeId());
-                        ps.setInt(7, student.getClassLevelTypeId());
-                        ps.setInt(8, student.getClassRepeatYearTypeId());
-                        ps.setInt(9, student.getImpairmentTypeId());
-                        ps.setInt(10, student.getStudentId());
+                        ps.setInt(6, student.getSchoolLevelTypeId() != null ? student.getSchoolLevelTypeId() : 0);
+                        ps.setInt(7, student.getClassLevelTypeId() != null ? student.getClassLevelTypeId() : 0);
+                        ps.setInt(8, student.getClassRepeatYearTypeId() != null ? student.getClassRepeatYearTypeId() : 0);
+                        ps.setInt(9, student.getImpairmentTypeId() != null ? student.getImpairmentTypeId() : 0);
+                        ps.setInt(10, student.getStudentId() != null ? student.getStudentId() : 0);
                         return ps;
                     }
             );

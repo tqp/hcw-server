@@ -1,6 +1,7 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.events;
 
 import com.timsanalytics.crc.main.beans.StudentSponsorLetter;
+import com.timsanalytics.crc.main.dao.UtilsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

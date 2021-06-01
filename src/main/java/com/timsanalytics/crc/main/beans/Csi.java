@@ -1,9 +1,9 @@
 package com.timsanalytics.crc.main.beans;
 
 public class Csi {
-    private Integer csiId;
+    private Integer studentCsiId;
     private Integer studentId;
-    private Integer userId;
+    private Integer caseManagerUserId;
     private String csiDate;
     private String csiServicesProvided;
     private String csiComments;
@@ -25,12 +25,12 @@ public class Csi {
     private String caseManagerSurname;
     private String caseManagerGivenName;
 
-    public Integer getCsiId() {
-        return csiId;
+    public Integer getStudentCsiId() {
+        return studentCsiId;
     }
 
-    public void setCsiId(Integer csiId) {
-        this.csiId = csiId;
+    public void setStudentCsiId(Integer studentCsiId) {
+        this.studentCsiId = studentCsiId;
     }
 
     public Integer getStudentId() {
@@ -41,12 +41,12 @@ public class Csi {
         this.studentId = studentId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getCaseManagerUserId() {
+        return caseManagerUserId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCaseManagerUserId(Integer caseManagerUserId) {
+        this.caseManagerUserId = caseManagerUserId;
     }
 
     public String getCsiDate() {

@@ -18,13 +18,10 @@ import java.util.List;
 public class RelationshipDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
-    private final PrintObjectService printObjectService;
 
     @Autowired
-    public RelationshipDao(JdbcTemplate mySqlAuthJdbcTemplate,
-                           PrintObjectService printObjectService) {
+    public RelationshipDao(JdbcTemplate mySqlAuthJdbcTemplate) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
-        this.printObjectService = printObjectService;
     }
 
     // CAREGIVER
@@ -60,7 +57,6 @@ public class RelationshipDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -111,7 +107,6 @@ public class RelationshipDao {
         query.append("          WHERE\n");
         query.append("              Rel_Student_Caregiver.student_id = Person_Student.student_id\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{caregiverId}, (rs, rowNum) -> {
                 Relationship row = new Relationship();
@@ -147,7 +142,6 @@ public class RelationshipDao {
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      student_caregiver_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -181,7 +175,6 @@ public class RelationshipDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      student_caregiver_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -203,13 +196,12 @@ public class RelationshipDao {
     // CASE MANAGER
 
     public Relationship createCaseManagerRelationship(String username, Relationship relationship) {
-        System.out.println("createCaseManagerRelationship");
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
         query.append("      CRC.Rel_Student_Case_Manager\n");
         query.append("      (\n");
         query.append("          student_id,\n");
-        query.append("          case_manager_id,\n");
+        query.append("          case_manager_user_id,\n");
         query.append("          start_date,\n");
         query.append("          created_on,\n");
         query.append("          created_by,\n");
@@ -228,7 +220,6 @@ public class RelationshipDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -273,7 +264,9 @@ public class RelationshipDao {
         query.append("          WHERE\n");
         query.append("              Rel_Student_Case_Manager.student_id = Person_Student.student_id\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
+        query.append("  ORDER BY\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Person_Student.surname\n");
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{caseManagerId}, (rs, rowNum) -> {
                 Relationship row = new Relationship();
@@ -304,7 +297,6 @@ public class RelationshipDao {
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      student_case_manager_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -335,7 +327,6 @@ public class RelationshipDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      student_case_manager_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -381,7 +372,6 @@ public class RelationshipDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -417,7 +407,6 @@ public class RelationshipDao {
         query.append("  WHERE\n");
         query.append("      Rel_Student_Sponsor.sponsor_id = ?\n");
         query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{sponsorId}, (rs, rowNum) -> {
                 Relationship row = new Relationship();
@@ -448,7 +437,6 @@ public class RelationshipDao {
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      student_sponsor_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -479,7 +467,6 @@ public class RelationshipDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      student_sponsor_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -519,7 +506,6 @@ public class RelationshipDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -554,7 +540,6 @@ public class RelationshipDao {
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      student_program_status_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -586,7 +571,6 @@ public class RelationshipDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      student_program_status_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {

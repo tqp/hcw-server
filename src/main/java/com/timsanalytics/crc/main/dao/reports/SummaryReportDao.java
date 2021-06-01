@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.reports;
 
 import com.timsanalytics.crc.main.beans.SummaryReportResult;
 import org.slf4j.Logger;

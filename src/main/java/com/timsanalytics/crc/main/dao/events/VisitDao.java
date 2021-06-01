@@ -1,8 +1,9 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.events;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Visit;
+import com.timsanalytics.crc.main.dao.UtilsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class VisitDao {
         query.append("      CRC.Student_Visit\n");
         query.append("      (\n");
         query.append("          student_id,\n");
-        query.append("          case_manager_id,\n");
+        query.append("          case_manager_user_id,\n");
         query.append("          visit_date,\n");
         query.append("          visit_type_id,\n");
         query.append("          interaction_type_id,\n");
@@ -58,7 +59,7 @@ public class VisitDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setInt(1, visit.getStudentId());
-                        ps.setInt(2, visit.getCaseManagerId());
+                        ps.setInt(2, visit.getCaseManagerUserId());
                         ps.setString(3, visit.getVisitDate());
                         ps.setInt(4, visit.getVisitTypeId());
                         ps.setInt(5, visit.getInteractionTypeId());
@@ -84,7 +85,7 @@ public class VisitDao {
         query.append("  SELECT\n");
         query.append("      student_visit_id,\n");
         query.append("      student_id,\n");
-        query.append("      case_manager_id\n");
+        query.append("      case_manager_user_id\n");
         query.append("  FROM\n");
         query.append("      CRC.Student_Visit\n");
         query.append("  WHERE\n");
@@ -97,7 +98,7 @@ public class VisitDao {
                 Visit row = new Visit();
                 row.setVisitId(rs.getInt("student_visit_id"));
                 row.setStudentId(rs.getInt("student_id"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -183,7 +184,7 @@ public class VisitDao {
                 row.setVisitTypeName(rs.getString("visit_type_name"));
                 row.setInteractionTypeName(rs.getString("interaction_type_name"));
                 row.setStudentId(rs.getInt("student_id"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setStudentSurname(rs.getString("surname"));
                 row.setStudentGivenName(rs.getString("given_name"));
                 return row;
@@ -209,7 +210,7 @@ public class VisitDao {
         query.append("                  Person_Student.student_id,\n");
         query.append("                  Person_Student.surname,\n");
         query.append("                  Person_Student.given_name,\n");
-        query.append("                  case_manager_id\n");
+        query.append("                  case_manager_user_id\n");
         query.append("              FROM\n");
         query.append("                  CRC.Student_Visit\n");
         query.append("                  LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Visit.student_id AND Person_Student.deleted = 0\n");
@@ -256,7 +257,7 @@ public class VisitDao {
         query.append("      Person_Student.student_id,\n");
         query.append("      Person_Student.surname,\n");
         query.append("      Person_Student.given_name,\n");
-        query.append("      Student_Visit.case_manager_id,\n");
+        query.append("      Student_Visit.case_manager_user_id,\n");
         query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
         query.append("      Person_Case_Manager.given_name AS case_manager_given_name\n");
         query.append("  FROM\n");
@@ -264,7 +265,7 @@ public class VisitDao {
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Visit.student_id AND Person_Student.deleted = 0\n");
         query.append("      LEFT JOIN CRC.Ref_Visit_Type ON Ref_Visit_Type.visit_type_id = Student_Visit.visit_type_id AND Ref_Visit_Type.deleted = 0\n");
         query.append("      LEFT JOIN CRC.Ref_Interaction_Type ON Ref_Interaction_Type.interaction_type_id = Student_Visit.interaction_type_id AND Ref_Interaction_Type.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Visit.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Student_Visit.case_manager_user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_visit_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -282,7 +283,7 @@ public class VisitDao {
                 row.setStudentId(rs.getInt("student_id"));
                 row.setStudentSurname(rs.getString("surname"));
                 row.setStudentGivenName(rs.getString("given_name"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("case_manager_surname"));
                 row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 row.setStudentGivenName(rs.getString("given_name"));
@@ -302,7 +303,7 @@ public class VisitDao {
         query.append("  UPDATE\n");
         query.append("      CRC.Student_Visit\n");
         query.append("  SET\n");
-        query.append("      case_manager_id = ?,\n");
+        query.append("      case_manager_user_id = ?,\n");
         query.append("      visit_date = ?,\n");
         query.append("      visit_type_id = ?,\n");
         query.append("      interaction_type_id = ?,\n");
@@ -315,7 +316,7 @@ public class VisitDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, visit.getCaseManagerId());
+                        ps.setInt(1, visit.getCaseManagerUserId());
                         ps.setString(2, visit.getVisitDate());
                         ps.setInt(3, visit.getVisitTypeId());
                         ps.setInt(4, visit.getInteractionTypeId());
@@ -370,7 +371,7 @@ public class VisitDao {
         query.append("  SELECT\n");
         query.append("      student_visit_id,\n");
         query.append("      student_id,\n");
-        query.append("      Student_Visit.case_manager_id,\n");
+        query.append("      Student_Visit.case_manager_user_id,\n");
         query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
         query.append("      Person_Case_Manager.given_name AS case_manager_given_name,\n");
         query.append("      visit_date,\n");
@@ -384,7 +385,7 @@ public class VisitDao {
         query.append("      CRC.Student_Visit\n");
         query.append("      LEFT JOIN CRC.Ref_Visit_Type ON Ref_Visit_Type.visit_type_id = Student_Visit.visit_type_id AND Ref_Visit_Type.deleted = 0\n");
         query.append("      LEFT JOIN CRC.Ref_Interaction_Type ON Ref_Interaction_Type.interaction_type_id = Student_Visit.interaction_type_id AND Ref_Interaction_Type.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Visit.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Student_Visit.case_manager_user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         query.append("      AND Student_Visit.deleted = 0\n");
@@ -396,7 +397,7 @@ public class VisitDao {
                 Visit row = new Visit();
                 row.setVisitId(rs.getInt("student_visit_id"));
                 row.setStudentId(rs.getInt("student_id"));
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("case_manager_surname"));
                 row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 row.setVisitDate(rs.getString("visit_date"));

@@ -1,9 +1,10 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.dao.RowMappers.CaseManagerRowMapper;
+import com.timsanalytics.crc.main.dao.UtilsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class CaseManagerDao {
         query.append("  INSERT INTO\n");
         query.append("      CRC.Person_Case_Manager\n");
         query.append("      (\n");
-        query.append("          user_id,\n");
+        query.append("          case_manager_user_id,\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
         query.append("          address,\n");
@@ -56,7 +57,7 @@ public class CaseManagerDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setInt(1, caseManager.getUserId());
+                        ps.setInt(1, caseManager.getCaseManagerUserId());
                         ps.setString(2, caseManager.getCaseManagerSurname());
                         ps.setString(3, caseManager.getCaseManagerGivenName());
                         ps.setString(4, caseManager.getCaseManagerAddress());
@@ -67,7 +68,7 @@ public class CaseManagerDao {
             );
             int lastInsertId = this.utilsDao.getLastInsertId();
             this.logger.debug("New Case Manager ID: " + lastInsertId);
-            return this.getCaseManagerDetail(caseManager.getUserId());
+            return this.getCaseManagerDetail(caseManager.getCaseManagerUserId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -80,7 +81,7 @@ public class CaseManagerDao {
     public List<CaseManager> getCaseManagerList() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Auth_User.user_id as case_manager_id,\n");
+        query.append("      Auth_User.user_id as case_manager_user_id,\n");
         query.append("      Auth_User.username,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
@@ -90,16 +91,18 @@ public class CaseManagerDao {
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
         query.append("      LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
-        query.append("      LEFT JOIN CRC.Case_Manager_Student_Count ON Case_Manager_Student_Count.case_manager_id = Auth_User.user_id\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Case_Manager_Student_Count ON Case_Manager_Student_Count.case_manager_user_id = Auth_User.user_id\n");
         query.append("  WHERE\n");
         query.append("      Auth_User.deleted = 0\n");
         query.append("      AND Auth_User_Role.role_id = 5\n");
-        this.logger.trace("SQL:\n" + query.toString());
+        query.append("  ORDER BY\n");
+        query.append("      Auth_User.given_name,\n");
+        query.append("      Auth_User.surname\n");
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setCaseManagerPhone(rs.getString("phone"));
@@ -182,7 +185,7 @@ public class CaseManagerDao {
                     pageSize
             }, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setCaseManagerPhone(rs.getString("phone"));
@@ -267,7 +270,7 @@ public class CaseManagerDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Auth_User.user_id,\n");
-        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.user_id AS case_manager_user_id,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
         query.append("      Person_Case_Manager.address,\n");
@@ -312,11 +315,11 @@ public class CaseManagerDao {
                         ps.setString(3, caseManager.getCaseManagerAddress());
                         ps.setString(4, caseManager.getCaseManagerPhone());
                         ps.setString(5, caseManager.getCaseManagerEmail());
-                        ps.setInt(6, caseManager.getCaseManagerId());
+                        ps.setInt(6, caseManager.getCaseManagerUserId());
                         return ps;
                     }
             );
-            return this.getCaseManagerDetail(caseManager.getUserId());
+            return this.getCaseManagerDetail(caseManager.getCaseManagerUserId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -359,25 +362,26 @@ public class CaseManagerDao {
     public CaseManager getCurrentCaseManagerDetailByStudentId(int studentId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Auth_User.user_id AS case_manager_id,\n");
+        query.append("      Auth_User.user_id AS case_manager_user_id,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
         query.append("      Rel_Student_Case_Manager.student_case_manager_id,\n");
         query.append("      Rel_Student_Case_Manager.start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Case_Manager\n");
-        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Rel_Student_Case_Manager.case_manager_id AND Auth_User.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Rel_Student_Case_Manager.case_manager_user_id AND Auth_User.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
         query.append("      AND Auth_User.deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      start_date DESC\n");
+        query.append("      start_date DESC,\n");
+        query.append("      Rel_Student_Case_Manager.updated_on DESC\n");
         query.append("      LIMIT 0, 1\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setRelationshipId(rs.getInt("student_case_manager_id"));

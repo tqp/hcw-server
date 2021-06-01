@@ -1,7 +1,7 @@
 package com.timsanalytics.crc.main.services;
 
 import com.timsanalytics.crc.main.beans.Student;
-import com.timsanalytics.crc.main.dao.ReportsDao;
+import com.timsanalytics.crc.main.dao.reports.ReportsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

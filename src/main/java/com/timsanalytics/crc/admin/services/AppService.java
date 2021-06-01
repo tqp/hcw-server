@@ -1,7 +1,6 @@
 package com.timsanalytics.crc.admin.services;
 
 import com.timsanalytics.crc.admin.dao.AppDao;
-import com.timsanalytics.crc.main.dao.CaregiverDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;

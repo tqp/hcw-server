@@ -1,9 +1,10 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.dao.RowMappers.CaregiverRowMapper;
+import com.timsanalytics.crc.main.dao.UtilsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,9 @@ public class CaregiverDao {
         query.append("  (\n");
         query.append("      deleted = 0\n");
         query.append("  )\n");
+        query.append("  ORDER BY\n");
+        query.append("      given_name,\n");
+        query.append("      surname\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
@@ -393,7 +397,8 @@ public class CaregiverDao {
         query.append("      student_id = ?\n");
         query.append("      AND Rel_Student_Caregiver.deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      start_date DESC\n");
+        query.append("      start_date DESC,\n");
+        query.append("      Rel_Student_Caregiver.updated_on DESC\n");
         query.append("  LIMIT 0, 1\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {

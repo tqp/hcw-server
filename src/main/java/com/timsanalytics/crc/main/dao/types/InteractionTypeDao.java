@@ -32,12 +32,11 @@ public class InteractionTypeDao {
         query.append("  ORDER BY\n");
         query.append("      sort_order,\n");
         query.append("      interaction_type_name\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 InteractionType row = new InteractionType();
                 row.setInteractionTypeId(rs.getInt("interaction_type_id"));
-                row.setInteractionTypeName(rs.getString("name"));
+                row.setInteractionTypeName(rs.getString("interaction_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

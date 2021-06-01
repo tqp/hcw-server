@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.controllers;
+package com.timsanalytics.crc.main.controllers.reports;
 
 import com.timsanalytics.crc.main.beans.SummaryReportResult;
 import com.timsanalytics.crc.main.services.SummaryReportService;

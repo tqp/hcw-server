@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.controllers;
+package com.timsanalytics.crc.main.controllers.events;
 
 import com.timsanalytics.crc.main.beans.StudentSponsorLetter;
 import com.timsanalytics.crc.main.services.StudentSponsorLetterService;

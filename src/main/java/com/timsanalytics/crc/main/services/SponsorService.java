@@ -4,8 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Sponsor;
-import com.timsanalytics.crc.main.beans.Student;
-import com.timsanalytics.crc.main.dao.SponsorDao;
+import com.timsanalytics.crc.main.dao.people.SponsorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

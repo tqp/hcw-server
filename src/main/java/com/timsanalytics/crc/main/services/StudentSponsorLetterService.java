@@ -1,7 +1,7 @@
 package com.timsanalytics.crc.main.services;
 
 import com.timsanalytics.crc.main.beans.StudentSponsorLetter;
-import com.timsanalytics.crc.main.dao.StudentSponsorLetterDao;
+import com.timsanalytics.crc.main.dao.events.StudentSponsorLetterDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

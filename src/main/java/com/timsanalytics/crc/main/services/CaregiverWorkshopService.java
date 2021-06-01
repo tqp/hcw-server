@@ -2,7 +2,7 @@ package com.timsanalytics.crc.main.services;
 
 import com.timsanalytics.crc.common.beans.KeyValueInteger;
 import com.timsanalytics.crc.main.beans.CaregiverWorkshop;
-import com.timsanalytics.crc.main.dao.CaregiverWorkshopDao;
+import com.timsanalytics.crc.main.dao.events.CaregiverWorkshopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

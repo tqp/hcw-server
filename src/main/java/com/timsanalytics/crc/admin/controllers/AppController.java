@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/health-check")
-@Tag(name = "App", description = "This is used to query application health-related data.")
+@Tag(name = "Application", description = "This is used to query application health-related data.")
 public class AppController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final AppService appService;
@@ -35,7 +35,7 @@ public class AppController {
 
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Health Check Response", description = "Get Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Health Check Response", description = "Get Health Check Response", tags = {"Application"})
     public ResponseEntity<KeyValue> getServerHealthCheck() {
         try {
             return ResponseEntity.ok()
@@ -49,7 +49,7 @@ public class AppController {
 
     @ResponseBody
     @RequestMapping(value = "/database-health-check", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Database Health Check Response", description = "Get Database Health Check Response", tags = {"App"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Database Health Check Response", description = "Get Database Health Check Response", tags = {"Application"})
     public ResponseEntity<Integer> getDatabaseHealthCheck() {
         try {
             return ResponseEntity.ok()
@@ -63,7 +63,7 @@ public class AppController {
 
     @ResponseBody
     @RequestMapping(value = "/build-timestamp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Build Timestamp", tags = {"App"}, description = "Gets the date-time when the server was last built.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Build Timestamp", description = "Gets the date-time when the server was last built.", tags = {"Application"})
     public ResponseEntity<KeyValue> getBuildTimestamp() {
         this.logger.trace("AppController -> getBuildTimestamp");
         try {
@@ -78,7 +78,7 @@ public class AppController {
 
     @ResponseBody
     @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Environment Profile", description = "Get Environment Profile", tags = {"Environment"})
+    @Operation(summary = "Get Environment Profile", description = "Get Environment Profile", tags = {"Application"})
     public ResponseEntity<KeyValue> getEnvironmentProfile() {
         try {
             return ResponseEntity.ok()

@@ -4,7 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.PostGradEvent;
-import com.timsanalytics.crc.main.dao.PostGradEventDao;
+import com.timsanalytics.crc.main.dao.events.PostGradEventDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

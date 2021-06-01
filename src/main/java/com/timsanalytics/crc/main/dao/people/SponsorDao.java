@@ -1,10 +1,11 @@
-package com.timsanalytics.crc.main.dao;
+package com.timsanalytics.crc.main.dao.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Sponsor;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.RowMappers.SponsorRowMapper;
+import com.timsanalytics.crc.main.dao.UtilsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -317,7 +318,7 @@ public class SponsorDao {
 
     public List<Sponsor> getSponsorListByStudentId(Integer studentId) {
         StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
+        query.append("  SELECT DISTINCT\n");
         query.append("      Person_Sponsor.sponsor_id,\n");
         query.append("      Person_Sponsor.surname,\n");
         query.append("      Person_Sponsor.given_name\n");
@@ -327,6 +328,9 @@ public class SponsorDao {
         query.append("  WHERE\n");
         query.append("      Rel_Student_Sponsor.student_id = ?\n");
         query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      Person_Sponsor.given_name,\n");
+        query.append("      Person_Sponsor.surname\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
@@ -362,7 +366,8 @@ public class SponsorDao {
         query.append("      student_id = ?\n");
         query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      start_date DESC\n");
+        query.append("      start_date DESC,\n");
+        query.append("      Rel_Student_Sponsor.updated_on DESC\n");
         query.append("  LIMIT 0, 1\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {

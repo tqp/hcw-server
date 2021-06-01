@@ -65,11 +65,11 @@ public class HistoryDao {
         query.append("          Rel_Student_Case_Manager.deleted,\n");
         query.append("          start_date,\n");
         query.append("          Rel_Student_Case_Manager.student_case_manager_id AS relationship_id,\n");
-        query.append("          Person_Case_Manager.case_manager_id AS entity_id,\n");
+        query.append("          Person_Case_Manager.case_manager_user_id AS entity_id,\n");
         query.append("          CONCAT(Person_Case_Manager.given_name, \" \", Person_Case_Manager.surname)\n");
         query.append("      FROM\n");
         query.append("          CRC.Rel_Student_Case_Manager\n");
-        query.append("          LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Rel_Student_Case_Manager.case_manager_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("          LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Rel_Student_Case_Manager.case_manager_user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("      WHERE\n");
         query.append("          student_id = ?\n");
         query.append("          AND Rel_Student_Case_Manager.deleted = 0\n");

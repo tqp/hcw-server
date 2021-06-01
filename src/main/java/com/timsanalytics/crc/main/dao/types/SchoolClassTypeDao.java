@@ -24,18 +24,17 @@ public class SchoolClassTypeDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      school_class_type_id,\n");
-        query.append("      name\n");
+        query.append("      school_class_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Ref_School_Class_Type\n");
         query.append("  WHERE\n");
         query.append("      parent_id = ?\n");
         query.append("      AND deleted = 0\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{parentId}, (rs, rowNum) -> {
                 SchoolClassType row = new SchoolClassType();
                 row.setSchoolClassTypeId(rs.getInt("school_class_type_id"));
-                row.setSchoolClassTypeName(rs.getString("name"));
+                row.setSchoolClassTypeName(rs.getString("school_class_type_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {

@@ -3,9 +3,8 @@ package com.timsanalytics.crc.main.services;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.Loan;
 import com.timsanalytics.crc.main.beans.Payment;
-import com.timsanalytics.crc.main.dao.PaymentDao;
+import com.timsanalytics.crc.main.dao.finance.PaymentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
