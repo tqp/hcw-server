@@ -253,7 +253,7 @@ public class RelationshipDao {
         query.append("      CRC.Rel_Student_Case_Manager\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Case_Manager.student_id AND Person_Student.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      Rel_Student_Case_Manager.case_manager_id = ?\n");
+        query.append("      Rel_Student_Case_Manager.case_manager_user_id = ?\n");
         query.append("      AND Rel_Student_Case_Manager.deleted = 0\n");
         query.append("      AND Rel_Student_Case_Manager.start_date =\n");
         query.append("      (\n");
@@ -291,12 +291,12 @@ public class RelationshipDao {
         query.append("      CRC.Rel_Student_Case_Manager\n");
         query.append("  SET\n");
         query.append("      student_id = ?,\n");
-        query.append("      case_manager_id = ?,\n");
+        query.append("      case_manager_user_id = ?,\n");
         query.append("      start_date = ?,\n");
         query.append("      updated_on = now(),\n");
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
-        query.append("      student_case_manager_id = ?\n");
+        query.append("      student_case_manager_user_id = ?\n");
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -326,7 +326,7 @@ public class RelationshipDao {
         query.append("  SET\n");
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
-        query.append("      student_case_manager_id = ?\n");
+        query.append("      student_case_manager_user_id = ?\n");
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {

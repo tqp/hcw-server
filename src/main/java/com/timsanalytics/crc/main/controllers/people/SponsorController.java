@@ -4,7 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Sponsor;
-import com.timsanalytics.crc.main.services.SponsorService;
+import com.timsanalytics.crc.main.services.people.SponsorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

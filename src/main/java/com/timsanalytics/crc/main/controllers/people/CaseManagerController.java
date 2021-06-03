@@ -4,7 +4,8 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.CaseManager;
-import com.timsanalytics.crc.main.services.CaseManagerService;
+import com.timsanalytics.crc.main.services.people.CaseManagerService;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,10 +28,12 @@ import java.util.List;
 public class CaseManagerController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final CaseManagerService caseManagerService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public CaseManagerController(CaseManagerService caseManagerService) {
+    public CaseManagerController(CaseManagerService caseManagerService, PrintObjectService printObjectService) {
         this.caseManagerService = caseManagerService;
+        this.printObjectService = printObjectService;
     }
 
     // BASIC CRUD
@@ -128,6 +131,19 @@ public class CaseManagerController {
             CaseManager caseManager = caseManagerService.getCurrentCaseManagerDetailByStudentId(studentId);
             return ResponseEntity.ok()
                     .body(caseManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/student/{studentId}/owner/{username}", method = RequestMethod.GET)
+    @Operation(summary = "Is the Logged-In User the Student's Case Manager?", description = "Is the Logged-In User the Student's Case Manager?", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Boolean> isTheLoggedInUserTheStudentsCaseManager(@Parameter(description = "Student ID", required = true) @PathVariable int studentId,
+                                                                           @Parameter(description = "Logged-In Username", required = true) @PathVariable String username) {
+        try {
+            return ResponseEntity.ok()
+                    .body(caseManagerService.isTheLoggedInUserTheStudentsCaseManager(studentId, username));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

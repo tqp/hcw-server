@@ -185,7 +185,7 @@ public class CaseManagerDao {
                     pageSize
             }, (rs, rowNum) -> {
                 CaseManager row = new CaseManager();
-                row.setCaseManagerUserId(rs.getInt("case_manager_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setCaseManagerPhone(rs.getString("phone"));
@@ -209,7 +209,7 @@ public class CaseManagerDao {
         // This is a REALLY, REALLY, inefficient query. I'm embarrassed by it. :(
         // Should probably use a View instead. But it works!
         query.append("              SELECT\n");
-        query.append("                  Auth_User.user_id as case_manager_id,\n");
+        query.append("                  Auth_User.user_id as case_manager_user_id,\n");
         query.append("                  Auth_User.username,\n");
         query.append("                  Auth_User.surname,\n");
         query.append("                  Auth_User.given_name,\n");
@@ -222,7 +222,7 @@ public class CaseManagerDao {
         query.append("                          CRC.Rel_Student_Case_Manager\n");
         query.append("                          LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Case_Manager.student_id AND Person_Student.deleted = 0\n");
         query.append("                      WHERE\n");
-        query.append("                          Rel_Student_Case_Manager.case_manager_id = Auth_User.user_id\n");
+        query.append("                          Rel_Student_Case_Manager.case_manager_user_id = Auth_User.user_id\n");
         query.append("                          AND Rel_Student_Case_Manager.deleted = 0\n");
         query.append("                          AND Rel_Student_Case_Manager.start_date =\n");
         query.append("                          (\n");
@@ -237,7 +237,7 @@ public class CaseManagerDao {
         query.append("              FROM\n");
         query.append("                  CRC.Auth_User\n");
         query.append("                  LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
-        query.append("                  LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("                  LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("              WHERE\n");
         query.append("              (\n");
         query.append("                  Auth_User.deleted = 0\n");
@@ -278,7 +278,7 @@ public class CaseManagerDao {
         query.append("      Person_Case_Manager.email\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
-        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      Auth_User.user_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -304,7 +304,7 @@ public class CaseManagerDao {
         query.append("      phone = ?,\n");
         query.append("      email = ?\n");
         query.append("  WHERE\n");
-        query.append("      case_manager_id = ?\n");
+        query.append("      case_manager_user_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
@@ -336,7 +336,7 @@ public class CaseManagerDao {
         query.append("  SET\n");
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
-        query.append("      case_manager_id = ?\n");
+        query.append("      case_manager_user_id = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("id=" + caseManagerId);
         try {
@@ -365,7 +365,8 @@ public class CaseManagerDao {
         query.append("      Auth_User.user_id AS case_manager_user_id,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
-        query.append("      Rel_Student_Case_Manager.student_case_manager_id,\n");
+        query.append("      Auth_User.username,\n");
+        query.append("      Rel_Student_Case_Manager.case_manager_user_id,\n");
         query.append("      Rel_Student_Case_Manager.start_date\n");
         query.append("  FROM\n");
         query.append("      CRC.Rel_Student_Case_Manager\n");
@@ -384,7 +385,8 @@ public class CaseManagerDao {
                 row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
-                row.setRelationshipId(rs.getInt("student_case_manager_id"));
+                row.setCaseManagerUsername(rs.getString("username"));
+                row.setRelationshipId(rs.getInt("case_manager_user_id"));
                 row.setRelationshipStartDate(rs.getString("start_date"));
                 return row;
             });

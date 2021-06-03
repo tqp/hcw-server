@@ -98,6 +98,8 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/app-user/**").hasAnyRole("MANAGER")
                 .antMatchers("/api/v1/app-role/**").hasAnyRole("MANAGER")
                 .antMatchers("/api/v1/app-user-role/**").hasAnyRole("MANAGER")
+                .antMatchers("/api/v1/relationship/**").hasAnyRole("USER", "MANAGER", "CASE_MANAGER")
+
                 .antMatchers("/api/v1/infra/v1/audit/**").hasAnyRole("MANAGER")
 
                 // API Endpoints ADMIN

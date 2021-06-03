@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.services;
+package com.timsanalytics.crc.main.services.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
@@ -56,4 +56,11 @@ public class CaseManagerService {
     public CaseManager getCurrentCaseManagerDetailByStudentId(int studentId) {
         return this.caseManagerDao.getCurrentCaseManagerDetailByStudentId(studentId);
     }
+
+    public Boolean isTheLoggedInUserTheStudentsCaseManager(int studentId, String username) {
+        CaseManager caseManager = this.caseManagerDao.getCurrentCaseManagerDetailByStudentId(studentId);
+        return username.equalsIgnoreCase(caseManager.getCaseManagerUsername());
+    }
+
+
 }

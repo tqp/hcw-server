@@ -4,7 +4,7 @@ import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.Caregiver;
-import com.timsanalytics.crc.main.services.CaregiverService;
+import com.timsanalytics.crc.main.services.people.CaregiverService;
 import com.timsanalytics.crc.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

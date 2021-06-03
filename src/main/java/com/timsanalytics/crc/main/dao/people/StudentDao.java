@@ -1,5 +1,6 @@
 package com.timsanalytics.crc.main.dao.people;
 
+import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Relationship;
@@ -92,10 +93,6 @@ public class StudentDao {
         query.append("      Person_Student.student_id,\n");
         query.append("      Person_Student.surname,\n");
         query.append("      Person_Student.given_name,\n");
-        query.append("      Person_Student.sex,\n");
-        query.append("      Person_Student.dob,\n");
-        query.append("      Person_Student.school,\n");
-        query.append("      Person_Student.grade,\n");
         query.append("      Person_Caregiver.caregiver_id,\n");
         query.append("      Person_Caregiver.surname AS caregiver_surname,\n");
         query.append("      Person_Caregiver.given_name AS caregiver_given_name,\n");
@@ -106,6 +103,7 @@ public class StudentDao {
         query.append("      Ref_Tier_Type.name AS tier_type_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Person_Student\n");
+        query.append("      -- Current Caregiver\n");
         query.append("      LEFT JOIN CRC.Rel_Student_Caregiver ON Rel_Student_Caregiver.student_id = Person_Student.student_id AND Rel_Student_Caregiver.deleted = 0\n");
         query.append("      LEFT OUTER JOIN CRC.Rel_Student_Caregiver effectiveDateComparison ON\n");
         query.append("      (\n");
@@ -117,19 +115,109 @@ public class StudentDao {
         query.append("              (\n");
         query.append("                  Rel_Student_Caregiver.start_date = effectiveDateComparison.start_date\n");
         query.append("                  AND\n");
-        query.append("                  Rel_Student_Caregiver.student_id > effectiveDateComparison.student_id\n");
+        query.append("                  Rel_Student_Caregiver.student_caregiver_id > effectiveDateComparison.student_caregiver_id\n");
         query.append("              )\n");
         query.append("          )\n");
         query.append("      )\n");
-        query.append("  LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Rel_Student_Caregiver.caregiver_id AND Person_Caregiver.deleted = 0\n");
-        query.append("  LEFT JOIN CRC.Ref_Tier_Type on Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Rel_Student_Caregiver.caregiver_id AND Person_Caregiver.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Tier_Type on Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("  (\n");
         query.append("      Person_Student.deleted = 0\n");
+        query.append("      AND effectiveDateComparison.student_id IS NULL\n");
         query.append("  )\n");
+        query.append("  ORDER BY\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                Student row = new Student();
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("surname"));
+                row.setStudentGivenName(rs.getString("given_name"));
+                row.setCaregiverSurname(rs.getString("caregiver_surname"));
+                row.setCaregiverGivenName(rs.getString("caregiver_given_name"));
+                row.setCaregiverAddress(rs.getString("caregiver_address"));
+                row.setCaregiverPhone(rs.getString("caregiver_phone"));
+                row.setRelationshipTierTypeName(rs.getString("tier_type_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Student> getStudentByCaseManagerList(User loggedInUser) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Person_Caregiver.caregiver_id,\n");
+        query.append("      Person_Caregiver.surname AS caregiver_surname,\n");
+        query.append("      Person_Caregiver.given_name AS caregiver_given_name,\n");
+        query.append("      Person_Caregiver.address AS caregiver_address,\n");
+        query.append("      Person_Caregiver.phone AS caregiver_phone,\n");
+        query.append("      Rel_Student_Caregiver.start_date,\n");
+        query.append("      Ref_Tier_Type.tier_type_id,\n");
+        query.append("      Ref_Tier_Type.name AS tier_type_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Person_Student\n");
+
+        query.append("      -- Current Caregiver\n");
+        query.append("      LEFT JOIN CRC.Rel_Student_Caregiver ON Rel_Student_Caregiver.student_id = Person_Student.student_id AND Rel_Student_Caregiver.deleted = 0\n");
+        query.append("      LEFT OUTER JOIN CRC.Rel_Student_Caregiver effectiveDateComparison_cg ON\n");
+        query.append("      (\n");
+        query.append("          effectiveDateComparison_cg.student_id = Person_Student.student_id\n");
+        query.append("          AND\n");
+        query.append("          (\n");
+        query.append("              Rel_Student_Caregiver.start_date < effectiveDateComparison_cg.start_date\n");
+        query.append("              OR\n");
+        query.append("              (\n");
+        query.append("                  Rel_Student_Caregiver.start_date = effectiveDateComparison_cg.start_date\n");
+        query.append("                  AND\n");
+        query.append("                  Rel_Student_Caregiver.student_caregiver_id > effectiveDateComparison_cg.student_caregiver_id\n");
+        query.append("              )\n");
+        query.append("          )\n");
+        query.append("      )\n");
+        query.append("      LEFT JOIN CRC.Person_Caregiver ON Person_Caregiver.caregiver_id = Rel_Student_Caregiver.caregiver_id AND Person_Caregiver.deleted = 0\n");
+
+        query.append("      -- Current Case Manager\n");
+        query.append("      LEFT JOIN CRC.Rel_Student_Case_Manager ON Rel_Student_Case_Manager.student_id = Person_Student.student_id AND Rel_Student_Case_Manager.deleted = 0\n");
+        query.append("      LEFT OUTER JOIN CRC.Rel_Student_Case_Manager effectiveDateComparison_cm ON\n");
+        query.append("      (\n");
+        query.append("          effectiveDateComparison_cm.student_id = Person_Student.student_id\n");
+        query.append("          AND\n");
+        query.append("          (\n");
+        query.append("              Rel_Student_Case_Manager.start_date < effectiveDateComparison_cm.start_date\n");
+        query.append("              OR\n");
+        query.append("              (\n");
+        query.append("                  Rel_Student_Case_Manager.start_date = effectiveDateComparison_cm.start_date\n");
+        query.append("                  AND\n");
+        query.append("                  Rel_Student_Case_Manager.student_id > effectiveDateComparison_cm.student_id\n");
+        query.append("              )\n");
+        query.append("          )\n");
+        query.append("      )\n");
+
+        query.append("      LEFT JOIN CRC.Ref_Tier_Type on Ref_Tier_Type.tier_type_id = Rel_Student_Caregiver.tier_type_id AND Ref_Tier_Type.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("  (\n");
+        query.append("      Person_Student.deleted = 0\n");
+        query.append("      AND effectiveDateComparison_cg.student_id IS NULL\n");
+        query.append("      AND effectiveDateComparison_cm.student_id IS NULL\n");
+        query.append("      AND Rel_Student_Case_Manager.case_manager_user_id = ?\n");
+        query.append("  )\n");
+        query.append("  ORDER BY\n");
+        query.append("      Person_Student.surname,\n");
+        query.append("      Person_Student.given_name\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{loggedInUser.getUserId()}, (rs, rowNum) -> {
                 Student row = new Student();
                 row.setStudentId(rs.getInt("student_id"));
                 row.setStudentSurname(rs.getString("surname"));

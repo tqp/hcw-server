@@ -8,6 +8,7 @@ public class CaseManager {
     private Integer caseManagerId;
     private String caseManagerSurname;
     private String caseManagerGivenName;
+    private String caseManagerUsername;
     private String caseManagerGender;
     private String caseManagerAddress;
     private String caseManagerPhone;
@@ -54,6 +55,14 @@ public class CaseManager {
 
     public void setCaseManagerGivenName(String caseManagerGivenName) {
         this.caseManagerGivenName = caseManagerGivenName;
+    }
+
+    public String getCaseManagerUsername() {
+        return caseManagerUsername;
+    }
+
+    public void setCaseManagerUsername(String caseManagerUsername) {
+        this.caseManagerUsername = caseManagerUsername;
     }
 
     public String getCaseManagerGender() {

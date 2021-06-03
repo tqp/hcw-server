@@ -1,5 +1,6 @@
-package com.timsanalytics.crc.main.services;
+package com.timsanalytics.crc.main.services.people;
 
+import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
@@ -25,6 +26,10 @@ public class StudentService {
 
     public List<Student> getStudentList() {
         return this.studentDao.getStudentList();
+    }
+
+    public List<Student> getStudentByCaseManagerList(User loggedInUser) {
+        return this.studentDao.getStudentByCaseManagerList(loggedInUser);
     }
 
     public ServerSidePaginationResponse<Student> getStudentList_SSP(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {

@@ -25,7 +25,7 @@ public class CsiScoresReportDao {
     public List<CsiScoresReport> getCsiScoresReportData() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      case_manager_id,\n");
+        query.append("      case_manager_user_id,\n");
         query.append("      surname,\n");
         query.append("      given_name,\n");
         query.append("      total_score,\n");
@@ -33,7 +33,7 @@ public class CsiScoresReportDao {
         query.append("  FROM\n");
         query.append("      (\n");
         query.append("          SELECT\n");
-        query.append("              Student_Csi.case_manager_id,\n");
+        query.append("              Student_Csi.case_manager_user_id,\n");
         query.append("              Person_Case_Manager.surname,\n");
         query.append("              Person_Case_Manager.given_name,\n");
         query.append("              (\n");
@@ -51,7 +51,7 @@ public class CsiScoresReportDao {
         query.append("              ) AS total_score\n");
         query.append("          FROM\n");
         query.append("              CRC.Student_Csi\n");
-        query.append("              LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_id = Student_Csi.case_manager_id\n");
+        query.append("              LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Student_Csi.case_manager_user_id\n");
         query.append("          WHERE\n");
         query.append("              year(csi_date) = 2020\n");
         query.append("          ORDER BY\n");
@@ -59,14 +59,14 @@ public class CsiScoresReportDao {
         query.append("              Person_Case_Manager.given_name\n");
         query.append("      ) AS SUB_QUERY\n");
         query.append("  GROUP BY\n");
-        query.append("      case_manager_id,\n");
+        query.append("      case_manager_user_id,\n");
         query.append("      surname,\n");
         query.append("      given_name\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 CsiScoresReport row = new CsiScoresReport();
-                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerId(rs.getInt("case_manager_user_id"));
                 row.setCaseManagerSurname(rs.getString("surname"));
                 row.setCaseManagerGivenName(rs.getString("given_name"));
                 row.setTotalScore(rs.getInt("total_score"));

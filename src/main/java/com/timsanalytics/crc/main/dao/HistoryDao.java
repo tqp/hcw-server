@@ -64,7 +64,7 @@ public class HistoryDao {
         query.append("          'Case Manager' AS history_type_name,\n");
         query.append("          Rel_Student_Case_Manager.deleted,\n");
         query.append("          start_date,\n");
-        query.append("          Rel_Student_Case_Manager.student_case_manager_id AS relationship_id,\n");
+        query.append("          Rel_Student_Case_Manager.case_manager_user_id AS relationship_id,\n");
         query.append("          Person_Case_Manager.case_manager_user_id AS entity_id,\n");
         query.append("          CONCAT(Person_Case_Manager.given_name, \" \", Person_Case_Manager.surname)\n");
         query.append("      FROM\n");
