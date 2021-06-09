@@ -31,7 +31,6 @@ public class PersonTypeDao {
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      name\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 PersonType row = new PersonType();

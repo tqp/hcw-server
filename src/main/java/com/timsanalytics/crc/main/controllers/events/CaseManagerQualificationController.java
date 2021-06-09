@@ -33,7 +33,8 @@ public class CaseManagerQualificationController {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create Case Manager Qualification Item", description = "Create Case Manager Qualification Item", tags = {"Case Manager Qualification"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<CaseManagerQualification> createCaseManagerQualification(@RequestBody CaseManagerQualification CaseManagerQualification, @RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<CaseManagerQualification> createCaseManagerQualification(@RequestBody CaseManagerQualification CaseManagerQualification,
+                                                                                   @RequestHeader(name = "Authorization") String token) {
         String username = this.tokenService.getUsernameFromToken(token.replaceFirst("Bearer ", ""));
         try {
             return ResponseEntity.ok()

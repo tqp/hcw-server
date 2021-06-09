@@ -52,7 +52,7 @@ public class TokenService {
         String AUTHORITIES_KEY = environment.getProperty("jwt.authorities-key");
 
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getUserUsername())
                 .claim(AUTHORITIES_KEY, authorities)
                 .setIssuer("TQP")
                 .setIssuedAt(new Date(System.currentTimeMillis()))

@@ -44,7 +44,7 @@ public class AuthDao {
                     (rs, rowNum) -> {
                         User row = new User();
                         row.setUserId(rs.getInt("user_id"));
-                        row.setUsername(rs.getString("username"));
+                        row.setUserUsername(rs.getString("username"));
                         row.setPassword(rs.getString("password"));
                         row.setLastLogin(rs.getString("last_login"));
                         row.setLoginCount(rs.getInt("login_count"));

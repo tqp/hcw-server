@@ -3,7 +3,6 @@ package com.timsanalytics.crc.auth.authCommon.services;
 import com.timsanalytics.crc.auth.authCommon.beans.Role;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.dao.UserDao;
-import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.utils.PrintObjectService;
@@ -38,7 +37,7 @@ public class UserService {
     }
 
     public User createUser(User user, User loggedInUser) {
-        this.logger.debug("UserService -> createUser: username=" + user.getUsername());
+        this.logger.debug("UserService -> createUser: username=" + user.getUserUsername());
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
         User createdUser = null;
@@ -54,15 +53,13 @@ public class UserService {
             this.logger.debug("UserService -> createUser -> response: " + createdUser);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
-            logger.error("Error during creation: " + user.getUsername());
+            logger.error("Error during creation: " + user.getUserUsername());
         }
         return user;
     }
 
     public List<User> getUserList() {
-        this.logger.debug("UserService -> getUserList");
-        List<User> list = this.userDao.getUserList();
-        return list;
+        return this.userDao.getUserList();
     }
 
     public ServerSidePaginationResponse<User> getUserList_SSP(ServerSidePaginationRequest<User> serverSidePaginationRequest) {
@@ -86,7 +83,7 @@ public class UserService {
     }
 
     public User updateUser(User user, User loggedInUser) {
-        this.logger.debug("UserService -> updateUser: username=" + user.getUsername());
+        this.logger.debug("UserService -> updateUser: username=" + user.getUserUsername());
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
         User updatedUser = null;
@@ -102,7 +99,7 @@ public class UserService {
             this.logger.debug("UserService -> updateUser -> response: " + updatedUser);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
-            logger.error("Error during update: " + user.getUsername(), e);
+            logger.error("Error during update: " + user.getUserUsername(), e);
         }
         return updatedUser;
     }
@@ -140,7 +137,7 @@ public class UserService {
             this.logger.debug("UserService -> updateMyProfile -> response: " + item);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
-            logger.error("Error during update: " + User.getUsername(), e);
+            logger.error("Error during update: " + User.getUserUsername(), e);
             throw e;
         }
         return item; // Note: this User does not include the updates
@@ -158,7 +155,7 @@ public class UserService {
             mySqlAuthTransactionManager.commit(txStatus);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
-            logger.error("Error during update: " + User.getUsername(), e);
+            logger.error("Error during update: " + User.getUserUsername(), e);
             throw e;
         }
         return item; // Note: this User does not include the updates
@@ -174,7 +171,7 @@ public class UserService {
             mySqlAuthTransactionManager.commit(txStatus);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
-            logger.error("Error during update: " + User.getUsername(), e);
+            logger.error("Error during update: " + User.getUserUsername(), e);
             throw e;
         }
         return item; // Note: this User does not include the updates

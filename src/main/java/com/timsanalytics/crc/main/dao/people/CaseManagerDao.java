@@ -95,7 +95,7 @@ public class CaseManagerDao {
         query.append("      LEFT JOIN CRC.Case_Manager_Student_Count ON Case_Manager_Student_Count.case_manager_user_id = Auth_User.user_id\n");
         query.append("  WHERE\n");
         query.append("      Auth_User.deleted = 0\n");
-        query.append("      AND Auth_User_Role.role_id = 5\n");
+        query.append("      AND Auth_User_Role.role_id = 15\n");
         query.append("  ORDER BY\n");
         query.append("      Auth_User.given_name,\n");
         query.append("      Auth_User.surname\n");

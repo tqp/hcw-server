@@ -5,6 +5,7 @@ import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.auth.authCommon.services.UserService;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Student;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -33,7 +35,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create User", description = "Create User", tags = {"User"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<User> createUser(@RequestBody User user, HttpServletRequest request) {
         try {
@@ -42,6 +44,20 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get User List", description = "Get User List", tags = {"User"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<User>> getUserList() {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.userService.getUserList());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -89,7 +105,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update User", description = "Update User", tags = {"User"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<User> updateUser(@RequestBody User user, HttpServletRequest request) {
         try {

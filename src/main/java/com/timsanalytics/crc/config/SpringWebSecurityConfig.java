@@ -68,39 +68,39 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // LOCK THE ENDPOINTS DOWN HERE
                 .and()
                 .authorizeRequests()
-//                .antMatchers("**").permitAll() // WIDE OPEN!!!
+                .antMatchers("**").permitAll() // WIDE OPEN!!!
 
-                // Front-End Resources
-                .antMatchers("/*", "/*/*").permitAll()
-                .antMatchers("/assets/**").permitAll()
-                .antMatchers("/api-docs/**").permitAll()
-                .antMatchers("/swagger-ui.html").permitAll()
-
-                // API Endpoints OPEN
-                .antMatchers("/app/**").permitAll()
-                .antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers("/api/v1/token-exchange/**").permitAll()
-                .antMatchers("/api/v1/intuit-token/**").permitAll()
-                .antMatchers("/api/v1/google-auth/**").permitAll()
-                .antMatchers("/api/v1/test/**").permitAll()
-                .antMatchers("/api/v1/basic-database-connection/**").permitAll()
-                .antMatchers("/api/v1/health-check/**").permitAll()
-
-                // RE-FILE LATER
-                .antMatchers("/api/v1/user/**").permitAll()
-                .antMatchers("/api/v1/interaction-type/**").permitAll()
-
-                // API Endpoints USER
-                .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER", "CASE_MANAGER")
-                .antMatchers("/api/v1/settings/**").hasAnyRole("USER")
-
-                // API Endpoints MANAGER
-                .antMatchers("/api/v1/app-user/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/app-role/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/app-user-role/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/relationship/**").hasAnyRole("USER", "MANAGER", "CASE_MANAGER")
-
-                .antMatchers("/api/v1/infra/v1/audit/**").hasAnyRole("MANAGER")
+//                // Front-End Resources
+//                .antMatchers("/*", "/*/*").permitAll()
+//                .antMatchers("/assets/**").permitAll()
+//                .antMatchers("/api-docs/**").permitAll()
+//                .antMatchers("/swagger-ui.html").permitAll()
+//
+//                // API Endpoints OPEN
+//                .antMatchers("/app/**").permitAll()
+//                .antMatchers("/api/v1/auth/**").permitAll()
+//                .antMatchers("/api/v1/token-exchange/**").permitAll()
+//                .antMatchers("/api/v1/intuit-token/**").permitAll()
+//                .antMatchers("/api/v1/google-auth/**").permitAll()
+//                .antMatchers("/api/v1/test/**").permitAll()
+//                .antMatchers("/api/v1/basic-database-connection/**").permitAll()
+//                .antMatchers("/api/v1/health-check/**").permitAll()
+//
+//                // RE-FILE LATER
+//                .antMatchers("/api/v1/user/**").permitAll()
+//                .antMatchers("/api/v1/interaction-type/**").permitAll()
+//
+//                // API Endpoints USER
+//                .antMatchers("/api/v1/my-profile/**").permitAll()
+//                .antMatchers("/api/v1/settings/**").hasAnyRole("ADMIN")
+//
+//                // API Endpoints MANAGER
+//                .antMatchers("/api/v1/app-user/**").hasAnyRole("ADMIN", "MANAGE_USERS")
+//                .antMatchers("/api/v1/app-role/**").hasAnyRole("ADMIN", "MANAGE_USERS")
+//                .antMatchers("/api/v1/app-user-role/**").hasAnyRole("ADMIN", "MANAGE_USERS")
+//                .antMatchers("/api/v1/relationship/**").hasAnyRole("ADMIN", "MANAGE_USERS")
+//
+//                .antMatchers("/api/v1/infra/v1/audit/**").hasAnyRole("ADMIN", "MANAGE_USERS")
 
                 // API Endpoints ADMIN
 
@@ -109,9 +109,28 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Testing Endpoints
                 .antMatchers("/api/v1/diagnostics/endpoint/open/**").permitAll()
                 .antMatchers("/api/v1/diagnostics/endpoint/user/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/diagnostics/endpoint/manager/**").hasAnyRole("MANAGER")
+                .antMatchers("/api/v1/diagnostics/endpoint/manager/**").hasAnyRole("MANAGE_USERS")
                 .antMatchers("/api/v1/diagnostics/endpoint/admin/**").hasAnyRole("ADMIN")
                 .antMatchers("/api/v1/diagnostics/endpoint/developer/**").hasAnyRole("DEVELOPER")
+
+
+                //ADMIN
+//MANAGE_USERS
+//ADD_STUDENTS
+//VIEW_ALL_STUDENTS
+//EDIT_ONLY_THEIR_STUDENTS
+//EDIT_ALL_STUDENTS
+//EDIT_ONLY_THEIR_CAREGIVERS
+//VIEW_ALL_CAREGIVERS
+//EDIT_ALL_CAREGIVERS
+//ADD_CASE_MANAGER
+//VIEW_ALL_CASE_MANAGERS
+//EDIT_ALL_CASE_MANAGERS_INFORMATION
+//EDIT_YOUR_OWN_PERSONAL_INFORMATION
+//VIEW_REPORTS
+//VIEW_AND_EDIT_FINANCE
+//ADD_CAREGIVER
+
 
                 .anyRequest().authenticated();
     }

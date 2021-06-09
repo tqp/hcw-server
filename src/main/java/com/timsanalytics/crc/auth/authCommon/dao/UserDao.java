@@ -3,12 +3,9 @@ package com.timsanalytics.crc.auth.authCommon.dao;
 import com.timsanalytics.crc.auth.authCommon.beans.Role;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.dao.rowMappers.RoleRowMapper;
-import com.timsanalytics.crc.auth.authCommon.dao.rowMappers.UserRowMapper;
-import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.dao.UtilsDao;
 import com.timsanalytics.crc.utils.BCryptEncoderService;
-import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,7 +45,7 @@ public class UserDao {
         query.append("          username,\n");
         query.append("          surname,\n");
         query.append("          given_name,\n");
-        query.append("          position,\n");
+        query.append("          position_id,\n");
         query.append("          password,\n");
         query.append("          password_set,\n");
         query.append("          created_on,\n");
@@ -71,9 +68,6 @@ public class UserDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("Username: " + user.getUsername());
-
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
@@ -81,10 +75,10 @@ public class UserDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
-                        ps.setString(1, user.getUsername());
-                        ps.setString(2, user.getSurname());
-                        ps.setString(3, user.getGivenName());
-                        ps.setInt(4, user.getPosition());
+                        ps.setString(1, user.getUserUsername());
+                        ps.setString(2, user.getUserSurname());
+                        ps.setString(3, user.getUserGivenName());
+                        ps.setInt(4, user.getPositionId());
                         ps.setString(5, user.getPassword() != null ? this.bCryptEncoderService.encode(user.getPassword()) : null);
                         ps.setString(6, user.getPassword() != null ? now.toString() : null);
                         ps.setInt(7, -1);
@@ -115,21 +109,41 @@ public class UserDao {
         query.append("      login_count,\n");
         query.append("      surname,\n");
         query.append("      given_name,\n");
-        query.append("      position,\n");
+        query.append("      Auth_User.position_id,\n");
+        query.append("      Auth_Position.position_name,\n");
         query.append("      user_profile_photo_url,\n");
-        query.append("      created_on,\n");
-        query.append("      created_by,\n");
-        query.append("      updated_on,\n");
-        query.append("      updated_by,\n");
-        query.append("      deleted\n");
+        query.append("      Auth_User.created_on,\n");
+        query.append("      Auth_User.created_by,\n");
+        query.append("      Auth_User.updated_on,\n");
+        query.append("      Auth_User.updated_by,\n");
+        query.append("      Auth_User.deleted\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
+        query.append("      LEFT JOIN CRC.Auth_Position ON Auth_Position.position_id = Auth_User.position_id AND Auth_Position.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userId: " + userId);
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userId}, new UserRowMapper());
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userId}, (rs, rowNum) -> {
+                User row = new User();
+                row.setUserId(rs.getInt("user_id"));
+                row.setUserUsername(rs.getString("username"));
+                row.setPassword(rs.getString("password"));
+                row.setPasswordSet(rs.getString("password_set"));
+                row.setPasswordReset(rs.getInt("password_reset"));
+                row.setLastLogin(rs.getString("last_login"));
+                row.setLoginCount(rs.getInt("login_count"));
+                row.setUserSurname(rs.getString("surname"));
+                row.setUserGivenName(rs.getString("given_name"));
+                row.setPositionId(rs.getInt("position_id"));
+                row.setPositionName(rs.getString("position_name"));
+                row.setPicture(rs.getString("user_profile_photo_url"));
+                row.setCreatedOn(rs.getTimestamp("created_on"));
+                row.setCreatedBy(rs.getString("created_by"));
+                row.setUpdatedOn(rs.getTimestamp("updated_on"));
+                row.setUpdatedBy(rs.getString("updated_by"));
+                row.setStatus(rs.getInt("deleted"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -143,31 +157,37 @@ public class UserDao {
         this.logger.debug("UserDao -> getUserList");
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      user_id,\n");
+        query.append("      Auth_User.user_id,\n");
         query.append("      username,\n");
+        query.append("      given_name,\n");
         query.append("      surname,\n");
-        query.append("      given_name\n");
-        query.append("      password,\n");
-        query.append("      password_set,\n");
-        query.append("      password_reset,\n");
+        query.append("      Auth_User.position_id,\n");
+        query.append("      Auth_Position.position_name,\n");
         query.append("      last_login,\n");
         query.append("      login_count,\n");
-        query.append("      user_profile_photo_url,\n");
-        query.append("      created_on,\n");
-        query.append("      created_by,\n");
-        query.append("      updated_on,\n");
-        query.append("      updated_by,\n");
-        query.append("      deleted\n");
+        query.append("      user_profile_photo_url\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
+        query.append("      LEFT JOIN CRC.Auth_Position ON Auth_Position.position_id = Auth_User.position_id AND Auth_Position.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      deleted = 0\n");
+        query.append("      Auth_User.deleted = 0\n");
         query.append("  ORDER BY\n");
+        query.append("      given_name,\n");
         query.append("      surname,\n");
-        query.append("      given_name\n");
-        this.logger.debug("SQL:\n" + query.toString());
+        query.append("      Auth_User.given_name\n");
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new UserRowMapper());
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
+                User row = new User();
+                row.setUserId(rs.getInt("user_id"));
+                row.setUserUsername(rs.getString("username"));
+                row.setUserGivenName(rs.getString("given_name"));
+                row.setUserSurname(rs.getString("surname"));
+                row.setPositionId(rs.getInt("position_id"));
+                row.setPositionName(rs.getString("position_name"));
+                row.setLastLogin(rs.getString("last_login"));
+                row.setLoginCount(rs.getInt("login_count"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -213,9 +233,6 @@ public class UserDao {
 
         query.append("  LIMIT ?, ?\n");
         query.append("  -- END PAGINATION QUERY\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
-
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
                     pageStart,
@@ -223,19 +240,12 @@ public class UserDao {
             }, (rs, rowNum) -> {
                 User row = new User();
                 row.setUserId(rs.getInt("user_id"));
-                row.setUsername(rs.getString("username"));
-                row.setSurname(rs.getString("surname"));
-                row.setGivenName(rs.getString("given_name"));
+                row.setUserUsername(rs.getString("username"));
+                row.setUserSurname(rs.getString("surname"));
+                row.setUserGivenName(rs.getString("given_name"));
                 row.setLastLogin(rs.getString("last_login"));
                 row.setLoginCount(rs.getInt("login_count"));
-                // Roles
-                row.setRoleView(rs.getInt("role_view"));
-                row.setRoleManager(rs.getInt("role_manager"));
-                row.setRoleCaseManager(rs.getInt("role_case_manager"));
-                row.setRoleCreate(rs.getInt("role_create"));
-                row.setRoleEdit(rs.getInt("role_edit"));
-                row.setRoleReports(rs.getInt("role_reports"));
-                row.setRoleFinance(rs.getInt("role_finance"));
+                row.setPositionId(rs.getInt("position_id"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -256,15 +266,9 @@ public class UserDao {
         query.append("                  username,\n");
         query.append("                  surname,\n");
         query.append("                  given_name,\n");
+        query.append("                  position_id,\n");
         query.append("                  last_login,\n");
-        query.append("                  login_count,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 1 THEN 1 ELSE NULL END) AS role_view,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 4 THEN 1 ELSE NULL END) AS role_manager,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 5 THEN 1 ELSE NULL END) AS role_case_manager,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 9 THEN 1 ELSE NULL END) AS role_create,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 10 THEN 1 ELSE NULL END) AS role_edit,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 11 THEN 1 ELSE NULL END) AS role_reports,\n");
-        query.append("                  SUM(CASE WHEN Auth_User_Role.role_id = 12 THEN 1 ELSE NULL END) AS role_finance\n");
+        query.append("                  login_count\n");
         query.append("              FROM\n");
         query.append("                  CRC.Auth_User\n");
         query.append("                  LEFT JOIN CRC.Auth_User_Role ON Auth_User_Role.user_id = Auth_User.user_id AND Auth_User_Role.deleted = 0\n");
@@ -330,21 +334,20 @@ public class UserDao {
         query.append("      username = ?,\n");
         query.append("      surname = ?,\n");
         query.append("      given_name = ?,\n");
-        query.append("      position = ?,\n");
+        query.append("      position_id = ?,\n");
         query.append("      updated_on = NOW(),\n");
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
 //                        ps.setInt(1, loggedInUser.getUsername());
-                        ps.setString(1, User.getUsername());
-                        ps.setString(2, User.getSurname());
-                        ps.setString(3, User.getGivenName());
-                        ps.setInt(4, User.getPosition());
+                        ps.setString(1, User.getUserUsername());
+                        ps.setString(2, User.getUserSurname());
+                        ps.setString(3, User.getUserGivenName());
+                        ps.setInt(4, User.getPositionId());
                         ps.setInt(5, -1);
                         ps.setInt(6, User.getUserId());
                         return ps;
@@ -369,8 +372,6 @@ public class UserDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userId: " + userId);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -396,8 +397,6 @@ public class UserDao {
         query.append("      CRC.App_User\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userId: " + userId);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -426,8 +425,6 @@ public class UserDao {
         query.append("      USER.STATUS = 'Disabled'\n");
         query.append("  WHERE\n");
         query.append("      USER.USER_GUID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userGuid: " + userId);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -454,8 +451,6 @@ public class UserDao {
         query.append("      USER.STATUS = 'Active'\n");
         query.append("  WHERE\n");
         query.append("      USER.USER_GUID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userId: " + userId);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -484,9 +479,6 @@ public class UserDao {
         query.append("      USER.UPDATED_BY = ?\n");
         query.append("  WHERE\n");
         query.append("      USER.USER_GUID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("theme: " + User.getTheme());
-        this.logger.debug("userGuid: " + User.getUserId());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -520,8 +512,6 @@ public class UserDao {
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userGuid: " + user.getUserId());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -554,8 +544,6 @@ public class UserDao {
         query.append("      updated_by = ?\n");
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userGuid: " + user.getUserId());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -588,24 +576,44 @@ public class UserDao {
         query.append("      login_count,\n");
         query.append("      surname,\n");
         query.append("      given_name,\n");
-        query.append("      position,\n");
+        query.append("      Auth_User.position_id,\n");
+        query.append("      position_name,\n");
         query.append("      user_profile_photo_url,\n");
-        query.append("      created_on,\n");
-        query.append("      created_by,\n");
-        query.append("      updated_on,\n");
-        query.append("      updated_by,\n");
-        query.append("      deleted\n");
+        query.append("      Auth_User.created_on,\n");
+        query.append("      Auth_User.created_by,\n");
+        query.append("      Auth_User.updated_on,\n");
+        query.append("      Auth_User.updated_by,\n");
+        query.append("      Auth_User.deleted\n");
         query.append("  FROM\n");
         query.append("      CRC.Auth_User\n");
+        query.append("      LEFT JOIN CRC.Auth_Position ON Auth_Position.position_id = Auth_User.position_id AND Auth_Position.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      username = ?\n");
-        query.append("      AND deleted = 0\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userId: " + username);
+        query.append("      AND Auth_User.deleted = 0\n");
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, new UserRowMapper());
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, (rs, rowNum) -> {
+                User row = new User();
+                row.setUserId(rs.getInt("user_id"));
+                row.setUserUsername(rs.getString("username"));
+                row.setPassword(rs.getString("password"));
+                row.setPasswordSet(rs.getString("password_set"));
+                row.setPasswordReset(rs.getInt("password_reset"));
+                row.setLastLogin(rs.getString("last_login"));
+                row.setLoginCount(rs.getInt("login_count"));
+                row.setUserSurname(rs.getString("surname"));
+                row.setUserGivenName(rs.getString("given_name"));
+                row.setPositionId(rs.getInt("position_id"));
+                row.setPositionName(rs.getString("position_name"));
+                row.setPicture(rs.getString("user_profile_photo_url"));
+                row.setCreatedOn(rs.getTimestamp("created_on"));
+                row.setCreatedBy(rs.getString("created_by"));
+                row.setUpdatedOn(rs.getTimestamp("updated_on"));
+                row.setUpdatedBy(rs.getString("updated_by"));
+                row.setStatus(rs.getInt("deleted"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
-            //this.logger.error("EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
             this.logger.error("Exception: " + e);
@@ -645,8 +653,6 @@ public class UserDao {
         query.append("  WHERE\n");
         query.append("      username = ?\n");
         query.append("      AND deleted = 0\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("username: " + username);
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, Integer.class);
         } catch (EmptyResultDataAccessException e) {
@@ -671,8 +677,6 @@ public class UserDao {
         query.append("  WHERE\n");
         query.append("      user_id = ?\n");
         query.append("      AND Auth_User_Role.deleted = 0\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("userGuid: " + userGuid);
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{userGuid}, new RoleRowMapper());
         } catch (EmptyResultDataAccessException e) {

@@ -73,7 +73,7 @@ public class DiagnosticsController {
     // METHOD TESTS
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     @Operation(summary = "Perform a test GET request")
     public ResponseEntity<KeyValue> testGet() {
         this.logger.debug("EndpointTestController -> testGet");
@@ -83,7 +83,7 @@ public class DiagnosticsController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     @Operation(summary = "Perform a test POST request")
     public ResponseEntity<KeyValue> testPost() {
         this.logger.debug("EndpointTestController -> testPost");
@@ -93,7 +93,7 @@ public class DiagnosticsController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.PUT)
     @Operation(summary = "Perform a test PUT request")
     public ResponseEntity<KeyValue> testPut() {
         this.logger.debug("EndpointTestController -> testPut");
@@ -103,7 +103,7 @@ public class DiagnosticsController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
     @Operation(summary = "Perform a test DELETE request")
     public ResponseEntity<KeyValue> testDelete() {
         this.logger.debug("EndpointTestController -> testDelete");

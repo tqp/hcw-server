@@ -64,8 +64,8 @@ public class UserRoleDao {
                         ps.setInt(1, userId);
                         ps.setInt(2, roleId);
                         ps.setInt(3, deleted);
-                        ps.setString(4, loggedInUser.getUsername());
-                        ps.setString(5, loggedInUser.getUsername());
+                        ps.setString(4, loggedInUser.getUserUsername());
+                        ps.setString(5, loggedInUser.getUserUsername());
                         return ps;
                     });
             return userId;
@@ -97,7 +97,7 @@ public class UserRoleDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, status);
-                        ps.setString(2, loggedInUser.getUsername());
+                        ps.setString(2, loggedInUser.getUserUsername());
                         ps.setInt(3, userId);
                         ps.setInt(4, roleId);
                         return ps;

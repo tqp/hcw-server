@@ -5,9 +5,9 @@ import java.util.List;
 
 public class User {
     private Integer userId;
-    private String username;
-    private String surname;
-    private String givenName;
+    private String userUsername;
+    private String userSurname;
+    private String userGivenName;
     private String password;
     private String passwordSet;
     private Integer passwordReset;
@@ -20,18 +20,10 @@ public class User {
     private String updatedBy;
     private String theme;
     private String picture;
-    private Integer position;
+    private Integer positionId;
+    private String positionName;
     private List<Role> roles;
     private String rolesString;
-
-    // ROLES
-    private int roleView;
-    private int roleManager;
-    private int roleCaseManager;
-    private int roleCreate;
-    private int roleEdit;
-    private int roleReports;
-    private int roleFinance;
 
     public Integer getUserId() {
         return userId;
@@ -41,28 +33,28 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserUsername() {
+        return userUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserUsername(String userUsername) {
+        this.userUsername = userUsername;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getUserSurname() {
+        return userSurname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setUserSurname(String userSurname) {
+        this.userSurname = userSurname;
     }
 
-    public String getGivenName() {
-        return givenName;
+    public String getUserGivenName() {
+        return userGivenName;
     }
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
+    public void setUserGivenName(String userGivenName) {
+        this.userGivenName = userGivenName;
     }
 
     public String getPassword() {
@@ -161,12 +153,20 @@ public class User {
         this.picture = picture;
     }
 
-    public Integer getPosition() {
-        return position;
+    public Integer getPositionId() {
+        return positionId;
     }
 
-    public void setPosition(Integer position) {
-        this.position = position;
+    public void setPositionId(Integer positionId) {
+        this.positionId = positionId;
+    }
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 
     public List<Role> getRoles() {
@@ -183,61 +183,5 @@ public class User {
 
     public void setRolesString(String rolesString) {
         this.rolesString = rolesString;
-    }
-
-    public int getRoleView() {
-        return roleView;
-    }
-
-    public void setRoleView(int roleView) {
-        this.roleView = roleView;
-    }
-
-    public int getRoleManager() {
-        return roleManager;
-    }
-
-    public void setRoleManager(int roleManager) {
-        this.roleManager = roleManager;
-    }
-
-    public int getRoleCaseManager() {
-        return roleCaseManager;
-    }
-
-    public void setRoleCaseManager(int roleCaseManager) {
-        this.roleCaseManager = roleCaseManager;
-    }
-
-    public int getRoleCreate() {
-        return roleCreate;
-    }
-
-    public void setRoleCreate(int roleCreate) {
-        this.roleCreate = roleCreate;
-    }
-
-    public int getRoleEdit() {
-        return roleEdit;
-    }
-
-    public void setRoleEdit(int roleEdit) {
-        this.roleEdit = roleEdit;
-    }
-
-    public int getRoleReports() {
-        return roleReports;
-    }
-
-    public void setRoleReports(int roleReports) {
-        this.roleReports = roleReports;
-    }
-
-    public int getRoleFinance() {
-        return roleFinance;
-    }
-
-    public void setRoleFinance(int roleFinance) {
-        this.roleFinance = roleFinance;
     }
 }

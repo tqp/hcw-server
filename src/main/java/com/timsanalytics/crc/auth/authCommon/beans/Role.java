@@ -11,7 +11,6 @@ public class Role {
     private String createdBy;
     private Date updatedOn;
     private String updatedBy;
-
     private Boolean status;
 
     public Integer getRoleId() {
