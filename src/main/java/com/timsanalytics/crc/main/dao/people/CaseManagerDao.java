@@ -2,9 +2,11 @@ package com.timsanalytics.crc.main.dao.people;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.Caregiver;
 import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.dao.RowMappers.CaseManagerRowMapper;
 import com.timsanalytics.crc.main.dao.UtilsDao;
+import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,13 @@ public class CaseManagerDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final UtilsDao utilsDao;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public CaseManagerDao(JdbcTemplate mySqlAuthJdbcTemplate, UtilsDao utilsDao) {
+    public CaseManagerDao(JdbcTemplate mySqlAuthJdbcTemplate, UtilsDao utilsDao, PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.utilsDao = utilsDao;
+        this.printObjectService = printObjectService;
     }
 
     // BASIC CRUD
@@ -266,13 +270,13 @@ public class CaseManagerDao {
         return whereClause.toString();
     }
 
-    public CaseManager getCaseManagerDetail(int userId) {
+    public CaseManager getCaseManagerDetail(int caseManagerUserId) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      Auth_User.user_id,\n");
         query.append("      Auth_User.user_id AS case_manager_user_id,\n");
         query.append("      Auth_User.surname,\n");
         query.append("      Auth_User.given_name,\n");
+        query.append("      Person_Case_Manager.case_manager_id,\n");
         query.append("      Person_Case_Manager.address,\n");
         query.append("      Person_Case_Manager.phone,\n");
         query.append("      Person_Case_Manager.email\n");
@@ -281,12 +285,21 @@ public class CaseManagerDao {
         query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Auth_User.user_id AND Person_Case_Manager.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      Auth_User.user_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userId}, new CaseManagerRowMapper());
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{caseManagerUserId}, (rs, rowNum) -> {
+                CaseManager row = new CaseManager();
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
+                row.setCaseManagerSurname(rs.getString("surname"));
+                row.setCaseManagerGivenName(rs.getString("given_name"));
+                row.setCaseManagerId(rs.getInt("case_manager_id"));
+                row.setCaseManagerAddress(rs.getString("address"));
+                row.setCaseManagerPhone(rs.getString("phone"));
+                row.setCaseManagerEmail(rs.getString("email"));
+                return row;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
+            return new CaseManager();
         } catch (Exception e) {
             this.logger.error("Exception: " + e);
             return null;

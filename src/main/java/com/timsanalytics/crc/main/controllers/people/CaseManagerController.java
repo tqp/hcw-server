@@ -1,17 +1,15 @@
 package com.timsanalytics.crc.main.controllers.people;
 
+import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.services.people.CaseManagerService;
-import com.timsanalytics.crc.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -26,14 +25,14 @@ import java.util.List;
 @RequestMapping("/api/v1/case-manager")
 @Tag(name = "Case Manager", description = "CaseManager")
 public class CaseManagerController {
-    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final CaseManagerService caseManagerService;
-    private final PrintObjectService printObjectService;
+    private final TokenService tokenService;
 
     @Autowired
-    public CaseManagerController(CaseManagerService caseManagerService, PrintObjectService printObjectService) {
+    public CaseManagerController(CaseManagerService caseManagerService,
+                                 TokenService tokenService) {
         this.caseManagerService = caseManagerService;
-        this.printObjectService = printObjectService;
+        this.tokenService = tokenService;
     }
 
     // BASIC CRUD
@@ -99,10 +98,11 @@ public class CaseManagerController {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update Case Manager", description = "Update Case Manager", tags = {"Case Manager"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<CaseManager> updateCaseManager(@RequestBody CaseManager caseManager) {
+    public ResponseEntity<CaseManager> updateCaseManager(HttpServletRequest request,
+                                                         @RequestBody CaseManager caseManager) {
         try {
             return ResponseEntity.ok()
-                    .body(caseManagerService.updateCaseManager(caseManager));
+                    .body(caseManagerService.updateCaseManager(caseManager, this.tokenService.getUserFromRequest(request)));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

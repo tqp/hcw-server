@@ -4,6 +4,7 @@ import com.timsanalytics.crc.auth.authCommon.beans.Role;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.dao.rowMappers.RoleRowMapper;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.crc.main.beans.CaseManager;
 import com.timsanalytics.crc.main.dao.UtilsDao;
 import com.timsanalytics.crc.utils.BCryptEncoderService;
 import org.slf4j.Logger;
@@ -354,6 +355,38 @@ public class UserDao {
                     }
             );
             return this.getUserDetail(User.getUserId());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public User updateUserNameFromCaseManager(CaseManager caseManager, User loggedInUser) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      CRC.Auth_User\n");
+        query.append("  SET\n");
+        query.append("      surname = ?,\n");
+        query.append("      given_name = ?,\n");
+        query.append("      updated_on = NOW(),\n");
+        query.append("      updated_by = ?\n");
+        query.append("  WHERE\n");
+        query.append("      user_id = ?\n");
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, caseManager.getCaseManagerSurname());
+                        ps.setString(2, caseManager.getCaseManagerGivenName());
+                        ps.setString(3, loggedInUser.getUserUsername());
+                        ps.setInt(4, caseManager.getCaseManagerUserId());
+                        return ps;
+                    }
+            );
+            return this.getUserDetail(caseManager.getCaseManagerUserId());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

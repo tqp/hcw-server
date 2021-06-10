@@ -5,6 +5,8 @@ import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.auth.authCommon.dao.UserDao;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.CaseManager;
+import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +104,10 @@ public class UserService {
             logger.error("Error during update: " + user.getUserUsername(), e);
         }
         return updatedUser;
+    }
+
+    public void updateUserNameFromCaseManager(CaseManager caseManager, User loggedInUser) {
+        this.userDao.updateUserNameFromCaseManager(caseManager, loggedInUser);
     }
 
     // DELETE
