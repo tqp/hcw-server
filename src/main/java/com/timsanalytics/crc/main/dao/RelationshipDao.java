@@ -396,6 +396,7 @@ public class RelationshipDao {
 
     public List<Relationship> getStudentListBySponsorId(Integer sponsorId) {
         StringBuilder query = new StringBuilder();
+
         query.append("  SELECT\n");
         query.append("      Person_Student.student_id,\n");
         query.append("      Person_Student.surname,\n");
@@ -405,8 +406,20 @@ public class RelationshipDao {
         query.append("      CRC.Rel_Student_Sponsor\n");
         query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Rel_Student_Sponsor.student_id AND Person_Student.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      Rel_Student_Sponsor.sponsor_id = ?\n");
+        query.append("      Rel_Student_Sponsor.Sponsor_id = ?\n");
         query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
+        query.append("      AND Rel_Student_Sponsor.start_date =\n");
+        query.append("      (\n");
+        query.append("          SELECT\n");
+        query.append("              MAX(start_date)\n");
+        query.append("          FROM\n");
+        query.append("              CRC.Rel_Student_Sponsor\n");
+        query.append("          WHERE\n");
+        query.append("              Rel_Student_Sponsor.student_id = Person_Student.student_id\n");
+        query.append("      )\n");
+        query.append("  ORDER BY\n");
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Person_Student.surname\n");
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{sponsorId}, (rs, rowNum) -> {
                 Relationship row = new Relationship();

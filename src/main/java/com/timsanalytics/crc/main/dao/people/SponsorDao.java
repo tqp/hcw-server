@@ -81,8 +81,8 @@ public class SponsorDao {
         query.append("  WHERE\n");
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      surname,\n");
-        query.append("      given_name\n");
+        query.append("      given_name,\n");
+        query.append("      surname\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
