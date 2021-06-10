@@ -1,22 +1,22 @@
 package com.timsanalytics.crc.main.beans;
 
-public class StudentSponsorLetter {
-    private Integer studentSponsorLetterId;
+public class SponsorLetter {
+    private Integer sponsorLetterId;
     private Integer studentId;
-    private String sponsorId;
-    private String studentSponsorLetterDate;
+    private Integer sponsorId;
+    private String sponsorLetterDate;
     // JOINED TABLES
     private String studentSurname;
     private String studentGivenName;
     private String sponsorSurname;
     private String sponsorGivenName;
 
-    public Integer getStudentSponsorLetterId() {
-        return studentSponsorLetterId;
+    public Integer getSponsorLetterId() {
+        return sponsorLetterId;
     }
 
-    public void setStudentSponsorLetterId(Integer studentSponsorLetterId) {
-        this.studentSponsorLetterId = studentSponsorLetterId;
+    public void setSponsorLetterId(Integer sponsorLetterId) {
+        this.sponsorLetterId = sponsorLetterId;
     }
 
     public Integer getStudentId() {
@@ -27,20 +27,20 @@ public class StudentSponsorLetter {
         this.studentId = studentId;
     }
 
-    public String getSponsorId() {
+    public Integer getSponsorId() {
         return sponsorId;
     }
 
-    public void setSponsorId(String sponsorId) {
+    public void setSponsorId(Integer sponsorId) {
         this.sponsorId = sponsorId;
     }
 
-    public String getStudentSponsorLetterDate() {
-        return studentSponsorLetterDate;
+    public String getSponsorLetterDate() {
+        return sponsorLetterDate;
     }
 
-    public void setStudentSponsorLetterDate(String studentSponsorLetterDate) {
-        this.studentSponsorLetterDate = studentSponsorLetterDate;
+    public void setSponsorLetterDate(String sponsorLetterDate) {
+        this.sponsorLetterDate = sponsorLetterDate;
     }
 
     public String getStudentSurname() {

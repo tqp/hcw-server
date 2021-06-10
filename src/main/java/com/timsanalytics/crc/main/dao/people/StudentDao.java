@@ -3,10 +3,8 @@ package com.timsanalytics.crc.main.dao.people;
 import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.crc.main.beans.Relationship;
 import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.dao.UtilsDao;
-import com.timsanalytics.crc.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +56,6 @@ public class StudentDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -127,9 +124,8 @@ public class StudentDao {
         query.append("      AND effectiveDateComparison.student_id IS NULL\n");
         query.append("  )\n");
         query.append("  ORDER BY\n");
-        query.append("      Person_Student.surname,\n");
-        query.append("      Person_Student.given_name\n");
-        this.logger.trace("SQL:\n" + query.toString());
+        query.append("      Person_Student.given_name,\n");
+        query.append("      Person_Student.surname\n");
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 Student row = new Student();
@@ -215,7 +211,6 @@ public class StudentDao {
         query.append("  ORDER BY\n");
         query.append("      Person_Student.surname,\n");
         query.append("      Person_Student.given_name\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{loggedInUser.getUserId()}, (rs, rowNum) -> {
                 Student row = new Student();
@@ -274,9 +269,6 @@ public class StudentDao {
 
         query.append("  LIMIT ?, ?\n");
         query.append("  -- END PAGINATION QUERY\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
-
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
                     pageStart,
@@ -417,7 +409,6 @@ public class StudentDao {
         query.append("      LEFT JOIN CRC.Ref_Impairment_Type ON Ref_Impairment_Type.impairment_type_id = Person_Student.impairment_type_id AND Ref_Impairment_Type.deleted = 0\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
                 Student row = new Student();
@@ -497,8 +488,6 @@ public class StudentDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      student_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("id=" + studentId);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -531,7 +520,6 @@ public class StudentDao {
         query.append("  WHERE\n");
         query.append("      Rel_Student_Sponsor.sponsor_id = ?\n");
         query.append("      AND Rel_Student_Sponsor.deleted = 0\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{sponsorId}, (rs, rowNum) -> {
                 Student row = new Student();
@@ -568,7 +556,6 @@ public class StudentDao {
         query.append("  ORDER BY\n");
         query.append("      surname,\n");
         query.append("      given_name\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
                     student.getStudentGivenName(),
