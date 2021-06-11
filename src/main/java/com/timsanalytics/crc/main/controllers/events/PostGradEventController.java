@@ -3,7 +3,6 @@ package com.timsanalytics.crc.main.controllers.events;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.Csi;
 import com.timsanalytics.crc.main.beans.PostGradEvent;
 import com.timsanalytics.crc.main.services.PostGradEventService;
 import io.swagger.v3.oas.annotations.Operation;

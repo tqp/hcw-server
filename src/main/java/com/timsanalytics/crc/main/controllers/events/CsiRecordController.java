@@ -3,8 +3,8 @@ package com.timsanalytics.crc.main.controllers.events;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.Csi;
-import com.timsanalytics.crc.main.services.CsiService;
+import com.timsanalytics.crc.main.beans.CsiRecord;
+import com.timsanalytics.crc.main.services.CsiRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,26 +22,26 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/csi")
-@Tag(name = "CSI", description = "CSI")
-public class CsiController {
+@RequestMapping("/api/v1/csi-record")
+@Tag(name = "CSI Records", description = "CSI Records")
+public class CsiRecordController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private final CsiService csiService;
+    private final CsiRecordService csiRecordService;
 
     @Autowired
-    public CsiController(CsiService csiService) {
-        this.csiService = csiService;
+    public CsiRecordController(CsiRecordService csiRecordService) {
+        this.csiRecordService = csiRecordService;
     }
 
     // BASIC CRUD
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Csi", tags = {"CSI"}, description = "Create Csi", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Csi> createCsi(@RequestBody Csi csi) {
+    @Operation(summary = "Create CSI Record", description = "Create CSI Record", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CsiRecord> createCsi(@RequestBody CsiRecord csiRecord) {
         try {
             return ResponseEntity.ok()
-                    .body(csiService.createCsi(csi));
+                    .body(csiRecordService.createCsiRecord(csiRecord));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -50,11 +50,11 @@ public class CsiController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Csi List", description = "Get Csi List", tags = {"CSI"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Csi>> getCsiList() {
+    @Operation(summary = "Get CSI Record List", description = "Get CSI Record List", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<CsiRecord>> getCsiList() {
         try {
             return ResponseEntity.ok()
-                    .body(this.csiService.getCsiList());
+                    .body(this.csiRecordService.getCsiRecordList());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -64,11 +64,11 @@ public class CsiController {
 
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Csi List (SSP)", description = "Get Csi List (SSP)", tags = {"CSI"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ServerSidePaginationResponse<Csi>> getCsiList_SSP(@RequestBody ServerSidePaginationRequest<Csi> serverSidePaginationRequest) {
+    @Operation(summary = "Get CSI Record List (SSP)", description = "Get CSI Record List (SSP)", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<ServerSidePaginationResponse<CsiRecord>> getCsiList_SSP(@RequestBody ServerSidePaginationRequest<CsiRecord> serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
-            ServerSidePaginationResponse<Csi> container = this.csiService.getCsiList_SSP(serverSidePaginationRequest);
+            ServerSidePaginationResponse<CsiRecord> container = this.csiRecordService.getCsiRecordList_SSP(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);
@@ -80,12 +80,12 @@ public class CsiController {
     }
 
     @RequestMapping(value = "/{csiRecordId}", method = RequestMethod.GET)
-    @Operation(summary = "Get Csi Detail", description = "Get Csi Detail", tags = {"CSI"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Csi> getCsiDetail(@Parameter(description = "Csi ID", required = true) @PathVariable int csiRecordId) {
+    @Operation(summary = "Get CSI Record Detail", description = "Get CSI Record Detail", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CsiRecord> getCsiDetail(@Parameter(description = "CSI ID", required = true) @PathVariable int csiRecordId) {
         try {
-            Csi csi = csiService.getCsiDetail(csiRecordId);
+            CsiRecord csiRecord = csiRecordService.getCsiRecordDetail(csiRecordId);
             return ResponseEntity.ok()
-                    .body(csi);
+                    .body(csiRecord);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -94,11 +94,11 @@ public class CsiController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update Csi", description = "Update Csi", tags = {"CSI"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Csi> updateCsi(@RequestBody Csi csi) {
+    @Operation(summary = "Update CSI Record", description = "Update CSI Record", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CsiRecord> updateCsi(@RequestBody CsiRecord csiRecord) {
         try {
             return ResponseEntity.ok()
-                    .body(csiService.updateCsi(csi));
+                    .body(csiRecordService.updateCsiRecord(csiRecord));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -106,12 +106,12 @@ public class CsiController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/{csiRecordId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete Csi", description = "Delete Csi", tags = {"CSI"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<KeyValue> deleteCsi(@Parameter(description = "Csi GUID", required = true) @PathVariable String csiRecordId) {
+    @RequestMapping(value = "/{csiRecordGuId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete CSI Record", description = "Delete CSI Record", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> deleteCsi(@Parameter(description = "CSI Record GUID", required = true) @PathVariable String csiRecordGuId) {
         try {
             return ResponseEntity.ok()
-                    .body(csiService.deleteCsi(csiRecordId));
+                    .body(csiRecordService.deleteCsiRecord(csiRecordGuId));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -122,11 +122,11 @@ public class CsiController {
 
     @ResponseBody
     @RequestMapping(value = "/student/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Csi List by Student ID", description = "Get Csi List by Student ID", tags = {"Csi"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Csi>> getCsiListByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
+    @Operation(summary = "Get CSI Record List by Student ID", description = "Get CSI Record List by Student ID", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<CsiRecord>> getCsiListByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
         try {
             return ResponseEntity.ok()
-                    .body(this.csiService.getCsiListByStudentId(studentId));
+                    .body(this.csiRecordService.getCsiRecordListByStudentId(studentId));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -136,11 +136,11 @@ public class CsiController {
 
     @ResponseBody
     @RequestMapping(value = "/recent-scores/student/{studentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Most Recent Csi Scores by Student ID", description = "Get Most Recent Csi Scores by Student ID", tags = {"Csi"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Csi> getMostRecentCsiScoresByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
+    @Operation(summary = "Get Most Recent CSI Record Scores by Student ID", description = "Get Most Recent CSI Record Scores by Student ID", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<CsiRecord> getMostRecentCsiScoresByStudentId(@Parameter(description = "Student ID", required = true) @PathVariable Integer studentId) {
         try {
             return ResponseEntity.ok()
-                    .body(this.csiService.getMostRecentCsiScoresByStudentId(studentId));
+                    .body(this.csiRecordService.getMostRecentCsiRecordScoresByStudentId(studentId));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -150,11 +150,11 @@ public class CsiController {
 
     @ResponseBody
     @RequestMapping(value = "/case-manager/{caseManagerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Csi List by Case Manager ID", description = "Get Csi List by Case Manager ID", tags = {"Csi"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Csi>> getCsiListByCaseManagerId(@Parameter(description = "Case Manager ID", required = true) @PathVariable Integer caseManagerId) {
+    @Operation(summary = "Get CSI Record List by Case Manager ID", description = "Get CSI Record List by Case Manager ID", tags = {"CSI Records"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<CsiRecord>> getCsiListByCaseManagerId(@Parameter(description = "Case Manager ID", required = true) @PathVariable Integer caseManagerId) {
         try {
             return ResponseEntity.ok()
-                    .body(this.csiService.getCsiListByCaseManagerId(caseManagerId));
+                    .body(this.csiRecordService.getCsiRecordListByCaseManagerId(caseManagerId));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

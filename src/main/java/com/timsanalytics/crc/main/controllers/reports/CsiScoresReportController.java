@@ -1,14 +1,8 @@
 package com.timsanalytics.crc.main.controllers.reports;
 
-import com.timsanalytics.crc.common.beans.KeyValue;
-import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.crc.main.beans.Csi;
 import com.timsanalytics.crc.main.beans.CsiScoresReport;
 import com.timsanalytics.crc.main.services.CsiScoresReportService;
-import com.timsanalytics.crc.main.services.CsiService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -20,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
