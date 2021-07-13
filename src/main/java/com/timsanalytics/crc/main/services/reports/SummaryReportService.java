@@ -21,4 +21,8 @@ public class SummaryReportService {
         return this.summaryReportDao.getStudentCountReintegrated();
     }
 
+    public Integer getStudentCountReintegratedRunaway() {
+        return this.summaryReportDao.getStudentCountReintegratedRunaway();
+    }
+
 }

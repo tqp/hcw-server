@@ -50,18 +50,17 @@ public class SummaryReportController {
         }
     }
 
+    @RequestMapping(value = "/student-count-reintegrated-runaway", method = RequestMethod.GET)
+    @Operation(summary = "student-count-reintegrated-runaway", description = "student-count-reintegrated-runaway", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Integer> getStudentCountReintegratedRunaway() {
+        try {
+            Integer count = summaryReportService.getStudentCountReintegratedRunaway();
+            return ResponseEntity.ok()
+                    .body(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-
-//    @RequestMapping(value = "/active-students/results", method = RequestMethod.GET)
-//    @Operation(summary = "Get Active Students Results", description = "Get Active Students Results", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
-//    public ResponseEntity<List<SummaryReportResult>> getActiveStudents_Results() {
-//        try {
-//            List<SummaryReportResult> count = summaryReportService.getActiveStudents_Results();
-//            return ResponseEntity.ok()
-//                    .body(count);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 }

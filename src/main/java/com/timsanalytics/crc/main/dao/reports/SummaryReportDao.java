@@ -114,5 +114,51 @@ public class SummaryReportDao {
             return 0;
         }
     }
+
+    public Integer getStudentCountReintegratedRunaway() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      COUNT(*)\n");
+        query.append("  FROM\n");
+        query.append("  (\n");
+        query.append("      SELECT\n");
+        query.append("          Person_Student.student_id\n");
+        query.append("      FROM\n");
+        query.append("          CRC.Person_Student\n");
+        query.append("          -- Current Program Status\n");
+        query.append("          LEFT JOIN CRC.Rel_Student_Program_Status ON Rel_Student_Program_Status.student_id = Person_Student.student_id AND Rel_Student_Program_Status.deleted = 0\n");
+        query.append("          LEFT OUTER JOIN CRC.Rel_Student_Program_Status effectiveDateComparison ON\n");
+        query.append("          (\n");
+        query.append("              effectiveDateComparison.student_id = Person_Student.student_id\n");
+        query.append("              AND\n");
+        query.append("              (\n");
+        query.append("                  Rel_Student_Program_Status.start_date < effectiveDateComparison.start_date\n");
+        query.append("                  OR\n");
+        query.append("                  (\n");
+        query.append("                      Rel_Student_Program_Status.start_date = effectiveDateComparison.start_date\n");
+        query.append("                      AND\n");
+        query.append("                      Rel_Student_Program_Status.student_program_status_id > effectiveDateComparison.student_program_status_id\n");
+        query.append("                  )\n");
+        query.append("              )\n");
+        query.append("          )\n");
+        query.append("      WHERE\n");
+        query.append("      (\n");
+        query.append("          Person_Student.deleted = 0\n");
+        query.append("          AND Rel_Student_Program_Status.program_status_level_one_id = 2\n");
+        query.append("          AND Rel_Student_Program_Status.program_status_level_two_id = 12\n");
+        query.append("          AND effectiveDateComparison.student_id IS NULL\n");
+        query.append("      )\n");
+        query.append("  ) AS COUNT\n");
+        try {
+            Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+            return count == null ? 0 : count;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return 0;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return 0;
+        }
+    }
 }
 
