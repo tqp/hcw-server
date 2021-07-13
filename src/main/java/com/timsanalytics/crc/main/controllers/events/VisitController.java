@@ -36,7 +36,7 @@ public class VisitController {
     // BASIC CRUD
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create Visit", description = "Create Visit", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Visit> createVisit(@RequestBody Visit visit) {
         try {
@@ -49,7 +49,7 @@ public class VisitController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Visit List", description = "Get Visit List", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<Visit>> getVisitList() {
         try {
@@ -93,7 +93,7 @@ public class VisitController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update Visit", description = "Update Visit", tags = {"Visit"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Visit> updateVisit(@RequestBody Visit visit) {
         try {

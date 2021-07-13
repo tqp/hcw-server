@@ -1,5 +1,6 @@
 package com.timsanalytics.crc.main.dao.events;
 
+import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.main.beans.Visit;
@@ -84,21 +85,86 @@ public class VisitDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      student_visit_id,\n");
-        query.append("      student_id,\n");
-        query.append("      case_manager_user_id\n");
+        query.append("      visit_date,\n");
+        query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
+        query.append("      Ref_Interaction_Type.interaction_type_name,\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname AS student_surname,\n");
+        query.append("      Person_Student.given_name AS student_given_name,\n");
+        query.append("      Student_Visit.case_manager_user_id,\n");
+        query.append("      Auth_User.surname AS case_manager_surname,\n");
+        query.append("      Auth_User.given_name AS case_manager_given_name\n");
         query.append("  FROM\n");
         query.append("      CRC.Student_Visit\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Visit.student_id AND Person_Student.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Visit.case_manager_user_id AND Auth_User.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Visit_Type ON Ref_Visit_Type.visit_type_id = Student_Visit.visit_type_id AND Ref_Visit_Type.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Interaction_Type ON Ref_Interaction_Type.interaction_type_id = Student_Visit.interaction_type_id AND Ref_Interaction_Type.deleted = 0\n");
         query.append("  WHERE\n");
-        query.append("      deleted = 0\n");
+        query.append("      Student_Visit.deleted = 0\n");
         query.append("  ORDER BY\n");
-        query.append("      student_visit_id\n");
-        this.logger.trace("SQL:\n" + query.toString());
+        query.append("      visit_date DESC\n");
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 Visit row = new Visit();
                 row.setVisitId(rs.getInt("student_visit_id"));
+                row.setVisitDate(rs.getString("visit_date"));
+                row.setVisitTypeName(rs.getString("visit_type_name"));
+                row.setInteractionTypeName(rs.getString("interaction_type_name"));
                 row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("student_surname"));
+                row.setStudentGivenName(rs.getString("student_given_name"));
                 row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Visit> getVisitListByCaseManager(User loggedInUser) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      student_visit_id,\n");
+        query.append("      visit_date,\n");
+        query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
+        query.append("      Ref_Interaction_Type.interaction_type_name,\n");
+        query.append("      Person_Student.student_id,\n");
+        query.append("      Person_Student.surname AS student_surname,\n");
+        query.append("      Person_Student.given_name AS student_given_name,\n");
+        query.append("      Student_Visit.case_manager_user_id,\n");
+        query.append("      Auth_User.surname AS case_manager_surname,\n");
+        query.append("      Auth_User.given_name AS case_manager_given_name\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Visit\n");
+        query.append("      LEFT JOIN CRC.Person_Student ON Person_Student.student_id = Student_Visit.student_id AND Person_Student.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Auth_User ON Auth_User.user_id = Student_Visit.case_manager_user_id AND Auth_User.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Visit_Type ON Ref_Visit_Type.visit_type_id = Student_Visit.visit_type_id AND Ref_Visit_Type.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Interaction_Type ON Ref_Interaction_Type.interaction_type_id = Student_Visit.interaction_type_id AND Ref_Interaction_Type.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Student_Visit.deleted = 0\n");
+        query.append("      AND Student_Visit.case_manager_user_id = ?\n");
+        query.append("  ORDER BY\n");
+        query.append("      visit_date DESC\n");
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{loggedInUser.getUserId()}, (rs, rowNum) -> {
+                Visit row = new Visit();
+                row.setVisitId(rs.getInt("student_visit_id"));
+                row.setVisitDate(rs.getString("visit_date"));
+                row.setVisitTypeName(rs.getString("visit_type_name"));
+                row.setInteractionTypeName(rs.getString("interaction_type_name"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setStudentSurname(rs.getString("student_surname"));
+                row.setStudentGivenName(rs.getString("student_given_name"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
                 return row;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -394,6 +460,58 @@ public class VisitDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
+                Visit row = new Visit();
+                row.setVisitId(rs.getInt("student_visit_id"));
+                row.setStudentId(rs.getInt("student_id"));
+                row.setCaseManagerUserId(rs.getInt("case_manager_user_id"));
+                row.setCaseManagerSurname(rs.getString("case_manager_surname"));
+                row.setCaseManagerGivenName(rs.getString("case_manager_given_name"));
+                row.setVisitDate(rs.getString("visit_date"));
+                row.setVisitTypeId(rs.getInt("visit_type_id"));
+                row.setVisitTypeName(rs.getString("visit_type_name"));
+                row.setInteractionTypeId(rs.getInt("interaction_type_id"));
+                row.setInteractionTypeName(rs.getString("interaction_type_name"));
+                row.setCaregiverComments(rs.getString("caregiver_comments"));
+                row.setCaseManagerComments(rs.getString("case_manager_comments"));
+                return row;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Visit> getVisitListByCaseManagerAndStudent(User loggedInUser, Integer studentId) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      student_visit_id,\n");
+        query.append("      student_id,\n");
+        query.append("      Student_Visit.case_manager_user_id,\n");
+        query.append("      Person_Case_Manager.surname AS case_manager_surname,\n");
+        query.append("      Person_Case_Manager.given_name AS case_manager_given_name,\n");
+        query.append("      visit_date,\n");
+        query.append("      Student_Visit.visit_type_id,\n");
+        query.append("      Ref_Visit_Type.name AS visit_type_name,\n");
+        query.append("      Student_Visit.interaction_type_id,\n");
+        query.append("      Ref_Interaction_Type.interaction_type_name,\n");
+        query.append("      caregiver_comments,\n");
+        query.append("      case_manager_comments\n");
+        query.append("  FROM\n");
+        query.append("      CRC.Student_Visit\n");
+        query.append("      LEFT JOIN CRC.Ref_Visit_Type ON Ref_Visit_Type.visit_type_id = Student_Visit.visit_type_id AND Ref_Visit_Type.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Ref_Interaction_Type ON Ref_Interaction_Type.interaction_type_id = Student_Visit.interaction_type_id AND Ref_Interaction_Type.deleted = 0\n");
+        query.append("      LEFT JOIN CRC.Person_Case_Manager ON Person_Case_Manager.case_manager_user_id = Student_Visit.case_manager_user_id AND Person_Case_Manager.deleted = 0\n");
+        query.append("  WHERE\n");
+        query.append("      Student_Visit.case_manager_user_id = ?\n");
+        query.append("      AND student_id = ?\n");
+        query.append("      AND Student_Visit.deleted = 0\n");
+        query.append("  ORDER BY\n");
+        query.append("      visit_date DESC\n");
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{loggedInUser.getUserId(), studentId}, (rs, rowNum) -> {
                 Visit row = new Visit();
                 row.setVisitId(rs.getInt("student_visit_id"));
                 row.setStudentId(rs.getInt("student_id"));

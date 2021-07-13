@@ -148,7 +148,7 @@ public class StudentDao {
         }
     }
 
-    public List<Student> getStudentByCaseManagerList(User loggedInUser) {
+    public List<Student> getStudentListByCaseManager(User loggedInUser) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      Person_Student.student_id,\n");

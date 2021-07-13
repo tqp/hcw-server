@@ -28,8 +28,8 @@ public class StudentService {
         return this.studentDao.getStudentList();
     }
 
-    public List<Student> getStudentByCaseManagerList(User loggedInUser) {
-        return this.studentDao.getStudentByCaseManagerList(loggedInUser);
+    public List<Student> getStudentListByCaseManager(User loggedInUser) {
+        return this.studentDao.getStudentListByCaseManager(loggedInUser);
     }
 
     public ServerSidePaginationResponse<Student> getStudentList_SSP(ServerSidePaginationRequest<Student> serverSidePaginationRequest) {

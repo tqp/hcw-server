@@ -33,11 +33,11 @@ public class StudentByCaseManagerController {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Student List By Case Manager", description = "Get Student List By Case Manager", tags = {"Student"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Student>> getStudentByCaseManagerList(HttpServletRequest request) {
+    public ResponseEntity<List<Student>> getStudentListByCaseManager(HttpServletRequest request) {
         User loggedInUser = this.tokenService.getUserFromRequest(request);
         try {
             return ResponseEntity.ok()
-                    .body(this.studentService.getStudentByCaseManagerList(loggedInUser));
+                    .body(this.studentService.getStudentListByCaseManager(loggedInUser));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

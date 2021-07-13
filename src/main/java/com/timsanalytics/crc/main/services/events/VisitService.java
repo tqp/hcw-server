@@ -1,8 +1,10 @@
 package com.timsanalytics.crc.main.services.events;
 
+import com.timsanalytics.crc.auth.authCommon.beans.User;
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.crc.main.beans.Student;
 import com.timsanalytics.crc.main.beans.Visit;
 import com.timsanalytics.crc.main.dao.events.VisitDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,10 @@ public class VisitService {
 
     public List<Visit> getVisitList() {
         return this.visitDao.getVisitList();
+    }
+
+    public List<Visit> getVisitListByCaseManager(User loggedInUser) {
+        return this.visitDao.getVisitListByCaseManager(loggedInUser);
     }
 
     public ServerSidePaginationResponse<Visit> getVisitList_SSP(ServerSidePaginationRequest<Visit> serverSidePaginationRequest) {
@@ -55,5 +61,9 @@ public class VisitService {
 
     public List<Visit> getVisitListByStudentId(Integer studentId) {
         return this.visitDao.getVisitListByStudentId(studentId);
+    }
+
+    public List<Visit> getVisitListByCaseManagerAndStudent(User loggedInUser, Integer studentId) {
+        return this.visitDao.getVisitListByCaseManagerAndStudent(loggedInUser, studentId);
     }
 }
