@@ -25,4 +25,12 @@ public class SummaryReportService {
         return this.summaryReportDao.getStudentCountReintegratedRunaway();
     }
 
+    public Integer getStudentCountFamiliesIntact() {
+        return this.summaryReportDao.getStudentCountFamiliesIntact();
+    }
+
+    public Integer getStudentCountFamiliesIntactEnrolled() {
+        return this.summaryReportDao.getStudentCountFamiliesIntactEnrolled();
+    }
+
 }
