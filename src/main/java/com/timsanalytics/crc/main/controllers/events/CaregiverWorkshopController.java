@@ -3,7 +3,7 @@ package com.timsanalytics.crc.main.controllers.events;
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.common.beans.KeyValueInteger;
 import com.timsanalytics.crc.main.beans.CaregiverWorkshop;
-import com.timsanalytics.crc.main.services.CaregiverWorkshopService;
+import com.timsanalytics.crc.main.services.events.CaregiverWorkshopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

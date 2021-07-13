@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.services;
+package com.timsanalytics.crc.main.services.events;
 
 import com.timsanalytics.crc.common.beans.KeyValue;
 import com.timsanalytics.crc.common.beans.ServerSidePaginationRequest;

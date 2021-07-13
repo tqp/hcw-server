@@ -3,7 +3,7 @@ package com.timsanalytics.crc.main.controllers.events;
 import com.timsanalytics.crc.auth.authCommon.services.TokenService;
 import com.timsanalytics.crc.common.beans.KeyValueInteger;
 import com.timsanalytics.crc.main.beans.CaseManagerQualification;
-import com.timsanalytics.crc.main.services.CaseManagerQualificationService;
+import com.timsanalytics.crc.main.services.events.CaseManagerQualificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

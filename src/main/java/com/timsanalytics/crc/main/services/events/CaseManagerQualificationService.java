@@ -1,4 +1,4 @@
-package com.timsanalytics.crc.main.services;
+package com.timsanalytics.crc.main.services.events;
 
 import com.timsanalytics.crc.common.beans.KeyValueInteger;
 import com.timsanalytics.crc.main.beans.CaseManagerQualification;

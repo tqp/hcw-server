@@ -47,7 +47,6 @@ public class PostGradEventDao {
         query.append("          ?,\n");
         query.append("          0\n");
         query.append("      )\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -84,7 +83,6 @@ public class PostGradEventDao {
         query.append("      deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      post_grad_event_date DESC\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
                 PostGradEvent row = new PostGradEvent();
@@ -162,9 +160,6 @@ public class PostGradEventDao {
 
         query.append("  LIMIT ?, ?\n");
         query.append("  -- END PAGINATION QUERY\n");
-
-        this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
 
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
@@ -249,7 +244,6 @@ public class PostGradEventDao {
         query.append("      LEFT JOIN CRC.Ref_Post_Grad_Event_Type ON Ref_Post_Grad_Event_Type.post_grad_event_type_id = Student_Post_Grad_Event.post_grad_event_type_id\n");
         query.append("  WHERE\n");
         query.append("      post_grad_event_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{postGradEventId}, (rs, rowNum) -> {
                 PostGradEvent row = new PostGradEvent();
@@ -283,7 +277,6 @@ public class PostGradEventDao {
         query.append("      post_grad_event_comments = ?\n");
         query.append("  WHERE\n");
         query.append("      post_grad_event_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -314,8 +307,6 @@ public class PostGradEventDao {
         query.append("      deleted = 1\n");
         query.append("  WHERE\n");
         query.append("      post_grad_event_id = ?\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("postGradEventId=" + postGradEventId);
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
@@ -352,7 +343,6 @@ public class PostGradEventDao {
         query.append("      AND Student_Post_Grad_Event.deleted = 0\n");
         query.append("  ORDER BY\n");
         query.append("      post_grad_event_date DESC\n");
-        this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{studentId}, (rs, rowNum) -> {
                 PostGradEvent row = new PostGradEvent();

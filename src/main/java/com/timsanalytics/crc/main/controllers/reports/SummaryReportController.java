@@ -1,7 +1,7 @@
 package com.timsanalytics.crc.main.controllers.reports;
 
 import com.timsanalytics.crc.main.beans.SummaryReportResult;
-import com.timsanalytics.crc.main.services.SummaryReportService;
+import com.timsanalytics.crc.main.services.reports.SummaryReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
