@@ -24,11 +24,11 @@ public class SummaryReportController {
         this.summaryReportService = summaryReportService;
     }
 
-    @RequestMapping(value = "/active-students/count", method = RequestMethod.GET)
-    @Operation(summary = "Get Active Students Count", description = "Get Active Students Count", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Integer> getActiveStudents_Count() {
+    @RequestMapping(value = "/student-count-total", method = RequestMethod.GET)
+    @Operation(summary = "student-count-total", description = "student-count-total", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Integer> getStudentCountTotal() {
         try {
-            Integer count = summaryReportService.getActiveStudents_Count();
+            Integer count = summaryReportService.getStudentCountTotal();
             return ResponseEntity.ok()
                     .body(count);
         } catch (Exception e) {
@@ -37,11 +37,11 @@ public class SummaryReportController {
         }
     }
 
-    @RequestMapping(value = "/active-students/results", method = RequestMethod.GET)
-    @Operation(summary = "Get Active Students Results", description = "Get Active Students Results", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<SummaryReportResult>> getActiveStudents_Results() {
+    @RequestMapping(value = "/student-count-reintegrated", method = RequestMethod.GET)
+    @Operation(summary = "student-count-reintegrated", description = "student-count-reintegrated", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Integer> getStudentCountReintegrated() {
         try {
-            List<SummaryReportResult> count = summaryReportService.getActiveStudents_Results();
+            Integer count = summaryReportService.getStudentCountReintegrated();
             return ResponseEntity.ok()
                     .body(count);
         } catch (Exception e) {
@@ -49,4 +49,19 @@ public class SummaryReportController {
             return null;
         }
     }
+
+
+
+//    @RequestMapping(value = "/active-students/results", method = RequestMethod.GET)
+//    @Operation(summary = "Get Active Students Results", description = "Get Active Students Results", tags = {"Summary Report"}, security = @SecurityRequirement(name = "bearerAuth"))
+//    public ResponseEntity<List<SummaryReportResult>> getActiveStudents_Results() {
+//        try {
+//            List<SummaryReportResult> count = summaryReportService.getActiveStudents_Results();
+//            return ResponseEntity.ok()
+//                    .body(count);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 }

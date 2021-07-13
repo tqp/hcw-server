@@ -1,11 +1,8 @@
 package com.timsanalytics.crc.main.services.reports;
 
-import com.timsanalytics.crc.main.beans.SummaryReportResult;
 import com.timsanalytics.crc.main.dao.reports.SummaryReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SummaryReportService {
@@ -16,11 +13,12 @@ public class SummaryReportService {
         this.summaryReportDao = summaryReportDao;
     }
 
-    public Integer getActiveStudents_Count() {
-        return this.summaryReportDao.getActiveStudents_Count();
+    public Integer getStudentCountTotal() {
+        return this.summaryReportDao.getStudentCountTotal();
     }
 
-    public List<SummaryReportResult> getActiveStudents_Results() {
-        return this.summaryReportDao.getActiveStudents_Results();
+    public Integer getStudentCountReintegrated() {
+        return this.summaryReportDao.getStudentCountReintegrated();
     }
+
 }
